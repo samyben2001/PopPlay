@@ -65,8 +65,8 @@ class Minigame(models.Model):
     
     
 class MinigameUserNote(models.Model):
-    account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING)
-    minigame = models.ForeignKey(Minigame, on_delete=models.DO_NOTHING)
+    account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING, related_name='minigames_notes')
+    minigame = models.ForeignKey(Minigame, on_delete=models.DO_NOTHING, related_name='minigame_notes')
     note = models.IntegerField(validators=[
         MinValueValidator(0, message="Note must be between 0 and 5"),
         MaxValueValidator(5, message="Note must be between 0 and 5")
