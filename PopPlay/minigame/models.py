@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.files.storage import storages
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.    
@@ -18,7 +19,7 @@ class MediaType(models.Model):
        
 class Media(models.Model):
     name = models.CharField(max_length=200)
-    url = models.FileField(unique=True)
+    url = models.FileField(unique=True, storage=storages["cloudflare"])
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(MediaAnswer)
     
@@ -52,7 +53,7 @@ class Minigame(models.Model):
     name = models.CharField(max_length=200, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
-    cover_url = models.FileField(null=True, blank=True)
+    cover_url = models.FileField(null=True, blank=True, storage=storages["cloudflare"])
     
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING)
     type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)

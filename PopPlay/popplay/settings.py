@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import datetime
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'DB_PopPlay',
         'USER': 'postgres',
-        'PASSWORD': '.AZERTY67',
+        'PASSWORD': os.getenv('DB_PWD'),
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -147,4 +152,25 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5), # custom lifetime for access token
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1), # custom lifetime for refresh token
+}
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles":{
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    "cloudflare": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": "pop-play",
+            "endpoint_url": f"https://{os.getenv('CLOUDFLARE_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+            "access_key": os.getenv('CLOUDFLARE_ACCESS_KEY'),
+            "secret_key": os.getenv('CLOUDFLARE_SECRET_KEY'),
+            "default_acl": "private",
+            "signature_version": "s3v4",
+        },
+    },
+    
 }

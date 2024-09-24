@@ -27,10 +27,23 @@ class MediaTypeViewSet(ModelViewSet):
 class MediaViewSet(ModelViewSet):
     queryset = Media.objects.all()
     filter_backends = [DjangoFilterBackend]
-    serializer_class = MediaSerializer    
+    serializer_class = MediaSerializer
+    
+
+class TypeViewSet(ModelViewSet):
+    queryset = Type.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = TypeSerializer  
 
 
 class MinigameViewSet(ModelViewSet):
     queryset = Minigame.objects.all()
     filter_backends = [DjangoFilterBackend]
     serializer_class = MinigameSerializer
+    
+
+class MinigameUserNoteViewSet(ModelViewSet):
+    queryset = MinigameUserNote.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = MinigameUserNoteSerializer
+    

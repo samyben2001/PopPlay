@@ -3,3 +3,4 @@ __pycache__/
 **/migrations/
 SchemaDB.lo1
 SchemaDB.png
+.env

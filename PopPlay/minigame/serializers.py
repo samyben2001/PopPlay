@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import *
 
-#TODO: CRUD for minigames
+#TODO: make differents serializers for list or detail
+
 class ThemeCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ThemeCategory
@@ -13,7 +14,7 @@ class ThemeSerializer(serializers.ModelSerializer):
     themeCategory = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, label='Category')
     class Meta:
         model = Theme
-        fields = ['name', 'category', 'themeCategory']
+        fields = ['id', 'name', 'category', 'themeCategory']
             
             
 class MediaAnswerSerializer(serializers.ModelSerializer):
@@ -29,18 +30,32 @@ class MediaTypeSerializer(serializers.ModelSerializer):
             
             
 class MediaSerializer(serializers.ModelSerializer):
+    answers = MediaAnswerSerializer(many=True, required=False)
     class Meta:
         model = Media
-        fields = '__all__'   
+        fields = ['id', 'name', 'url', 'type', 'answers'] 
 
 
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
         fields = '__all__'   
-            
+
+        
+class MinigameUserNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MinigameUserNote
+        fields = '__all__'
             
 class MinigameSerializer(serializers.ModelSerializer):
+    
+    theme = ThemeSerializer(read_only=True)
+    theme_w = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), write_only=True, label='Theme')
+    type = ThemeSerializer(read_only=True)
+    type_w = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, label='Type')
+    # notes = MinigameUserNoteSerializer()
     class Meta:
         model = Minigame
-        fields = '__all__'
+        fields = ['id', 'name', 'type', 'theme', 'theme_w', 'type_w', 'medias','cover_url', 'notes', 'date_created', 'date_updated']
+        
+
