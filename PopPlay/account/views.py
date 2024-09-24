@@ -8,7 +8,7 @@ from .serializers import AccountSerializer
 
 # Create your views here.
 class RegisterView(CreateAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     serializer_class = AccountSerializer
     
     def create(self, request, *args, **kwargs):

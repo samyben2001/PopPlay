@@ -11,9 +11,6 @@ class Account(models.Model):
     themes_liked = models.ManyToManyField(Theme)
     games_score = models.ManyToManyField(Minigame, through='UserMinigameScore', related_name='scored_by')
     
-    class Meta:
-        ordering = ['id']
-    
     def __str__(self):
         return self.user.username
     
@@ -22,6 +19,3 @@ class UserMinigameScore(models.Model):
     minigame = models.ForeignKey(Minigame, on_delete=models.DO_NOTHING)
     score = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        ordering = ['-date']

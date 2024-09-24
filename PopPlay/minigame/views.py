@@ -10,36 +10,36 @@ from .serializers import *
 
 # Create your views here.
 class ThemeCategoryViewSet(ModelViewSet):
-    queryset = ThemeCategory.objects.all() 
+    queryset = ThemeCategory.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = ThemeCategorySerializer
     
     
 class ThemeViewSet(ModelViewSet):
-    queryset = Theme.objects.all()
+    queryset = Theme.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = ThemeSerializer    
     
 class MediaTypeViewSet(ModelViewSet):
-    queryset = MediaType.objects.all()
+    queryset = MediaType.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaTypeSerializer
     
 
 class MediaViewSet(ModelViewSet):
-    queryset = Media.objects.all()
+    queryset = Media.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
     
 
 class TypeViewSet(ModelViewSet):
-    queryset = Type.objects.all()
+    queryset = Type.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = TypeSerializer  
 
 
 class MinigameViewSet(ModelViewSet):
-    queryset = Minigame.objects.all()
+    queryset = Minigame.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     
     def get_serializer_class(self, *args, **kwargs): #
@@ -49,7 +49,7 @@ class MinigameViewSet(ModelViewSet):
     
 
 class MinigameUserNoteViewSet(ModelViewSet):
-    queryset = MinigameUserNote.objects.all()
+    queryset = MinigameUserNote.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MinigameUserNoteSerializer
     

@@ -6,18 +6,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class MediaAnswer(models.Model):
     answer = models.CharField(max_length=200, unique=True)
     
-    class Meta:
-        ordering = ['id']
-    
     def __str__(self):
         return self.answer
     
     
 class MediaType(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    
-    class Meta:
-        ordering = ['id']
     
     def __str__(self):
         return self.name
@@ -29,18 +23,12 @@ class Media(models.Model):
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(MediaAnswer)
     
-    class Meta:
-        ordering = ['id']
-    
     def __str__(self):
         return self.name
  
  
 class ThemeCategory(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    
-    class Meta:
-        ordering = ['id']
     
     def __str__(self):
         return self.name
@@ -50,18 +38,12 @@ class Theme(models.Model):
     name = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(ThemeCategory, on_delete=models.RESTRICT)
     
-    class Meta:
-        ordering = ['id']
-    
     def __str__(self):
         return self.name
     
   
 class Type(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    
-    class Meta:
-        ordering = ['id']
     
     def __str__(self):
         return self.name
@@ -78,9 +60,6 @@ class Minigame(models.Model):
     medias = models.ManyToManyField(Media)
     notes = models.ManyToManyField('account.Account', through='MinigameUserNote')
     
-    class Meta:
-        ordering = ['id']
-    
     def __str__(self):
         return self.name
     
@@ -93,6 +72,3 @@ class MinigameUserNote(models.Model):
         MinValueValidator(0, message="Note must be between 0 and 5"),
         MaxValueValidator(5, message="Note must be between 0 and 5")
         ])
-    
-    class Meta:
-        ordering = ['id']
