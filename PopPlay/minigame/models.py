@@ -5,41 +5,62 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class MediaAnswer(models.Model):
     answer = models.CharField(max_length=200, unique=True)
     
+    def __str__(self):
+        return self.answer
+    
     
 class MediaType(models.Model):
     name = models.CharField(max_length=200, unique=True)
     
+    def __str__(self):
+        return self.name
+    
        
 class Media(models.Model):
     name = models.CharField(max_length=200)
-    url = models.URLField(unique=True)
+    url = models.FileField(unique=True)
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(MediaAnswer)
+    
+    def __str__(self):
+        return self.name
  
  
 class ThemeCategory(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    
+    def __str__(self):
+        return self.name
        
     
 class Theme(models.Model):
     name = models.CharField(max_length=200, unique=True)
     category = models.ForeignKey(ThemeCategory, on_delete=models.RESTRICT)
     
+    def __str__(self):
+        return self.name
+    
   
 class Type(models.Model):
     name = models.CharField(max_length=200, unique=True)
+    
+    def __str__(self):
+        return self.name
     
       
 class Minigame(models.Model):
     name = models.CharField(max_length=200, unique=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
-    cover_url = models.URLField(null=True, blank=True)
+    cover_url = models.FileField(null=True, blank=True)
     
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING)
     type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
     medias = models.ManyToManyField(Media)
     notes = models.ManyToManyField('account.Account', through='MinigameUserNote')
+    
+    def __str__(self):
+        return self.name
     
     
 class MinigameUserNote(models.Model):
