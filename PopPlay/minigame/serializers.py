@@ -6,6 +6,7 @@ from .models import *
 
 # region Media
 class MediaAnswerSerializer(serializers.ModelSerializer):
+    #TODO:  add detail + create MediaAnswerLightSerializer?
     class Meta:
         model = MediaAnswer
         fields = '__all__'   
@@ -109,7 +110,7 @@ class MinigameSerializer(serializers.ModelSerializer):
     theme_w = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), write_only=True, label='Theme')
     type = TypeSerializer(read_only=True)
     type_w = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, label='Type')
-    medias = MediaLightSerializer(many=True, read_only=True)
+    medias = MediaSerializer(many=True, read_only=True)
     medias_w = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, label='Medias')
     
     notes = MinigameUserNoteSerializer(source='minigame_notes', many=True, read_only=True)
