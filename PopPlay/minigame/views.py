@@ -16,7 +16,7 @@ class ThemeCategoryViewSet(ModelViewSet):
     
     
 class ThemeViewSet(ModelViewSet):
-    queryset = Theme.objects.all().order_by('id')
+    queryset = Theme.objects.all().order_by('id').prefetch_related('category')
     filter_backends = [DjangoFilterBackend]
     serializer_class = ThemeSerializer    
     
@@ -27,7 +27,7 @@ class MediaTypeViewSet(ModelViewSet):
     
 
 class MediaViewSet(ModelViewSet):
-    queryset = Media.objects.all().order_by('id')
+    queryset = Media.objects.all().order_by('id').prefetch_related('type', 'answers')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
     
@@ -39,7 +39,7 @@ class TypeViewSet(ModelViewSet):
 
 
 class MinigameViewSet(ModelViewSet):
-    queryset = Minigame.objects.all().order_by('id')
+    queryset = Minigame.objects.all().order_by('id').prefetch_related('type', 'theme', 'medias', 'notes')
     filter_backends = [DjangoFilterBackend]
     
     def get_serializer_class(self, *args, **kwargs): #
@@ -49,7 +49,7 @@ class MinigameViewSet(ModelViewSet):
     
 
 class MinigameUserNoteViewSet(ModelViewSet):
-    queryset = MinigameUserNote.objects.all().order_by('id')
+    queryset = MinigameUserNote.objects.all().order_by('id').prefetch_related('minigame', 'account')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MinigameUserNoteSerializer
     
