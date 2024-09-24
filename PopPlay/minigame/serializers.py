@@ -20,17 +20,16 @@ class MediaTypeSerializer(serializers.ModelSerializer):
         
 class MediaLightSerializer(serializers.ModelSerializer):
     type = MediaTypeSerializer(read_only=True)
-    type_w = serializers.PrimaryKeyRelatedField(queryset=MediaType.objects.all(), write_only=True, label='Type')
     
     class Meta:
         model = Media
-        fields = ['id', 'name', 'url', 'type','type_w', 'answers'] 
+        fields = ['id', 'name', 'url', 'type'] 
             
             
 class MediaSerializer(serializers.ModelSerializer):
     answers = MediaAnswerSerializer(many=True, required=False) # TODO: remove required in the future (angular development)
     type = MediaTypeSerializer(read_only=True)
-    type_w = serializers.PrimaryKeyRelatedField(queryset=MediaType.objects.all(), write_only=True, label='Type')
+    type_w = serializers.PrimaryKeyRelatedField(queryset=MediaType.objects.all(), write_only=True, source='type', label='Type')
     
     class Meta:
         model = Media
@@ -52,11 +51,11 @@ class ThemeLightSerializer(serializers.ModelSerializer):
    
 class ThemeSerializer(serializers.ModelSerializer):
     category = ThemeCategorySerializer(read_only=True)
-    themeCategory = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, label='Category')
+    category_w = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, source='category', label='Category')
     
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'category', 'themeCategory']
+        fields = ['id', 'name', 'category', 'category_w']
 # endregion
 
 # region Type
@@ -84,10 +83,10 @@ class MinigameUserNoteLightSerializer(serializers.ModelSerializer):
         
 class MinigameUserNoteSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True, source='account.user')
-    account_w = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), write_only=True)
+    account_w = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), write_only=True, source='account.user')
     
     minigame = MinigameExtraLightSerializer(read_only=True)
-    minigame_w = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=True)
+    minigame_w = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=True, source='minigame')
     
     class Meta:
         model = MinigameUserNote
@@ -107,11 +106,11 @@ class MinigameLightSerializer(serializers.ModelSerializer):
                   
 class MinigameSerializer(serializers.ModelSerializer):
     theme = ThemeSerializer(read_only=True)
-    theme_w = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), write_only=True, label='Theme')
+    theme_w = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), write_only=True, source='theme', label='Theme')
     type = TypeSerializer(read_only=True)
-    type_w = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, label='Type')
+    type_w = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, source='type', label='Type')
     medias = MediaSerializer(many=True, read_only=True)
-    medias_w = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, label='Medias')
+    medias_w = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, source='medias', label='Medias')
     
     notes = MinigameUserNoteSerializer(source='minigame_notes', many=True, read_only=True)
     
