@@ -4,28 +4,7 @@ from account.serializers import AccountSerializer
 from account.models import Account
 from .models import *
 
-
-class ThemeCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ThemeCategory
-        fields = '__all__'     
-    
-            
-class ThemeLightSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Theme
-        fields = ['id', 'name']
-   
-   
-class ThemeSerializer(serializers.ModelSerializer):
-    category = ThemeCategorySerializer(read_only=True)
-    themeCategory = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, label='Category')
-    
-    class Meta:
-        model = Theme
-        fields = ['id', 'name', 'category', 'themeCategory']
-            
-            
+# region Media
 class MediaAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = MediaAnswer
@@ -55,15 +34,39 @@ class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
         fields = ['id', 'name', 'url', 'type','type_w', 'answers'] 
+# endregion
 
+# region Theme
+class ThemeCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThemeCategory
+        fields = '__all__'     
+    
+            
+class ThemeLightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Theme
+        fields = ['id', 'name']
+   
+   
+class ThemeSerializer(serializers.ModelSerializer):
+    category = ThemeCategorySerializer(read_only=True)
+    themeCategory = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, label='Category')
+    
+    class Meta:
+        model = Theme
+        fields = ['id', 'name', 'category', 'themeCategory']
+# endregion
 
+# region Type
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Type
         fields = '__all__'   
-       
-        
-class MinigameLightSerializer(serializers.ModelSerializer):
+# endregion  
+
+# region Minigame + MinigameUserNote   
+class MinigameExtraLightSerializer(serializers.ModelSerializer):
     theme = ThemeLightSerializer(read_only=True)
     type = TypeSerializer(read_only=True)
     
@@ -71,19 +74,36 @@ class MinigameLightSerializer(serializers.ModelSerializer):
         model = Minigame
         fields = ['id', 'name', 'type', 'theme']
 
+
+class MinigameUserNoteLightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MinigameUserNote
+        fields = ['id', 'note']
+        
         
 class MinigameUserNoteSerializer(serializers.ModelSerializer):
     account = AccountSerializer(read_only=True, source='account.user')
     account_w = serializers.PrimaryKeyRelatedField(queryset=Account.objects.all(), write_only=True)
     
-    minigame = MinigameLightSerializer(read_only=True)
+    minigame = MinigameExtraLightSerializer(read_only=True)
     minigame_w = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=True)
     
     class Meta:
         model = MinigameUserNote
         fields = ['id', 'minigame', 'minigame_w', 'account', 'account_w', 'note']
             
-            
+  
+class MinigameLightSerializer(serializers.ModelSerializer):
+    theme = ThemeLightSerializer(read_only=True)
+    type = TypeSerializer(read_only=True)
+    
+    notes = MinigameUserNoteLightSerializer(source='minigame_notes', many=True, read_only=True)
+    
+    class Meta:
+        model = Minigame
+        fields = ['id', 'name', 'type', 'theme','cover_url', 'notes', 'date_created', 'date_updated']
+        
+                  
 class MinigameSerializer(serializers.ModelSerializer):
     theme = ThemeSerializer(read_only=True)
     theme_w = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), write_only=True, label='Theme')
@@ -97,5 +117,4 @@ class MinigameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Minigame
         fields = ['id', 'name', 'type', 'theme', 'theme_w', 'type_w', 'medias', 'medias_w','cover_url', 'notes', 'date_created', 'date_updated']
-        
-
+# endregion

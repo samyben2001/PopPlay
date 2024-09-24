@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .serializers import *
 
+#TODO: add permissions
+
 # Create your views here.
 class ThemeCategoryViewSet(ModelViewSet):
     queryset = ThemeCategory.objects.all() 
@@ -39,7 +41,11 @@ class TypeViewSet(ModelViewSet):
 class MinigameViewSet(ModelViewSet):
     queryset = Minigame.objects.all()
     filter_backends = [DjangoFilterBackend]
-    serializer_class = MinigameSerializer
+    
+    def get_serializer_class(self, *args, **kwargs): #
+        if self.action == 'list':
+            return MinigameLightSerializer
+        return MinigameSerializer
     
 
 class MinigameUserNoteViewSet(ModelViewSet):
