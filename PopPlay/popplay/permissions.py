@@ -5,6 +5,8 @@ class IsAccountOwnerOrIsStaffOrReadOnly(permissions.BasePermission):
     Object-level permission to only allow owners of an object or staff to edit it.
     Assumes the model instance has an `owner` attribute.
     """
+    # Message display if permission is denied
+    message = {'error': "Vous n'avez pas le droit d'effectuer cette action."}
 
     def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,

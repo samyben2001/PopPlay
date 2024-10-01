@@ -70,11 +70,11 @@ class AccountView(ModelViewSet):
         if not account.themes_liked.contains(theme):
             account.themes_liked.add(theme)
             account.save()
-            return Response({'response': f'Theme {theme.name} ajouté aux favoris'},status=status.HTTP_201_CREATED)
+            return Response({'response': f'Theme {theme.name} ajouté aux favoris'}, status=status.HTTP_201_CREATED)
         else:
             account.themes_liked.remove(theme)
             account.save()
-            return Response({'response': f'Theme {theme.name} retiré des favoris'},status=status.HTTP_201_CREATED)
+            return Response({'response': f'Theme {theme.name} retiré des favoris'}, status=status.HTTP_201_CREATED)
     
     # add game as favorite
     @action(detail=True, methods=['post', 'get'], permission_classes=[IsAuthenticated, IsAccountOwnerOrIsStaffOrReadOnly], url_path='favoris/games')
