@@ -63,8 +63,7 @@ class Minigame(models.Model):
     def __str__(self):
         return self.name
     
-    
-    
+
 class MinigameUserNote(models.Model):
     account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING, related_name='minigames_notes')
     minigame = models.ForeignKey(Minigame, on_delete=models.DO_NOTHING, related_name='minigame_notes')
