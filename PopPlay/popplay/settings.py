@@ -157,8 +157,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication', # ajout de l'authentification via JWT pour l'accès a l'API
         'rest_framework.authentication.SessionAuthentication' # ajout de l'authentification via le system de Session Django pour l'accès a l'API via la Browsable API
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # ajout de la pagination (page par page)
-    'PAGE_SIZE': 10, # nombre d'elements par page 
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # ajout de la pagination (page par page)
+    # 'PAGE_SIZE': 10, # nombre d'elements par page 
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend'), # ajout du filtre => besoin d'ajouter 'filter_backends = [DjangoFilterBackend]' dans les views
 }
 
