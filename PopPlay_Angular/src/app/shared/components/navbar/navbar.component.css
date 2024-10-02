@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+    :host {
+      @apply w-[90%] px-4 h-28 absolute top-0 left-[calc((100%-90%))/2] bg-orange-800;
+    }
+  }

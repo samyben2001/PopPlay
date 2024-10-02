@@ -1,0 +1,72 @@
+<div class="flex flex-col items-center">
+    <!-- Title -->
+    <div class="w-9/12 mb-6 border-b-2 border-orange-600">
+        <h2 class="text-2xl text-slate-200">Création d'un jeu</h2>
+    </div>
+
+    <!-- Game Creation Form -->
+    <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-4 rounded bg-slate-700">
+        <!-- Game name -->
+        <div class="flex flex-col mb-4">
+            <label for="name" class="text-slate-200 mb-1">Nom du jeu</label>
+            <input id="name" type="text" formControlName="name" placeholder="Nom du jeu" class="rounded bg-slate-200 px-1">
+        </div>
+
+        <!-- Cover -->
+        <div class="flex flex-col mb-4">
+            <label for="cover" class="text-slate-200 mb-1">Cover</label>
+            <input id="cover" type="file" formControlName="cover">
+        </div>
+        
+        <!-- Theme -->
+        <div class="flex flex-col mb-4">
+            <label for="theme" class="text-slate-200 mb-1">Themes:</label>
+            <select name="theme" id="theme" formControlName="theme_id" class="rounded bg-slate-200 px-1">
+                <option value="" disabled>Choississez un thème</option>
+                @for (theme of themes; track theme.id) {
+                    <option [value]="theme.id">{{theme.name}}</option>
+                }@empty {
+                    <option value="">Aucun theme</option>
+                }
+            </select>
+        </div>
+
+        <!-- Type -->
+        <div class="flex flex-col mb-4">
+            <label for="theme" class="text-slate-200 mb-1">Types:</label>
+            <select name="type" id="type" formControlName="type_id" class="rounded bg-slate-200 px-1">
+                <option value="" disabled>Choississez un type</option>
+                @for (type of types; track type.id) {
+                    <option [value]="type.id">{{type.name}}</option>
+                }@empty {
+                    <option value="">Aucun type</option>
+                }
+            </select>
+        </div>
+
+        <!-- Medias -->
+        <div class="flex flex-col mb-4">
+            <label for="theme" class="text-slate-200 mb-1">Medias:</label>
+            <select name="medias" id="medias" formControlName="medias_id" class="rounded bg-slate-200 px-1" multiple>
+                @for (media of medias; track media.id) {
+                    <option [value]="media.id">{{media.name}}</option>
+                }@empty {
+                    <option value="">Aucun media</option>
+                }
+            </select>
+        </div>
+    
+        <!-- Submit -->
+         @if (creationForm.invalid) {
+            <button type="submit" 
+            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+            Ajouter le jeu
+           </button>
+         }@else {   
+             <button type="submit" 
+             class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+             Ajouter le jeu
+            </button>
+        }
+    </form>
+</div>

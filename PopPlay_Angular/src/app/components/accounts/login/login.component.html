@@ -1,0 +1,46 @@
+<div class="flex flex-col items-center">
+    <!-- Title -->
+    <div class="w-9/12 mb-6 border-b-2 border-orange-600">
+        <h2 class="text-2xl text-slate-200">Connexion à votre compte</h2>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2  p-4 rounded bg-slate-700">
+        <!-- Username TODO: or email -->
+        <div class="flex flex-col mb-4">
+            <label for="username" class="text-slate-200 mb-1">Nom d'utilisateur</label>
+            <input id="username" type="text" formControlName="username" placeholder="Nom d'utilisateur" class="rounded bg-slate-200 px-1">
+    
+            @if (loginForm.get('username')!.dirty && loginForm.get('username')!.errors) {
+                <span class="text-red-600 text-sm">
+                    Veuillez entrer un nom d'utilisateur valide.
+                </span>
+            }
+        </div>
+    
+        <!-- Password -->
+        <div class="flex flex-col mb-4">
+            <label for="password" class="text-slate-200 mb-1">Mot de passe</label>
+            <input id="password" type="password" formControlName="password" placeholder="Mot de passe" class="rounded bg-slate-200 px-1">
+            
+            @if (loginForm.get('password')!.dirty && loginForm.get('password')!.errors) {
+                <span class="text-red-600 text-sm">
+                    Please enter a valid password.
+                </span>
+            }
+        </div>
+    
+        <!-- Submit -->
+        @if (loginForm.invalid) {
+            <button type="submit" 
+            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+            Se connecter
+           </button>
+         }@else {   
+             <button type="submit" 
+             class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+             Se connecter
+            </button>
+        }
+    </form>
+</div>
