@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from minigame.models import Theme
 from minigame.models import Minigame
 
+# TODO:  mail in user model should be unique + add username minlength(3)
+
 # Create your models here.
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='account')
