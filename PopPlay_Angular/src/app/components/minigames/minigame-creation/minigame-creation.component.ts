@@ -12,29 +12,28 @@ import { FloatLabelModule } from 'primeng/floatlabel';
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
 })
-export class MinigameCreationComponent implements OnInit {
+export class MinigameCreationComponent {
+  creationForm: FormGroup;
   minigameServ = inject(MinigameService);
-  minigame: MinigameCreate = {
-    name: '',
-    theme_id: 0,
-    type_id: 0,
-    medias_id: [],
-  };
 
+  minigame: MinigameCreate = {} as MinigameCreate;
   themes: Theme[] = [];
   types: Type[] = [];
   medias: Media[] = [];
-  creationForm: FormGroup;
+  imageGuessId: number = 0;
 
   constructor(private fb: FormBuilder) { 
     // Get all themes, types and medias from API
-    this.minigameServ.get_themes().subscribe({
-      next: (data) => { this.themes = data; },
+    this.minigameServ.get_types().subscribe({
+      next: (data) => { 
+        this.types = data; 
+        this.imageGuessId = this.types.find(type => type.name == "Images Guessing")!.id;
+      },
       error: (err) => { console.log(err); }
     });
-    
-    this.minigameServ.get_types().subscribe({
-      next: (data) => { this.types = data; },
+
+    this.minigameServ.get_themes().subscribe({
+      next: (data) => { this.themes = data; },
       error: (err) => { console.log(err); }
     });
     
@@ -46,20 +45,36 @@ export class MinigameCreationComponent implements OnInit {
     // Using FormBuilder to create the FormGroup.
     this.creationForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
-      theme_id: ['', [Validators.required]],
+      cover_url: ['', [Validators.required]],
       type_id: ['', [Validators.required]],
-      medias_id: [''],
-      cover: ['', [Validators.required]],
+      theme_id: ['', [Validators.required]],
+      medias_id: [[]],
     });
   }
-  ngOnInit(): void {
-    
+
+  onChange(event: any) {
+    const file: File = event.target.files[0];
+    console.log(file);
+
+    if (file) {
+      this.minigame.cover_url = file;
+    };
   }
 
   submit() {
-    console.log(this.creationForm.value);
+    if(this.creationForm.invalid || this.minigame.cover_url == null)
+      return;
 
-    this.minigameServ.create(this.creationForm.value).subscribe({
+    // TODO: check if entered Theme/Type exist else create them
+
+    this.minigame.name = this.creationForm.value.name;
+    this.minigame.type_id = this.creationForm.value.type_id;
+    this.minigame.theme_id = this.creationForm.value.theme_id;
+    this.minigame.medias_id = this.creationForm.value.medias_id;
+    
+    console.log(this.minigame);
+    
+    this.minigameServ.create(this.minigame).subscribe({
       next: (data) => { console.log(data); },
       error: (err) => { console.log(err); }
     })

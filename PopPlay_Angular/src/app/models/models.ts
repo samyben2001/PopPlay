@@ -6,17 +6,16 @@ interface Pagination {
 
 export interface MinigameCreate {
     name: string;
-    coverUrl?: string; // Nullable FileField
+    cover_url: Blob;
     theme_id: number;
     type_id: number;
-    medias_id: Media[];
+    medias_id: number[];
 }
 
 export interface Minigame extends MinigameCreate {
     id: number;
     dateCreated: Date; // DateTime type in Django (string?)
     dateUpdated?: Date; // Nullable DateTime in Django
-    coverUrl?: string; // Nullable FileField
     notes: MinigameUserNote[];
 }
 

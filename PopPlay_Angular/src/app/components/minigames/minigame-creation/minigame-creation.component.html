@@ -10,30 +10,34 @@
         <div class="flex flex-col mb-4">
             <label for="name" class="text-slate-200 mb-1">Nom du jeu</label>
             <input id="name" type="text" formControlName="name" placeholder="Nom du jeu" class="rounded bg-slate-200 px-1">
+            @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
+                @if (creationForm.get('name')!.errors!['required']) {
+                    <span class="text-red-600 text-sm">
+                        Le nom du jeu est obligatoire.
+                    </span>
+                }
+                @if (creationForm.get('name')!.errors!['minlength']) {
+                    <span class="text-red-600 text-sm">
+                        Le nom du jeu doit comporter minimum 3 caractères.
+                    </span>
+                }
+            }
         </div>
 
         <!-- Cover -->
         <div class="flex flex-col mb-4">
-            <label for="cover" class="text-slate-200 mb-1">Cover</label>
-            <input id="cover" type="file" formControlName="cover">
-        </div>
-        
-        <!-- Theme -->
-        <div class="flex flex-col mb-4">
-            <label for="theme" class="text-slate-200 mb-1">Themes:</label>
-            <select name="theme" id="theme" formControlName="theme_id" class="rounded bg-slate-200 px-1">
-                <option value="" disabled>Choississez un thème</option>
-                @for (theme of themes; track theme.id) {
-                    <option [value]="theme.id">{{theme.name}}</option>
-                }@empty {
-                    <option value="">Aucun theme</option>
-                }
-            </select>
+            <label for="cover" class="text-slate-200 mb-1">Image de couverture</label>
+            <input id="cover" type="file" formControlName="cover_url" (change)="onChange($event)">
+            @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
+                <span class="text-red-600 text-sm">
+                    L'image de couverture du jeu est obligatoire.
+                </span>
+            }
         </div>
 
         <!-- Type -->
         <div class="flex flex-col mb-4">
-            <label for="theme" class="text-slate-200 mb-1">Types:</label>
+            <label for="theme" class="text-slate-200 mb-1">Type</label>
             <select name="type" id="type" formControlName="type_id" class="rounded bg-slate-200 px-1">
                 <option value="" disabled>Choississez un type</option>
                 @for (type of types; track type.id) {
@@ -42,19 +46,44 @@
                     <option value="">Aucun type</option>
                 }
             </select>
+            @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
+                <span class="text-red-600 text-sm">
+                    Le type du jeu est obligatoire.
+                </span>
+            }
         </div>
-
-        <!-- Medias -->
+        
+        <!-- Theme -->
         <div class="flex flex-col mb-4">
-            <label for="theme" class="text-slate-200 mb-1">Medias:</label>
-            <select name="medias" id="medias" formControlName="medias_id" class="rounded bg-slate-200 px-1" multiple>
-                @for (media of medias; track media.id) {
-                    <option [value]="media.id">{{media.name}}</option>
+            <label for="theme" class="text-slate-200 mb-1">Theme</label>
+            <select name="theme" id="theme" formControlName="theme_id" class="rounded bg-slate-200 px-1">
+                <option value="" disabled>Choississez un thème</option>
+                @for (theme of themes; track theme.id) {
+                    <option [value]="theme.id">{{theme.name}}</option>
                 }@empty {
-                    <option value="">Aucun media</option>
+                    <option value="">Aucun theme</option>
                 }
             </select>
+            @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
+                <span class="text-red-600 text-sm">
+                    Le thème du jeu est obligatoire.
+                </span>
+            }
         </div>
+
+        @if (creationForm.get('type_id')!.value == imageGuessId) {
+            <!-- Medias -->
+            <div class="flex flex-col mb-4">
+                <label for="theme" class="text-slate-200 mb-1">Medias:</label>
+                <select name="medias" id="medias" formControlName="medias_id" class="rounded bg-slate-200 px-1" multiple>
+                    @for (media of medias; track media.id) {
+                        <option [value]="media.id">{{media.name}}</option>
+                    }@empty {
+                        <option value="">Aucun media</option>
+                    }
+                </select>
+            </div>
+        }
     
         <!-- Submit -->
          @if (creationForm.invalid) {

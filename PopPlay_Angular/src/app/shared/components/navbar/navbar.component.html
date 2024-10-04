@@ -7,7 +7,12 @@
         <!-- <img src="assets/img/PopPlay.webp" alt="logo" class="h-full w-auto"> -->
     </div>
     <div class="h-full flex items-center justify-end w-1/4 gap-x-4">
-        <a routerLink="register">Register</a>
-        <a routerLink="login">Login</a>
+        @if(!isConnected()){
+            <a routerLink="register">S'inscrire</a>
+            <a routerLink="login">Se connecter</a>
+        }@else {
+            <!-- <a routerLink="account">Account</a> -->
+            <a (click)="logout()">Se Déconnecter</a>
+        }
     </div>
 </div>

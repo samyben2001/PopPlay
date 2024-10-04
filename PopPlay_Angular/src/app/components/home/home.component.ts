@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MinigameService } from '../../services/minigame.service';
+import { Minigame } from '../../models/models';
 
 @Component({
   selector: 'app-home',
@@ -8,5 +10,13 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  gameServ = inject(MinigameService);
+  minigames: Minigame[] = [];
 
+  constructor() {
+    this.gameServ.get_all().subscribe(data => {
+      this.minigames = data;
+      console.log(this.minigames);
+    });
+  }
 }
