@@ -4,25 +4,28 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Media, MinigameCreate, Theme, Type } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { MediaSelectorComponent } from '../../../shared/components/media-selector/media-selector.component';
 
 @Component({
   selector: 'app-minigame-creation',
   standalone: true,
-  imports: [CommonModule,FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MediaSelectorComponent],
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
 })
-export class MinigameCreationComponent {
-  creationForm: FormGroup;
+export class MinigameCreationComponent implements OnInit {
+  creationForm: FormGroup = new FormGroup({});
   minigameServ = inject(MinigameService);
-
+  
   minigame: MinigameCreate = {} as MinigameCreate;
   themes: Theme[] = [];
   types: Type[] = [];
   medias: Media[] = [];
   imageGuessId: number = 0;
+  isMediasSelectorVisible: boolean = false;
 
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder) {}
+  ngOnInit(): void {
     // Get all themes, types and medias from API
     this.minigameServ.get_types().subscribe({
       next: (data) => { 
@@ -52,13 +55,17 @@ export class MinigameCreationComponent {
     });
   }
 
-  onChange(event: any) {
+  onCoverSelected(event: any) {
     const file: File = event.target.files[0];
-    console.log(file);
 
     if (file) {
       this.minigame.cover_url = file;
     };
+  }
+
+  openMediasSelector() {
+    console.log("openMediasSelector");
+    this.isMediasSelectorVisible = true;
   }
 
   submit() {
@@ -78,5 +85,11 @@ export class MinigameCreationComponent {
       next: (data) => { console.log(data); },
       error: (err) => { console.log(err); }
     })
+  }
+
+  onSelectedMedias(medias: Media[]) {
+    console.log(medias);
+    // this.creationForm.patchValue({medias_id: medias});
+    this.isMediasSelectorVisible = false;
   }
 }

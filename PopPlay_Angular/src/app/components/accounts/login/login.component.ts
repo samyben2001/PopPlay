@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AccountService } from '../../../services/account.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -13,13 +12,14 @@ import { jwtDecode } from 'jwt-decode';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   accountServ = inject(AccountService);
   authServ = inject(AuthService);
   router = inject(Router);
-  loginForm: FormGroup;
+  loginForm: FormGroup = new FormGroup({});
 
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder) { }
+  ngOnInit(): void {
     // Using FormBuilder to create the FormGroup.
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]], // Define the default value and validators inside the array

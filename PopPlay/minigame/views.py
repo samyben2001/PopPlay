@@ -44,7 +44,7 @@ class TypeViewSet(ModelViewSet):
 class MinigameViewSet(ModelViewSet):
     queryset = Minigame.objects.all().order_by('id').prefetch_related('type', 'theme', 'medias', 'notes')
     filter_backends = [DjangoFilterBackend]
-    
+    # TODO: check if name of medias not already used in cloudflare
     def get_serializer_class(self, *args, **kwargs):
         if self.action == 'list':
             return MinigameLightSerializer

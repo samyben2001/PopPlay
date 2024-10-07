@@ -27,7 +27,7 @@
         <!-- Cover -->
         <div class="flex flex-col mb-4">
             <label for="cover" class="text-slate-200 mb-1">Image de couverture</label>
-            <input id="cover" type="file" formControlName="cover_url" (change)="onChange($event)">
+            <input id="cover" type="file" formControlName="cover_url" (change)="onCoverSelected($event)">
             @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
                 <span class="text-red-600 text-sm">
                     L'image de couverture du jeu est obligatoire.
@@ -73,7 +73,13 @@
 
         @if (creationForm.get('type_id')!.value == imageGuessId) {
             <!-- Medias -->
+             
             <div class="flex flex-col mb-4">
+                <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
+                    Ajouter des médias
+                </button>
+            </div>
+            <!-- <div class="flex flex-col mb-4">
                 <label for="theme" class="text-slate-200 mb-1">Medias:</label>
                 <select name="medias" id="medias" formControlName="medias_id" class="rounded bg-slate-200 px-1" multiple>
                     @for (media of medias; track media.id) {
@@ -82,7 +88,7 @@
                         <option value="">Aucun media</option>
                     }
                 </select>
-            </div>
+            </div> -->
         }
     
         <!-- Submit -->
@@ -99,3 +105,5 @@
         }
     </form>
 </div>
+
+<app-media-selector [isVisible]="isMediasSelectorVisible" [medias]="medias" (selectedMediasEvent)="onSelectedMedias($event)"></app-media-selector>

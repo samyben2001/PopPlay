@@ -48,6 +48,14 @@ export interface Media {
     answers: MediaAnswer[];
 }
 
+export interface Media {
+    id: number;
+    name: string;
+    url: string; // FileField in Django maps to string for file URL
+    type: MediaType;
+    answers: MediaAnswer[];
+}
+
 export interface MediaAnswer {
     id: number;
     answer: string;

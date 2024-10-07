@@ -6,8 +6,11 @@ import { MinigameCreationComponent } from './components/minigames/minigame-creat
 
 export const routes: Routes = [
     {path: '', component: HomeComponent, pathMatch: 'full'},
-    {path: 'register', component: RegisterComponent},
-    {path: 'login', component: LoginComponent},
+
+    {path: 'accounts', children: [
+        {path: 'register', component: RegisterComponent},
+        {path: 'login', component: LoginComponent},
+    ]},
 
     {path: 'minigame/creation', component: MinigameCreationComponent},
 ];

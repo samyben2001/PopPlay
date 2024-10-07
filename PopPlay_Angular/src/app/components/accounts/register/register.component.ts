@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { checkPasswordIdenticalValidator } from '../../../shared/validators/checkPasswordIdenticalValidator';
 import { AccountService } from '../../../services/account.service';
@@ -12,13 +12,16 @@ import { Router } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   accountServ = inject(AccountService);
   router = inject(Router);
-  registerForm: FormGroup;
+  fb = inject(FormBuilder);
+  registerForm: FormGroup = new FormGroup({});
   StrongPasswordRegx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$.])[A-Za-z\d!@#$.]{8,}$/; // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,.)
 
-  constructor(private fb: FormBuilder) { 
+  constructor() {}
+
+  ngOnInit(): void {
     // Using FormBuilder to create the FormGroup.
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array

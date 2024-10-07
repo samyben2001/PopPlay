@@ -8,8 +8,8 @@
     </div>
     <div class="h-full flex items-center justify-end w-1/4 gap-x-4">
         @if(!isConnected()){
-            <a routerLink="register">S'inscrire</a>
-            <a routerLink="login">Se connecter</a>
+            <a routerLink="accounts/register">S'inscrire</a>
+            <a routerLink="accounts/login">Se connecter</a>
         }@else {
             <!-- <a routerLink="account">Account</a> -->
             <a (click)="logout()">Se Déconnecter</a>

@@ -1,0 +1,50 @@
+@if (isVisible) {
+    <div class="fixed top-0 left-0 w-full h-full bg-slate-800 bg-opacity-80 flex justify-center items-center z-50">
+        <div class="w-4/6 max-h-5/6 bg-slate-500 rounded-md flex flex-col">
+            <form [formGroup]="mediaForm" (ngSubmit)="submit()" class="flex flex-col p-4">
+                <button type="button" (click)="fileInput.click()" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+                    <span>Sélectionner un média</span>
+                    <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
+                </button>
+
+                <div class="flex flex-col mb-4">
+                    <label for="name" class="text-slate-200 mb-1">Nom du média</label>
+                    <input id="name" type="text" formControlName="name" placeholder="Nom du média" class="rounded bg-slate-200 px-1">
+                </div>
+
+                @if (mediaForm.get('name')!.dirty && mediaForm.get('name')!.errors) {
+                    <span class="text-red-600 text-sm">
+                        Veuillez entrer un nom valide.
+                    </span>
+                }
+                
+                <div class="flex flex-col mb-4">
+                    <!-- TODO: make a select for type -->
+                    <label for="type_id" class="text-slate-200 mb-1">Type</label>
+                    <input id="type_id" type="text" formControlName="type_id" placeholder="Type" class="rounded bg-slate-200 px-1">  
+                </div>
+
+                <div class="flex flex-col mb-4">
+                    <!-- TODO: add possibility to add multiple answers -->
+                    <label for="answers" class="text-slate-200 mb-1">Réponses associées</label>
+                    <input id="answers" type="text" formControlName="answers" placeholder="answers" class="rounded bg-slate-200 px-1">  
+                </div>
+
+
+                @if (mediaForm.invalid) {
+                    <button type="submit" 
+                    class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+                    Ajouter le media
+                </button>
+                }@else {   
+                    <button type="submit" 
+                    class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+                    Ajouter le media
+                    </button>
+                }
+            </form>
+        </div>
+    </div>
+}
+
+
