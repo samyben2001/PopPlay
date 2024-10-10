@@ -4,6 +4,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 
@@ -28,11 +29,17 @@ class MediaTypeViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaTypeSerializer
     
+class MediaAnswerViewSet(ModelViewSet):
+    queryset = MediaAnswer.objects.all().order_by('id')
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = MediaAnswerSerializer
+    
 
 class MediaViewSet(ModelViewSet):
     queryset = Media.objects.all().order_by('id').prefetch_related('type', 'answers')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
+    # parser_classes = [MultiPartParser, FormParser]
     
 
 class TypeViewSet(ModelViewSet):
@@ -52,8 +59,13 @@ class MinigameViewSet(ModelViewSet):
             return MinigameUserNoteSerializer
         return MinigameSerializer
     
+    def get_permissions(self):
+        if self.action == 'add_note':
+            return [IsAuthenticated()]
+        return []
+    
     # ajout note
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'])
     def add_note(self, request, pk):
         try:   
             minigame = self.get_object()

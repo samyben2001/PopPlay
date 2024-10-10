@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChildren } from '@angular/core';
 import { Media } from '../../../models/models';
 import { MediaCreatorComponent } from '../media-creator/media-creator.component';
+import { ToastService } from '../../../services/toast.service';
+import { ToastTypes } from '../../../enums/ToastTypes';
 
 @Component({
   selector: 'app-media-selector',
@@ -9,21 +11,30 @@ import { MediaCreatorComponent } from '../media-creator/media-creator.component'
   templateUrl: './media-selector.component.html',
   styleUrl: './media-selector.component.css'
 })
-export class MediaSelectorComponent implements OnInit, AfterViewInit {
+export class MediaSelectorComponent implements OnChanges{
+  toastService = inject(ToastService);
   @Input() medias: Media[] = [];
   @Input() isVisible: boolean = false;
-  selectedMedias: Media[] = [];
-  @Output() selectedMediasEvent = new EventEmitter<Media[]>();
+  @Input() selectedMedias: Media[] = [];
+  @Output() selectedMediasEvent = new EventEmitter<Media[] | null>();
 
   isCreatorVisible: boolean = false;
 
   @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
 
-  ngOnInit(): void {
-  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedMedias'] && changes['selectedMedias'].currentValue) {
+      console.log("MediaChange", changes);
+      this.selectedMedias = changes['selectedMedias'].currentValue;
+    }
 
-  ngAfterViewInit(): void {
-    console.log(this.checkboxes);
+    if (changes['isVisible'] && changes['isVisible'].currentValue) {
+      let interval = setInterval(() => {
+        console.log("VisibleChange ", changes, this.selectedMedias);
+        this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
+        clearInterval(interval);
+      }, 50);
+    }
   }
 
   selectMedia(media: Media) {
@@ -41,6 +52,7 @@ export class MediaSelectorComponent implements OnInit, AfterViewInit {
 
   private ToggleCheckbox(media: Media, value: boolean) {
     let box = this.checkboxes.find((checkbox: ElementRef<HTMLInputElement>) => checkbox.nativeElement.value == media.id.toString());
+    console.log(box, this.checkboxes, media)
     if (box)
       box.nativeElement.checked = value;
   }
@@ -49,13 +61,25 @@ export class MediaSelectorComponent implements OnInit, AfterViewInit {
     this.checkboxes.forEach((checkbox: ElementRef<HTMLInputElement>) => checkbox.nativeElement.checked = false);
   }
 
-  openMediasCreator() {
-    this.isCreatorVisible = true;
+  dismiss() {
+    this.selectedMediasEvent.emit(null);
+    this.ResetCheckboxes();
   }
 
   submit() {
     this.selectedMediasEvent.emit(this.selectedMedias);
     this.ResetCheckboxes();
-    this.selectedMedias = [];
+  }
+
+  openMediasCreator() {
+    this.isCreatorVisible = true;
+  }
+
+  onMediaCreated(media: Media | null) {
+    if (media){
+      this.medias.push(media);
+      this.toastService.Show("Media Created", `Media ${media.name} created successfully`, ToastTypes.SUCCESS, 3000);
+    }
+    this.isCreatorVisible = false;
   }
 }

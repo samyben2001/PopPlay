@@ -1,36 +1,63 @@
 @if (isVisible) {
     <div class="fixed top-0 left-0 w-full h-full bg-slate-800 bg-opacity-80 flex justify-center items-center z-50">
-        <div class="w-4/6 max-h-5/6 bg-slate-500 rounded-md flex flex-col">
+        <div class="w-4/6 bg-slate-500 rounded-md flex flex-col">
+            <!-- Cancel Button -->
+            <span (click)="dismiss()" class="self-end cursor-pointer mr-1 my-1 p-1 leading-[1.0955rem] box-content text-orange-800 text-3xl border-2 border-opacity-0 border-orange-800 rounded-full active:border-opacity-100 active:bg-slate-600">&times;</span>
+            <!-- Media Form Creation -->
             <form [formGroup]="mediaForm" (ngSubmit)="submit()" class="flex flex-col p-4">
-                <button type="button" (click)="fileInput.click()" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
-                    <span>Sélectionner un média</span>
-                    <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
-                </button>
 
-                <div class="flex flex-col mb-4">
-                    <label for="name" class="text-slate-200 mb-1">Nom du média</label>
-                    <input id="name" type="text" formControlName="name" placeholder="Nom du média" class="rounded bg-slate-200 px-1">
+                <!-- Media Selector Button -->
+                <div class="flex flex-col mb-6">
+                    <button type="button" (click)="fileInput.click()" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+                        <span>{{!selectedFileName ? 'Sélectionner un média' : 'Modifier le média'}}</span>
+                        <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
+                    </button>
+                    <span>{{selectedFileName ? selectedFileName : 'Aucun fichier sélectionné'}}</span>
                 </div>
 
+                <!-- Media Name -->
+                <div class="flex flex-col mb-6">
+                    <p-floatLabel>
+                        <input pInputText id="name" formControlName="name" class="w-full py-3 px-2"/>
+                        <label for="name" class="text-slate-300">Nom du média</label>
+                    </p-floatLabel>
+                </div>
                 @if (mediaForm.get('name')!.dirty && mediaForm.get('name')!.errors) {
                     <span class="text-red-600 text-sm">
                         Veuillez entrer un nom valide.
                     </span>
                 }
                 
-                <div class="flex flex-col mb-4">
-                    <!-- TODO: make a select for type -->
-                    <label for="type_id" class="text-slate-200 mb-1">Type</label>
-                    <input id="type_id" type="text" formControlName="type_id" placeholder="Type" class="rounded bg-slate-200 px-1">  
+                <!-- Media Type -->
+                <div class="flex flex-col mb-6">
+                    <p-floatLabel>
+                        <p-dropdown id="type_id"
+                        [options]="mediaTypes" 
+                        formControlName="type_id" 
+                        optionLabel="name" 
+                        optionValue="id"
+                        [showClear]="true"  
+                        styleClass="w-full" />
+                        <label for="type_id" class="text-slate-300">Type</label>
+                    </p-floatLabel>
                 </div>
 
-                <div class="flex flex-col mb-4">
-                    <!-- TODO: add possibility to add multiple answers -->
-                    <label for="answers" class="text-slate-200 mb-1">Réponses associées</label>
-                    <input id="answers" type="text" formControlName="answers" placeholder="answers" class="rounded bg-slate-200 px-1">  
+                <!-- Media Answers -->
+                <div class="flex flex-col mb-6">
+                    
+                    <p-floatLabel>
+                        <input pInputText id="answers_id" formControlName="answers_id" class="w-full py-3 px-2" (keyup)="onAnswersChanged($event)"/>
+                        <label for="answers_id" class="text-slate-300">Réponses associées</label>
+                    </p-floatLabel>
+                    <!-- Selected Answers -->
+                    <div class="flex flex-row flex-wrap gap-2 mt-2">
+                        @for (answer of answers; track $index) {
+                            <span class="text-slate-200 bg-emerald-700 rounded-full px-2">{{answer}}</span>
+                        }
+                    </div>
                 </div>
 
-
+                <!-- Submit Button -->
                 @if (mediaForm.invalid) {
                     <button type="submit" 
                     class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
@@ -46,5 +73,3 @@
         </div>
     </div>
 }
-
-

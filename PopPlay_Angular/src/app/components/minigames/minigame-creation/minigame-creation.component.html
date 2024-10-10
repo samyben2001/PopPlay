@@ -5,11 +5,13 @@
     </div>
 
     <!-- Game Creation Form -->
-    <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-4 rounded bg-slate-700">
+    <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-6 rounded bg-slate-700">
         <!-- Game name -->
-        <div class="flex flex-col mb-4">
-            <label for="name" class="text-slate-200 mb-1">Nom du jeu</label>
-            <input id="name" type="text" formControlName="name" placeholder="Nom du jeu" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <input pInputText id="name" formControlName="name" class="w-full py-3 px-2"/>
+                <label for="name" class="text-slate-300">Nom du jeu</label>
+            </p-floatLabel>
             @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
                 @if (creationForm.get('name')!.errors!['required']) {
                     <span class="text-red-600 text-sm">
@@ -25,9 +27,12 @@
         </div>
 
         <!-- Cover -->
-        <div class="flex flex-col mb-4">
-            <label for="cover" class="text-slate-200 mb-1">Image de couverture</label>
-            <input id="cover" type="file" formControlName="cover_url" (change)="onCoverSelected($event)">
+        <div class="flex flex-col mb-6">
+            <button type="button" (click)="fileInput.click()" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+                <span>{{!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'}}</span>
+                <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
+            </button>
+            <span class="text-slate-200">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
             @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
                 <span class="text-red-600 text-sm">
                     L'image de couverture du jeu est obligatoire.
@@ -36,16 +41,20 @@
         </div>
 
         <!-- Type -->
-        <div class="flex flex-col mb-4">
-            <label for="theme" class="text-slate-200 mb-1">Type</label>
-            <select name="type" id="type" formControlName="type_id" class="rounded bg-slate-200 px-1">
-                <option value="" disabled>Choississez un type</option>
-                @for (type of types; track type.id) {
-                    <option [value]="type.id">{{type.name}}</option>
-                }@empty {
-                    <option value="">Aucun type</option>
-                }
-            </select>
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <p-dropdown id="type"
+                [options]="types" 
+                 formControlName="type_id"
+                 optionLabel="name" 
+                 optionValue="id"
+                 [filter]="true"
+                 filterBy="name" 
+                 [showClear]="true"  
+                 styleClass="w-full" /> 
+                <label for="type" class="text-slate-300">Type</label>
+            </p-floatLabel>
+
             @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
                 <span class="text-red-600 text-sm">
                     Le type du jeu est obligatoire.
@@ -54,16 +63,23 @@
         </div>
         
         <!-- Theme -->
-        <div class="flex flex-col mb-4">
-            <label for="theme" class="text-slate-200 mb-1">Theme</label>
-            <select name="theme" id="theme" formControlName="theme_id" class="rounded bg-slate-200 px-1">
-                <option value="" disabled>Choississez un thème</option>
-                @for (theme of themes; track theme.id) {
-                    <option [value]="theme.id">{{theme.name}}</option>
-                }@empty {
-                    <option value="">Aucun theme</option>
-                }
-            </select>
+        <div class="flex flex-col mb-6">
+            <div class="flex flex-row ">
+                <p-floatLabel class="grow">
+                    <p-dropdown id="theme"
+                        [options]="themes" 
+                        formControlName="theme_id"
+                        optionLabel="name" 
+                        optionValue="id"
+                        [filter]="true"
+                        filterBy="name" 
+                        [showClear]="true"  
+                        styleClass="w-full" #themeDropdown/> 
+                    <label for="theme" class="text-slate-300">Thème</label>
+                </p-floatLabel>
+
+                <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer ml-2" (click)="openThemesCreator()">+</button>
+            </div>
             @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
                 <span class="text-red-600 text-sm">
                     Le thème du jeu est obligatoire.
@@ -71,39 +87,38 @@
             }
         </div>
 
-        @if (creationForm.get('type_id')!.value == imageGuessId) {
+        <!-- if type is 'Image Guessing' then display the medias section -->
+        @if (creationForm.get('type_id')!.value == imageGuessId) { 
             <!-- Medias -->
-             
-            <div class="flex flex-col mb-4">
+            <div class="flex flex-col mb-6">
+                <div class="flex flex-row flex-wrap gap-2">
+                    @for (media of mediasSelected; track $index) {
+                        <div class="h-24 relative">
+                            <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
+                            <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-red-600 cursor-pointer">&times;</span>
+                        </div>
+                    }
+                </div>
                 <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
-                    Ajouter des médias
+                    {{mediasSelected.length > 0 ? 'Modifier les medias' : 'Ajouter des medias'}}
                 </button>
             </div>
-            <!-- <div class="flex flex-col mb-4">
-                <label for="theme" class="text-slate-200 mb-1">Medias:</label>
-                <select name="medias" id="medias" formControlName="medias_id" class="rounded bg-slate-200 px-1" multiple>
-                    @for (media of medias; track media.id) {
-                        <option [value]="media.id">{{media.name}}</option>
-                    }@empty {
-                        <option value="">Aucun media</option>
-                    }
-                </select>
-            </div> -->
         }
     
         <!-- Submit -->
          @if (creationForm.invalid) {
             <button type="submit" 
-            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-4" disabled>
             Ajouter le jeu
            </button>
          }@else {   
              <button type="submit" 
-             class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+             class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">
              Ajouter le jeu
             </button>
         }
     </form>
 </div>
 
-<app-media-selector [isVisible]="isMediasSelectorVisible" [medias]="medias" (selectedMediasEvent)="onSelectedMedias($event)"></app-media-selector>
+<app-media-selector [isVisible]="isMediasSelectorVisible" [medias]="medias" [selectedMedias]="mediasSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
+<app-theme-creator [isVisible]="isThemeCreatorVisible" (themeCreatedEvent)="onThemeCreated($event)"/>

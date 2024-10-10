@@ -5,7 +5,6 @@ from .models import *
 
 # region Media
 class MediaAnswerSerializer(serializers.ModelSerializer):
-    #TODO: ( add detail + create MediaAnswerLightSerializer ) ?
     class Meta:
         model = MediaAnswer
         fields = '__all__'   
@@ -26,13 +25,14 @@ class MediaLightSerializer(serializers.ModelSerializer):
             
             
 class MediaSerializer(serializers.ModelSerializer):
-    answers = MediaAnswerSerializer(many=True, required=False) # TODO: remove required in the future (angular development)
+    answers = MediaAnswerSerializer(many=True, read_only=True)
+    answers_id = serializers.PrimaryKeyRelatedField(queryset=MediaAnswer.objects.all(), many=True, write_only=True, source='answers', label='Answers')
     type = MediaTypeSerializer(read_only=True)
     type_id = serializers.PrimaryKeyRelatedField(queryset=MediaType.objects.all(), write_only=True, source='type', label='Type')
     
     class Meta:
         model = Media
-        fields = ['id', 'name', 'url', 'type','type_id', 'answers'] 
+        fields = ['id', 'name', 'url', 'type','type_id', 'answers', 'answers_id'] 
 # endregion
 
 # region Theme
@@ -50,11 +50,11 @@ class ThemeLightSerializer(serializers.ModelSerializer):
    
 class ThemeSerializer(serializers.ModelSerializer):
     category = ThemeCategorySerializer(read_only=True)
-    category_w = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, source='category', label='Category')
+    category_id = serializers.PrimaryKeyRelatedField(queryset=ThemeCategory.objects.all(), write_only=True, source='category', label='Category')
     
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'category', 'category_w']
+        fields = ['id', 'name', 'category', 'category_id']
 # endregion
 
 # region Type

@@ -6,7 +6,7 @@ interface Pagination {
 
 export interface MinigameCreate {
     name: string;
-    cover_url: Blob;
+    cover_url: File;
     theme_id: number;
     type_id: number;
     medias_id: number[];
@@ -20,7 +20,7 @@ export interface Minigame extends MinigameCreate {
 }
 
 export interface Theme {
-    id: number;
+    id?: number;
     name: string;
     category: ThemeCategory;
 }
@@ -40,6 +40,13 @@ export interface MediaType {
     name: string;
 }
 
+export interface MediaCreate {
+    name: string;
+    url: File; // FileField in Django maps to string for file URL
+    type_id: number;
+    answers_id: number[];
+}
+
 export interface Media {
     id: number;
     name: string;
@@ -57,7 +64,7 @@ export interface Media {
 }
 
 export interface MediaAnswer {
-    id: number;
+    id?: number;
     answer: string;
 }
 

@@ -19,7 +19,7 @@ class MediaType(models.Model):
        
 class Media(models.Model):
     name = models.CharField(max_length=200)
-    url = models.FileField(unique=True, storage=storages["cloudflare"])
+    url = models.FileField(unique=True, storage=storages["cloudflare"], null=True, blank=True)
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(MediaAnswer)
     

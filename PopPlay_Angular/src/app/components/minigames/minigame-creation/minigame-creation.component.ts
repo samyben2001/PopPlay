@@ -1,35 +1,54 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Media, MinigameCreate, Theme, Type } from '../../../models/models';
+import { Media, Theme, Type } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MediaSelectorComponent } from '../../../shared/components/media-selector/media-selector.component';
+import { ToastService } from '../../../services/toast.service';
+import { ToastTypes } from '../../../enums/ToastTypes';
+import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { BehaviorSubject } from 'rxjs';
+import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/theme-creator.component";
 
 @Component({
   selector: 'app-minigame-creation',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MediaSelectorComponent],
+  imports: [CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MediaSelectorComponent,
+    ThemeCreatorComponent,
+    InputTextModule,
+    AutoCompleteModule,
+    DropdownModule,
+    FloatLabelModule, ThemeCreatorComponent],
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
 })
 export class MinigameCreationComponent implements OnInit {
-  creationForm: FormGroup = new FormGroup({});
+  toastService = inject(ToastService);
   minigameServ = inject(MinigameService);
-  
-  minigame: MinigameCreate = {} as MinigameCreate;
+  creationForm: FormGroup = new FormGroup({});
+
   themes: Theme[] = [];
+  @ViewChild('themeDropdown') themeDropdown!: Dropdown;
   types: Type[] = [];
   medias: Media[] = [];
   imageGuessId: number = 0;
   isMediasSelectorVisible: boolean = false;
+  isThemeCreatorVisible: boolean = false;
+  mediasSelected: Media[] = [];
+  selectedCover: string | null = null;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
   ngOnInit(): void {
     // Get all themes, types and medias from API
     this.minigameServ.get_types().subscribe({
-      next: (data) => { 
-        this.types = data; 
+      next: (data) => {
+        this.types = data;
         this.imageGuessId = this.types.find(type => type.name == "Images Guessing")!.id;
       },
       error: (err) => { console.log(err); }
@@ -39,12 +58,12 @@ export class MinigameCreationComponent implements OnInit {
       next: (data) => { this.themes = data; },
       error: (err) => { console.log(err); }
     });
-    
+
     this.minigameServ.get_medias().subscribe({
       next: (data) => { this.medias = data; },
       error: (err) => { console.log(err); }
     });
-    
+
     // Using FormBuilder to create the FormGroup.
     this.creationForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
@@ -57,39 +76,53 @@ export class MinigameCreationComponent implements OnInit {
 
   onCoverSelected(event: any) {
     const file: File = event.target.files[0];
-
     if (file) {
-      this.minigame.cover_url = file;
+      this.selectedCover = file.name;
+      this.creationForm.patchValue({ cover_url: file });
     };
   }
 
+  openThemesCreator() {
+    this.isThemeCreatorVisible = true;
+  }
+
+  onThemeCreated(theme: Theme | null) {
+    if(theme) {
+      this.themes.push(theme);
+      this.themeDropdown.value = theme.name;
+      this.creationForm.patchValue({ theme_id: theme.id });
+    }
+    this.isThemeCreatorVisible = false;
+  }
+
   openMediasSelector() {
-    console.log("openMediasSelector");
     this.isMediasSelectorVisible = true;
   }
 
-  submit() {
-    if(this.creationForm.invalid || this.minigame.cover_url == null)
-      return;
-
-    // TODO: check if entered Theme/Type exist else create them
-
-    this.minigame.name = this.creationForm.value.name;
-    this.minigame.type_id = this.creationForm.value.type_id;
-    this.minigame.theme_id = this.creationForm.value.theme_id;
-    this.minigame.medias_id = this.creationForm.value.medias_id;
-    
-    console.log(this.minigame);
-    
-    this.minigameServ.create(this.minigame).subscribe({
-      next: (data) => { console.log(data); },
-      error: (err) => { console.log(err); }
-    })
+  onSelectedMedias(medias: Media[] | null) {
+    this.mediasSelected = medias ? [...medias] : [];
+    this.isMediasSelectorVisible = false;
   }
 
-  onSelectedMedias(medias: Media[]) {
-    console.log(medias);
-    // this.creationForm.patchValue({medias_id: medias});
-    this.isMediasSelectorVisible = false;
+  removeMedia(media: Media) {
+    this.mediasSelected = this.mediasSelected.filter((m) => m.id != media.id);
+  }
+
+  submit() {
+    if (this.creationForm.invalid)
+      return;
+      
+    this.createGame();
+  }
+
+  private createGame() {
+    this.creationForm.patchValue({ medias_id: this.mediasSelected });
+
+    this.minigameServ.create(this.creationForm.value).subscribe({
+      next: (data) => {
+        this.toastService.Show("Minigmae Created", `Minigmae ${data.name} created successfully`, ToastTypes.SUCCESS, 3000);
+      },
+      error: (err) => { console.log(err); }
+    });
   }
 }
