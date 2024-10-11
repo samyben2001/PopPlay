@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { MinigameService } from '../../services/minigame.service';
 import { Minigame } from '../../models/models';
+import { MinigameCardComponent } from '../../shared/components/minigame-card/minigame-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [MinigameCardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

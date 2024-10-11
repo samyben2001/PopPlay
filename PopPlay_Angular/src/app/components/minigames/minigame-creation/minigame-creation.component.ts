@@ -24,7 +24,8 @@ import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/
     InputTextModule,
     AutoCompleteModule,
     DropdownModule,
-    FloatLabelModule, ThemeCreatorComponent],
+    FloatLabelModule,
+    ThemeCreatorComponent],
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
 })
