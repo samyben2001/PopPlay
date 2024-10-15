@@ -9,8 +9,7 @@ import { ToastService } from '../../../services/toast.service';
 import { ToastTypes } from '../../../enums/ToastTypes';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
-import { BehaviorSubject } from 'rxjs';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/theme-creator.component";
 
 @Component({
@@ -121,7 +120,7 @@ export class MinigameCreationComponent implements OnInit {
 
     this.minigameServ.create(this.creationForm.value).subscribe({
       next: (data) => {
-        this.toastService.Show("Minigmae Created", `Minigmae ${data.name} created successfully`, ToastTypes.SUCCESS, 3000);
+        this.toastService.Show("Minigmae Created", `Minigame ${data.name} created successfully`, ToastTypes.SUCCESS, 3000);
       },
       error: (err) => { console.log(err); }
     });

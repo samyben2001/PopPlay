@@ -32,6 +32,10 @@ export class MinigameService {
     return this.httpClient.get<Minigame[]>(this.apiUrl + 'minigame/');
   }
 
+  get_by_id(id: number): Observable<Minigame> {
+    return this.httpClient.get<Minigame>(this.apiUrl + 'minigame/' + id);
+  }
+
   create_theme(theme: Theme): Observable<Theme> {
     let body = {
       name: theme.name,

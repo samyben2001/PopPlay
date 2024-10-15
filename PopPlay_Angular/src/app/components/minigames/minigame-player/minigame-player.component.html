@@ -1,1 +1,22 @@
-<p>minigame-player works!</p>
+<!--  TODO: implement minigame-player component -->
+<div class="flex flex-col items-center">
+@if (minigame) {
+        <h2>{{minigame.name}}</h2>
+
+        <div class="relative">
+            <img [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
+            <div class="absolute top-0 left-0 h-full w-full backdrop-blur-[{{blurAmount}}px]"></div>
+        </div>
+
+        <div>
+            <input type="text" id="anwser" [(ngModel)]="answer">
+            <label for="anwser">Réponse</label>
+        </div>
+
+        <button (click)="try()" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">Valider</button>
+    }@else {
+        <h2>Chargement du jeu ...</h2>
+    }
+</div>
+
+

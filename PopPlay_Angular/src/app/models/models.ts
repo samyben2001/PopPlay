@@ -12,11 +12,17 @@ export interface MinigameCreate {
     medias_id: number[];
 }
 
-export interface Minigame extends MinigameCreate {
+export interface Minigame {
     id: number;
+    name: string;
+    cover_url: File;
+    theme: Theme;
+    type: Type;
+    medias: Media[];
     dateCreated: Date; // DateTime type in Django (string?)
     dateUpdated?: Date; // Nullable DateTime in Django
     notes: MinigameUserNote[];
+
 }
 
 export interface Theme {
