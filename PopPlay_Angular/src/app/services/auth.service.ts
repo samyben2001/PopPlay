@@ -28,6 +28,6 @@ export class AuthService {
       this.isConnected.set(false);
     }
 
-    return token != null ? token : null;
+    return token ? token : null;
   }
 }

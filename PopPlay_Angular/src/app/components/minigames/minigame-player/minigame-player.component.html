@@ -1,20 +1,36 @@
 <div class="flex flex-col items-center">
 @if (minigame) {
+        <!-- Game Title -->
         <h2 class="text-3xl underline text-slate-200">{{minigame.name}}</h2>
 
+        <!-- Game Image to Find & Blurred Overlay -->
         <div class="relative my-6 max-h-[50vh]">
-            <img id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
-            <div class="absolute top-0 left-0 h-full w-full backdrop-blur-[{{blurAmount}}px]"></div><!--  FIXME: blur TODO:apply from code not html -->
+            @if (!isCorrectAnswerShown) {
+                <img id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
+                <div class="absolute top-0 left-0 h-full w-full"  #imgOverlay></div>
+            }@else {
+                <div class="flex flex-col items-center my-6">
+                    <p class="text-3xl text-slate-200">La bonne réponse était: </p>
+                    <p class="text-4xl text-orange-700 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
+                    <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                </div>
+            }
         </div>
 
+        <!-- Timer & Score & Answer Input -->
         <div class="flex flex-col items-center w-3/4">
+            <div class="w-full flex flex-col lg:flex-row items-center lg:justify-around">
+                <p class="text-2xl text-orange-700 pb-4">Temps restant : <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
+                <p class="text-2xl text-slate-200 pb-4"> Score : <span class="font-bold">{{score}}</span></p>
+            </div>
             <p-floatLabel class="w-full">
-                <input pInputText id="anwser" [(ngModel)]="answer" class="w-full peer">
+                <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer">
                 <label for="anwser" class="peer-focus:text-slate-200">Entrez votre réponse</label>
             </p-floatLabel>
+            
+            <button (click)="try()" class="min-w-[50%] bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">Valider</button>
         </div>
 
-        <button (click)="try()" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">Valider</button>
     }@else {
         <h2>Chargement du jeu ...</h2>
     }
