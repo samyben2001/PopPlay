@@ -11,3 +11,11 @@
     @tailwind components;
     @tailwind utilities;
 }
+
+/* PrimeNg Dropdown Style (arrow direction + label color) */
+p-dropdown div.p-dropdown div.p-dropdown-trigger[aria-expanded='true'] {
+    rotate: 180deg;
+}
+p-floatlabel:has(p-dropdown div.p-dropdown div.p-dropdown-trigger[aria-expanded='true']) label {
+    @apply text-slate-200;
+}

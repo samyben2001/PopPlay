@@ -1,16 +1,17 @@
-<!--  TODO: implement minigame-player component -->
 <div class="flex flex-col items-center">
 @if (minigame) {
-        <h2>{{minigame.name}}</h2>
+        <h2 class="text-3xl underline text-slate-200">{{minigame.name}}</h2>
 
-        <div class="relative">
-            <img [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
-            <div class="absolute top-0 left-0 h-full w-full backdrop-blur-[{{blurAmount}}px]"></div>
+        <div class="relative my-6 max-h-[50vh]">
+            <img id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
+            <div class="absolute top-0 left-0 h-full w-full backdrop-blur-[{{blurAmount}}px]"></div><!--  FIXME: blur TODO:apply from code not html -->
         </div>
 
-        <div>
-            <input type="text" id="anwser" [(ngModel)]="answer">
-            <label for="anwser">Réponse</label>
+        <div class="flex flex-col items-center w-3/4">
+            <p-floatLabel class="w-full">
+                <input pInputText id="anwser" [(ngModel)]="answer" class="w-full peer">
+                <label for="anwser" class="peer-focus:text-slate-200">Entrez votre réponse</label>
+            </p-floatLabel>
         </div>
 
         <button (click)="try()" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">Valider</button>

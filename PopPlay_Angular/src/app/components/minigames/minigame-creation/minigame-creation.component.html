@@ -9,8 +9,8 @@
         <!-- Game name -->
         <div class="flex flex-col mb-6">
             <p-floatLabel>
-                <input pInputText id="name" formControlName="name" class="w-full py-3 px-2"/>
-                <label for="name" class="text-slate-300">Nom du jeu</label>
+                <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
+                <label for="name" class="peer-focus:text-slate-200">Nom du jeu</label>
             </p-floatLabel>
             @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
                 @if (creationForm.get('name')!.errors!['required']) {
@@ -51,8 +51,9 @@
                  [filter]="true"
                  filterBy="name" 
                  [showClear]="true"  
-                 styleClass="w-full" /> 
-                <label for="type" class="text-slate-300">Type</label>
+                 styleClass="w-full" 
+                 /> 
+                <label for="type">Type</label> <!-- FIXME: color on dropdown active -->
             </p-floatLabel>
 
             @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
@@ -75,7 +76,7 @@
                         filterBy="name" 
                         [showClear]="true"  
                         styleClass="w-full" #themeDropdown/> 
-                    <label for="theme" class="text-slate-300">Thème</label>
+                    <label for="theme">Thème</label>
                 </p-floatLabel>
 
                 <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer ml-2" (click)="openThemesCreator()">+</button>

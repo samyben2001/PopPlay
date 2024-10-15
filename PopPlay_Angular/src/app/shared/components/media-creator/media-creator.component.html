@@ -12,14 +12,14 @@
                         <span>{{!selectedFileName ? 'Sélectionner un média' : 'Modifier le média'}}</span>
                         <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
                     </button>
-                    <span>{{selectedFileName ? selectedFileName : 'Aucun fichier sélectionné'}}</span>
+                    <span class="text-slate-200">{{selectedFileName ? selectedFileName : 'Aucun fichier sélectionné'}}</span>
                 </div>
 
                 <!-- Media Name -->
                 <div class="flex flex-col mb-6">
                     <p-floatLabel>
-                        <input pInputText id="name" formControlName="name" class="w-full py-3 px-2"/>
-                        <label for="name" class="text-slate-300">Nom du média</label>
+                        <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
+                        <label for="name" class="peer-focus:text-slate-300">Nom du média</label>
                     </p-floatLabel>
                 </div>
                 @if (mediaForm.get('name')!.dirty && mediaForm.get('name')!.errors) {
@@ -38,7 +38,7 @@
                         optionValue="id"
                         [showClear]="true"  
                         styleClass="w-full" />
-                        <label for="type_id" class="text-slate-300">Type</label>
+                        <label for="type_id">Type</label>
                     </p-floatLabel>
                 </div>
 
@@ -46,8 +46,8 @@
                 <div class="flex flex-col mb-6">
                     
                     <p-floatLabel>
-                        <input pInputText id="answers_id" formControlName="answers_id" class="w-full py-3 px-2" (keyup)="onAnswersChanged($event)"/>
-                        <label for="answers_id" class="text-slate-300">Réponses associées</label>
+                        <input pInputText id="answers_id" formControlName="answers_id" class="w-full py-3 px-2 peer" (keyup)="onAnswersChanged($event)"/>
+                        <label for="answers_id" class="peer-focus:text-slate-300">Réponses associées</label>
                     </p-floatLabel>
                     <!-- Selected Answers -->
                     <div class="flex flex-row flex-wrap gap-2 mt-2">

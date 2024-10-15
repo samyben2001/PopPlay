@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      maxHeight: { // FIXME: tailwind custom theme not working
+        '125': '125px',
+      }
+    },
   },
   plugins: [
     require('tailwind-scrollbar'),

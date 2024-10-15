@@ -3,11 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MediaAnswer, Minigame } from '../../../models/models';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormsModule } from '@angular/forms';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-minigame-player',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, InputTextModule, FloatLabelModule],
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css'
 })

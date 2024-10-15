@@ -9,8 +9,8 @@
                 <!-- Theme Name -->
                 <div class="flex flex-col mb-6">
                     <p-floatLabel>
-                        <input pInputText id="name" formControlName="name" class="w-full py-3 px-2"/>
-                        <label for="name" class="text-slate-300">Nom du thème</label>
+                        <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
+                        <label for="name" class="peer-focus:text-slate-200">Nom du thème</label>
                     </p-floatLabel>
                 </div>
                 @if (themeForm.get('name')!.dirty && themeForm.get('name')!.errors) {
@@ -29,7 +29,7 @@
                         optionValue="id"
                         [showClear]="true"  
                         styleClass="w-full" />
-                        <label for="category" class="text-slate-300">Type</label>
+                        <label for="category">Type</label>
                     </p-floatLabel>
                 </div>
 
