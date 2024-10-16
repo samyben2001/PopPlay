@@ -6,11 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePipe } from '@angular/common';
+import { NoRightClickDirective } from '../../../shared/directives/no-right-click.directive';
 
 @Component({
   selector: 'app-minigame-player',
   standalone: true,
-  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe],
+  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective],
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css'
 })
@@ -37,11 +38,13 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   attempts: number = 0
   blurAmount: number = this.BASE_BLUR
   isCorrectAnswerShown: boolean = false
+  isGameEnded: boolean = false
 
   ngOnInit(): void {
     this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
+        this.shuffle(this.minigame.medias)
       },
       error: (err) => {
         console.log(err)
@@ -52,10 +55,12 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngAfterViewInit(): void {
     this.imgsToFind.changes.subscribe((img: QueryList<ElementRef>) => {
-      this.imgToFind = img.first
-      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`
+      if(!img.first) return
 
-      if(this.blurIntervalId)
+      this.imgToFind = img.first
+      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
+
+      if(this.blurIntervalId != undefined)
         clearInterval(this.blurIntervalId)
       this.unBlur()
     })
@@ -68,6 +73,8 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
     if (this.userAnswer != '') { // Check if user entered an answer
       this.checkUserAnswer(correctAnswers);
+    }else{
+      this.score += this.SCORE_PER_ERROR
     }
 
     this.userAnswer = ''
@@ -75,7 +82,15 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.attempts == this.MAX_ATTEMPTS) { // Check if user has used all attempts
       this.showCorrectAnswer();
     }
-    // TODO: check if last media, then Show Score + send score via API
+    this.checkIfGameEnded();
+  }
+  
+  private checkIfGameEnded() {
+    if (this.actualMediaIndex == this.minigame.medias.length) {
+      this.isGameEnded = true
+      clearInterval(this.blurIntervalId)
+      // TODO: send score via API if user connected
+    }
   }
 
 
@@ -85,8 +100,9 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`
       this.timer--
 
-      if (this.blurAmount <= 0 || this.timer <= 0) {
+      if (!this.isGameEnded && (this.blurAmount <= 0 || this.timer <= 0)) {
         clearInterval(this.blurIntervalId)
+        this.score += this.SCORE_PER_ERROR
         this.showCorrectAnswer()
       }
     }, 1000);
@@ -115,8 +131,8 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
     let interval = setInterval(() => {
       this.isCorrectAnswerShown = false;
-      this.nextMedias();
       this.timerBeforeNextMedia = this.TIME_BETWEEN_MEDIAS;
+      this.nextMedias();
       clearInterval(i);
       clearInterval(interval);
     }, 5000);
@@ -126,11 +142,33 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private nextMedias() {
     clearInterval(this.blurIntervalId);
     this.actualMediaIndex++;
-    this.attempts = 0;
+    this.checkIfGameEnded();
+    this.userAnswer = '';
+    if (this.isGameEnded) return;
+    
+    this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
     this.blurAmount = this.BASE_BLUR;
     this.timer = this.MAX_TIMER;
+    this.attempts = 0;
     this.unBlur();
   }
+
+  private shuffle(array: any[]) {
+    let currentIndex: number = array.length;
+  
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element...
+      let randomIndex: number = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  }
+
 
   ngOnDestroy(): void {
     // TODO: unsubscriptions

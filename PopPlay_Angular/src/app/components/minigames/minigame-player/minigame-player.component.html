@@ -5,30 +5,42 @@
 
         <!-- Game Image to Find & Blurred Overlay -->
         <div class="relative my-6 max-h-[50vh]">
-            @if (!isCorrectAnswerShown) {
-                <img id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
-                <div class="absolute top-0 left-0 h-full w-full"  #imgOverlay></div>
+            @if (!isGameEnded) {
+                @if (!isCorrectAnswerShown) {
+                    <img appNoRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name">
+                    <div appNoRightClick class="absolute top-0 left-0 h-full w-full"  #imgOverlay></div>
+                }@else {
+                    <div class="flex flex-col items-center my-6">
+                        <p class="text-3xl text-slate-200">La bonne réponse était: </p>
+                        <p class="text-4xl text-orange-700 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
+                        <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                    </div>
+                }
             }@else {
                 <div class="flex flex-col items-center my-6">
-                    <p class="text-3xl text-slate-200">La bonne réponse était: </p>
-                    <p class="text-4xl text-orange-700 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
-                    <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                    <p class="text-3xl text-slate-200">Votre Score Total est de: </p>
+                    <p class="text-4xl text-orange-700 font-bold py-2">{{score}} points</p>
                 </div>
             }
         </div>
 
         <!-- Timer & Score & Answer Input -->
-        <div class="flex flex-col items-center w-3/4">
-            <div class="w-full flex flex-col lg:flex-row items-center lg:justify-around">
-                <p class="text-2xl text-orange-700 pb-4">Temps restant : <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
-                <p class="text-2xl text-slate-200 pb-4"> Score : <span class="font-bold">{{score}}</span></p>
+        <div class="flex flex-col items-center w-3/4 p-6 bg-slate-200 rounded-md">
+            <div class="w-full flex flex-col lg:flex-row items-center lg:justify-around text-center">
+                <p class="text-2xl text-orange-700">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
+                <p class="text-2xl text-slate-800"> Score: <span class="font-bold">{{score}}</span></p>
             </div>
-            <p-floatLabel class="w-full">
-                <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer">
-                <label for="anwser" class="peer-focus:text-slate-200">Entrez votre réponse</label>
-            </p-floatLabel>
             
-            <button (click)="try()" class="min-w-[50%] bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">Valider</button>
+            <p-floatLabel class="w-full my-6">
+                <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer" [disabled]="isGameEnded || isCorrectAnswerShown">
+                <label for="anwser" class="peer-focus:text-slate-800">Entrez votre réponse</label>
+            </p-floatLabel>
+
+            @if (!isGameEnded && !isCorrectAnswerShown && userAnswer != '') {
+                <button (click)="try()" class="min-w-[50%] bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">Valider</button>
+            }@else {
+                <button (click)="try()" class="min-w-[50%] bg-emerald-900 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>Valider</button>
+            }
         </div>
 
     }@else {
