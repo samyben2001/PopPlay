@@ -1,7 +1,11 @@
-<div class="flex flex-row flex-wrap gap-y-4 justify-around">
-    @for (game of minigames; track $index) {
-        <div class="w-full lg:w-1/4">
-            <app-minigame-card [minigame]="game"/>
-        </div>
+<div class="flex flex-row flex-wrap gap-y-4 justify-around items-center">
+    @if (minigames) {
+        @for (game of minigames; track $index) {
+            <div class="w-10/12 lg:w-5/12">
+                <app-minigame-card [minigame]="game"/>
+            </div>
+        }
+    }@else {
+        <p class="text-3xl text-slate-200">Chargement des jeux en cours ...</p>
     }
 </div>

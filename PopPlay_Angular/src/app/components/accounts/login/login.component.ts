@@ -4,11 +4,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AccountService } from '../../../services/account.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,FloatLabelModule,InputTextModule, PasswordModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

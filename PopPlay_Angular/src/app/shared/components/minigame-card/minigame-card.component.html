@@ -1,12 +1,14 @@
-<!-- TODO: css -->
-<div class="w-full flex flex-col items-center bg-slate-300 rounded-md py-4">
-    <div>
+<div class="w-full flex flex-col items-center bg-slate-200 rounded-md py-4">
+    <div class="text-xl font-bold text-slate-800 text-center">
         <h3>{{minigame.name}}</h3>
     </div>
 
-    <img [src]="minigame.cover_url" [alt]="minigame.name" class="max-h-48 w-full object-cover">
-    
+    <img [src]="minigame.cover_url" [alt]="minigame.name" class="max-h-48 w-full object-cover my-4">
+
     <div>
-        <button type="button" (click)="startGame()" class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">Start Game</button>
+        <button type="button" (click)="startGame()"
+            class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+            Start Game
+        </button>
     </div>
 </div>

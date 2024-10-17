@@ -5,11 +5,13 @@
     </div>
 
     <!-- Login Form -->
-    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2  p-4 rounded bg-slate-700">
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2  p-6 rounded bg-slate-700">
         <!-- Username TODO: or email -->
-        <div class="flex flex-col mb-4">
-            <label for="username" class="text-slate-200 mb-1">Nom d'utilisateur</label>
-            <input id="username" type="text" formControlName="username" placeholder="Nom d'utilisateur" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <input pInputText id="username" formControlName="username" class="w-full py-3 px-2 peer">
+                <label for="username" class="peer-focus:text-slate-200">Nom d'utilisateur</label>
+            </p-floatLabel>
     
             @if (loginForm.get('username')!.dirty && loginForm.get('username')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -19,9 +21,11 @@
         </div>
     
         <!-- Password -->
-        <div class="flex flex-col mb-4">
-            <label for="password" class="text-slate-200 mb-1">Mot de passe</label>
-            <input id="password" type="password" formControlName="password" placeholder="Mot de passe" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <p-password id="password" formControlName="password" styleClass="w-full" inputStyleClass="w-full py-3 px-2" [feedback]="false"/>
+                <label for="password">Mot de passe</label>
+            </p-floatLabel>
             
             @if (loginForm.get('password')!.dirty && loginForm.get('password')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -33,7 +37,7 @@
         <!-- Submit -->
         @if (loginForm.invalid) {
             <button type="submit" 
-            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
             Se connecter
            </button>
          }@else {   

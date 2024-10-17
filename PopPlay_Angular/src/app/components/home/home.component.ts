@@ -12,12 +12,11 @@ import { MinigameCardComponent } from '../../shared/components/minigame-card/min
 })
 export class HomeComponent {
   gameServ = inject(MinigameService);
-  minigames: Minigame[] = [];
+  minigames?: Minigame[];
 
   constructor() {
     this.gameServ.get_all().subscribe(data => {
       this.minigames = data;
-      console.log(this.minigames);
     });
   }
 }

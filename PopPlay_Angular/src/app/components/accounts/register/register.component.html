@@ -5,11 +5,13 @@
     </div>
 
     <!-- Register Form -->
-    <form [formGroup]="registerForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-4 rounded bg-slate-700">
+    <form [formGroup]="registerForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-6 rounded bg-slate-700">
         <!-- Username -->
-        <div class="flex flex-col mb-4">
-            <label for="username" class="text-slate-200 mb-1">Nom d'utilisateur</label>
-            <input id="username" type="text" formControlName="username" placeholder="Nom d'utilisateur" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <input pInputText id="username" formControlName="username" class="w-full py-3 px-2 peer">
+                <label for="username" class="peer-focus:text-slate-200">Nom d'utilisateur</label>
+            </p-floatLabel>
     
             @if (registerForm.get('username')!.dirty && registerForm.get('username')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -19,9 +21,11 @@
         </div>
         
         <!-- Email -->
-        <div class="flex flex-col mb-4">
-            <label for="email" class="text-slate-200 mb-1">Email</label>
-            <input id="email" type="email" formControlName="email" placeholder="mail@example.com" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <input pInputText id="email" formControlName="email" class="w-full py-3 px-2 peer">
+                <label for="email" class="peer-focus:text-slate-200">Email</label>
+            </p-floatLabel>
     
             @if (registerForm.get('email')!.dirty && registerForm.get('email')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -31,9 +35,11 @@
         </div>
     
         <!-- Password -->
-        <div class="flex flex-col mb-4">
-            <label for="password" class="text-slate-200 mb-1">Mot de passe</label>
-            <input id="password" type="password" formControlName="password" placeholder="Mot de passe" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <p-password id="password" formControlName="password" styleClass="w-full" inputStyleClass="w-full py-3 px-2" [feedback]="false"/>
+                <label for="password">Mot de passe</label>
+            </p-floatLabel>
             
             @if (registerForm.get('password')!.dirty && registerForm.get('password')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -43,9 +49,11 @@
         </div>
     
         <!-- Password2 -->
-        <div class="flex flex-col mb-4">
-            <label for="password2" class="text-slate-200 mb-1">Retaper votre mot de passe</label>
-            <input id="password2" type="password" formControlName="password2" placeholder="Mot de passe" class="rounded bg-slate-200 px-1">
+        <div class="flex flex-col mb-6">
+            <p-floatLabel>
+                <p-password id="password2" formControlName="password2" styleClass="w-full" inputStyleClass="w-full py-3 px-2" [feedback]="false"/>
+                <label for="password2">Retapez votre mot de passe</label>
+            </p-floatLabel>
 
             @if ((registerForm.get('password')!.dirty && registerForm.get('password2')!.dirty) && registerForm.hasError('passwordMismatch')) {
                 <div class="text-red-600 text-sm">
@@ -58,12 +66,12 @@
         <!-- Submit -->
         @if (registerForm.invalid) {
             <button type="submit" 
-            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
             S'enregistrer
            </button>
          }@else {   
              <button type="submit" 
-             class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+             class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
              S'enregistrer
             </button>
         }

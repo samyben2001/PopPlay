@@ -4,11 +4,14 @@ import { AbstractControlOptions, FormBuilder, FormGroup, ReactiveFormsModule, Va
 import { checkPasswordIdenticalValidator } from '../../../shared/validators/checkPasswordIdenticalValidator';
 import { AccountService } from '../../../services/account.service';
 import { Router } from '@angular/router';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FloatLabelModule, InputTextModule,PasswordModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
