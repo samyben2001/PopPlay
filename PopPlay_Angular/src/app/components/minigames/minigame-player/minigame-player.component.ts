@@ -31,7 +31,6 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
       }),
     ),
     transition('hidden => visible', [animate('0.3s')]),
-    // transition('visible => hidden', [animate('0.5s')]),
   ]),],
 })
 export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy {

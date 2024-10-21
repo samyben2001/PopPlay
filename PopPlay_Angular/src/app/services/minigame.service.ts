@@ -28,6 +28,23 @@ export class MinigameService {
     return this.httpClient.post<Minigame>(this.apiUrl + 'minigame/', formData);
   }
 
+  update(minigame: MinigameCreate): Observable<Minigame>{
+    
+    const formData = new FormData();
+    formData.append('name', minigame.name);
+    formData.append('type_id', minigame.type_id.toString());
+    formData.append('theme_id', minigame.theme_id.toString());
+    if (typeof minigame.cover_url === 'object') 
+      formData.append('cover_url', minigame.cover_url);
+
+    if (minigame.medias_id.length > 0){
+      // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
+      minigame.medias_id.forEach((media: any) => formData.append('medias_id', media.id.toString()));
+    }
+    
+    return this.httpClient.put<Minigame>(this.apiUrl + 'minigame/' + minigame.id + '/', formData)
+  }
+
   get_all(): Observable<Minigame[]> {
     return this.httpClient.get<Minigame[]>(this.apiUrl + 'minigame/');
   }

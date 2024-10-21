@@ -19,6 +19,7 @@ export class ThemeCreatorComponent implements OnInit {
   gameServ = inject(MinigameService);
   router = inject(Router);
   fb = inject(FormBuilder);
+
   @Input() isVisible: boolean = false
   @Output() themeCreatedEvent = new EventEmitter<Theme | null>()
   themeForm: FormGroup = new FormGroup({});

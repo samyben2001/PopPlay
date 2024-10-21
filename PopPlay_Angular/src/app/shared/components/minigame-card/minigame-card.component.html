@@ -5,10 +5,15 @@
 
     <img [src]="minigame.cover_url" [alt]="minigame.name" class="max-h-48 w-full object-cover my-4">
 
-    <div>
+    <div class="flex flex-row gap-x-4">
         <button type="button" (click)="startGame()"
             class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
             Start Game
+        </button>
+
+        <button type="button" (click)="updateGame(minigame.id)"
+            class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+            Update Game
         </button>
     </div>
 </div>

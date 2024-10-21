@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import NotFound
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -17,28 +17,33 @@ class ThemeCategoryViewSet(ModelViewSet):
     queryset = ThemeCategory.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = ThemeCategorySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]   
     
     
 class ThemeViewSet(ModelViewSet):
     queryset = Theme.objects.all().order_by('id').prefetch_related('category')
     filter_backends = [DjangoFilterBackend]
-    serializer_class = ThemeSerializer    
+    serializer_class = ThemeSerializer 
+    permission_classes = [IsAuthenticatedOrReadOnly]   
     
 class MediaTypeViewSet(ModelViewSet):
     queryset = MediaType.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaTypeSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]   
     
 class MediaAnswerViewSet(ModelViewSet):
     queryset = MediaAnswer.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaAnswerSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]   
     
 
 class MediaViewSet(ModelViewSet):
     queryset = Media.objects.all().order_by('id').prefetch_related('type', 'answers')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]   
     # parser_classes = [MultiPartParser, FormParser]
     
 
@@ -46,11 +51,13 @@ class TypeViewSet(ModelViewSet):
     queryset = Type.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = TypeSerializer  
+    permission_classes = [IsAuthenticatedOrReadOnly]   
 
 
 class MinigameViewSet(ModelViewSet):
     queryset = Minigame.objects.all().order_by('id').prefetch_related('type', 'theme', 'medias', 'notes')
     filter_backends = [DjangoFilterBackend]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     # TODO: check if name of medias not already used in cloudflare
     def get_serializer_class(self, *args, **kwargs):
         if self.action == 'list':
@@ -58,11 +65,6 @@ class MinigameViewSet(ModelViewSet):
         elif self.action == 'add_note':
             return MinigameUserNoteSerializer
         return MinigameSerializer
-    
-    def get_permissions(self):
-        if self.action == 'add_note':
-            return [IsAuthenticated()]
-        return []
     
     # ajout note
     @action(detail=True, methods=['post'])

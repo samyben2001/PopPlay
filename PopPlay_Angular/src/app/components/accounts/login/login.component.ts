@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   authServ = inject(AuthService);
   router = inject(Router);
   loginForm: FormGroup = new FormGroup({});
+  errorLogin: string ='';
 
   constructor(private fb: FormBuilder) { }
   ngOnInit(): void {
@@ -40,7 +41,8 @@ export class LoginComponent implements OnInit {
         },
         error: (err) => { // login failed
           console.log('Error encountered during login');
-          console.log(err);
+          console.log(err)
+          this.errorLogin = err.error.detail;
         }
       });
     }

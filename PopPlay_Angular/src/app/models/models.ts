@@ -5,6 +5,7 @@ interface Pagination {
 }
 
 export interface MinigameCreate {
+    id?: number;
     name: string;
     cover_url: File;
     theme_id: number;
@@ -15,7 +16,7 @@ export interface MinigameCreate {
 export interface Minigame {
     id: number;
     name: string;
-    cover_url: File;
+    cover_url: string;
     theme: Theme;
     type: Type;
     medias: Media[];

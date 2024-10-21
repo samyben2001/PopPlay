@@ -1,7 +1,7 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Media, Theme, Type } from '../../../models/models';
+import { Media, Minigame, Theme, Type } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MediaSelectorComponent } from '../../../shared/components/media-selector/media-selector.component';
@@ -11,6 +11,7 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/theme-creator.component";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-minigame-creation',
@@ -31,6 +32,7 @@ import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/
 export class MinigameCreationComponent implements OnInit {
   toastService = inject(ToastService);
   minigameServ = inject(MinigameService);
+  activatedRoute = inject(ActivatedRoute);
   creationForm: FormGroup = new FormGroup({});
 
   themes: Theme[] = [];
@@ -42,6 +44,10 @@ export class MinigameCreationComponent implements OnInit {
   isThemeCreatorVisible: boolean = false;
   mediasSelected: Media[] = [];
   selectedCover: string | null = null;
+  
+  gameID?: number = -1;
+  gameToUpdate?: Minigame
+  isCoverUpdated: boolean = false
 
   constructor(private fb: FormBuilder) { }
   ngOnInit(): void {
@@ -64,14 +70,34 @@ export class MinigameCreationComponent implements OnInit {
       error: (err) => { console.log(err); }
     });
 
-    // Using FormBuilder to create the FormGroup.
-    this.creationForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
-      cover_url: ['', [Validators.required]],
-      type_id: ['', [Validators.required]],
-      theme_id: ['', [Validators.required]],
-      medias_id: [[]],
-    });
+    // if gameID is provided, Update else Creation
+    this.gameID = this.activatedRoute.snapshot.params['gameID'];
+    if (this.gameID) {
+      this.minigameServ.get_by_id(this.gameID).subscribe({
+        next: (game) => {
+          this.gameToUpdate = game
+          this.creationForm = this.fb.group({
+            id: [this.gameToUpdate.id],
+            name: [this.gameToUpdate.name, [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
+            cover_url: [''],
+            type_id: [this.gameToUpdate.type.id, [Validators.required]],
+            theme_id: [this.gameToUpdate.theme.id, [Validators.required]],
+            medias_id: [this.gameToUpdate.medias],
+          });
+          this.mediasSelected = this.gameToUpdate.medias
+          this.selectedCover = this.gameToUpdate.cover_url
+        }
+      })
+    } else {
+      // Using FormBuilder to create the FormGroup.
+      this.creationForm = this.fb.group({
+        name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
+        cover_url: ['', [Validators.required]],
+        type_id: ['', [Validators.required]],
+        theme_id: ['', [Validators.required]],
+        medias_id: [[]],
+      });
+    }
   }
 
   onCoverSelected(event: any) {
@@ -79,6 +105,9 @@ export class MinigameCreationComponent implements OnInit {
     if (file) {
       this.selectedCover = file.name;
       this.creationForm.patchValue({ cover_url: file });
+      // check if it's an update or create
+      if (this.gameToUpdate)
+        this.isCoverUpdated = true
     };
   }
 
@@ -87,7 +116,7 @@ export class MinigameCreationComponent implements OnInit {
   }
 
   onThemeCreated(theme: Theme | null) {
-    if(theme) {
+    if (theme) {
       this.themes.push(theme);
       this.themeDropdown.value = theme.name;
       this.creationForm.patchValue({ theme_id: theme.id });
@@ -111,8 +140,11 @@ export class MinigameCreationComponent implements OnInit {
   submit() {
     if (this.creationForm.invalid)
       return;
-      
-    this.createGame();
+
+    if (!this.gameID)
+      this.createGame();
+    else
+      this.updateGame();
   }
 
   private createGame() {
@@ -121,6 +153,19 @@ export class MinigameCreationComponent implements OnInit {
     this.minigameServ.create(this.creationForm.value).subscribe({
       next: (data) => {
         this.toastService.Show("Minigmae Created", `Minigame ${data.name} created successfully`, ToastTypes.SUCCESS, 3000);
+      },
+      error: (err) => { console.log(err); }
+    });
+  }
+
+  private updateGame() {
+    console.log('Update game to do ...');
+    // TODO: implement update method (check if cover has been changed, ...)
+    this.creationForm.patchValue({ medias_id: this.mediasSelected });
+
+    this.minigameServ.update(this.creationForm.value).subscribe({
+      next: (data) => {
+        this.toastService.Show("Minigmae Updated", `Minigame ${data.name} updated successfully`, ToastTypes.SUCCESS, 3000);
       },
       error: (err) => { console.log(err); }
     });

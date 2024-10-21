@@ -16,6 +16,7 @@ export const routes: Routes = [
 
     {path: 'minigame', children: [
         {path: 'creation', component: MinigameCreationComponent},
+        {path: 'update/:gameID', component: MinigameCreationComponent},
         {path: 'play/:gameId', component: MinigamePlayerComponent},
     ]},
 

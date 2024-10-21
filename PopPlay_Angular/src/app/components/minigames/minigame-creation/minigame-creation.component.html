@@ -4,6 +4,8 @@
         <h2 class="text-2xl text-slate-200">Création d'un jeu</h2>
     </div>
 
+    @if (!gameID || (gameID && gameToUpdate)) {
+    
     <!-- Game Creation Form -->
     <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-6 rounded bg-slate-700">
         <!-- Game name -->
@@ -32,7 +34,14 @@
                 <span>{{!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'}}</span>
                 <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
             </button>
-            <span class="text-slate-200">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
+            @if (!gameToUpdate || (gameToUpdate && isCoverUpdated)) {
+                <span class="text-slate-200">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
+            }@else{
+                <div class="h-24 mt-2 flex justify-center">
+                    <img [src]="selectedCover" [alt]="gameToUpdate.name" class="h-full w-auto">
+                </div>
+            }
+            
             @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
                 <span class="text-red-600 text-sm">
                     L'image de couverture du jeu est obligatoire.
@@ -98,6 +107,8 @@
                             <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
                             <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-red-600 cursor-pointer">&times;</span>
                         </div>
+                    }@empty {
+                        <p class="text-slate-200">Aucun média sélectionné</p>
                     }
                 </div>
                 <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
@@ -109,16 +120,17 @@
         <!-- Submit -->
          @if (creationForm.invalid) {
             <button type="submit" 
-            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-4" disabled>
-            Ajouter le jeu
+            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
+            {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
            </button>
          }@else {   
              <button type="submit" 
-             class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-4">
-             Ajouter le jeu
+             class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+             {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
             </button>
         }
     </form>
+    }
 </div>
 
 <app-media-selector [isVisible]="isMediasSelectorVisible" [medias]="medias" [selectedMedias]="mediasSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>

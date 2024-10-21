@@ -9,7 +9,7 @@
         <!-- Username TODO: or email -->
         <div class="flex flex-col mb-6">
             <p-floatLabel>
-                <input pInputText id="username" formControlName="username" class="w-full py-3 px-2 peer">
+                <input pInputText id="username" formControlName="username" class="w-full py-3 px-2 peer" >
                 <label for="username" class="peer-focus:text-slate-200">Nom d'utilisateur</label>
             </p-floatLabel>
     
@@ -23,15 +23,9 @@
         <!-- Password -->
         <div class="flex flex-col mb-6">
             <p-floatLabel>
-                <p-password id="password" formControlName="password" styleClass="w-full" inputStyleClass="w-full py-3 px-2" [feedback]="false"/>
+                <p-password id="password" formControlName="password" styleClass="w-full" inputStyleClass="w-full py-3 px-2" [feedback]="false" [toggleMask]="true"/>
                 <label for="password">Mot de passe</label>
             </p-floatLabel>
-            
-            @if (loginForm.get('password')!.dirty && loginForm.get('password')!.errors) {
-                <span class="text-red-600 text-sm">
-                    Please enter a valid password.
-                </span>
-            }
         </div>
     
         <!-- Submit -->
@@ -45,6 +39,12 @@
              class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
              Se connecter
             </button>
+        }
+
+        @if (errorLogin != '') {
+            <div class="text-red-600 text-sm">
+                {{errorLogin}}
+            </div>
         }
     </form>
 </div>
