@@ -1,6 +1,6 @@
 <div class="flex flex-col items-center">
     <!-- Title -->
-    <div class="w-9/12 mb-6 border-b-2 border-orange-600">
+    <div class="w-9/12 mb-6 border-b-2 border-pink-600">
         <h2 class="text-2xl text-slate-200">Création d'un jeu</h2>
     </div>
 
@@ -30,7 +30,7 @@
 
         <!-- Cover -->
         <div class="flex flex-col mb-6">
-            <button type="button" (click)="fileInput.click()" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+            <button type="button" (click)="fileInput.click()" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">
                 <span>{{!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'}}</span>
                 <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
             </button>
@@ -88,7 +88,7 @@
                     <label for="theme">Thème</label>
                 </p-floatLabel>
 
-                <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer ml-2" (click)="openThemesCreator()">+</button>
+                <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer ml-2" (click)="openThemesCreator()">+</button>
             </div>
             @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -105,14 +105,14 @@
                     @for (media of mediasSelected; track $index) {
                         <div class="h-24 relative">
                             <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
-                            <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-red-600 cursor-pointer">&times;</span>
+                            <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
                         </div>
                     }@empty {
                         <p class="text-slate-200">Aucun média sélectionné</p>
                     }
                 </div>
-                <button type="button" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
-                    {{mediasSelected.length > 0 ? 'Modifier les medias' : 'Ajouter des medias'}}
+                <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
+                    {{mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'}}
                 </button>
             </div>
         }
@@ -120,12 +120,12 @@
         <!-- Submit -->
          @if (creationForm.invalid) {
             <button type="submit" 
-            class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
+            class="bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
             {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
            </button>
          }@else {   
              <button type="submit" 
-             class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+             class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
              {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
             </button>
         }

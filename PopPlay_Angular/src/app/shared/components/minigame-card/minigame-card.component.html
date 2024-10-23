@@ -1,18 +1,35 @@
-<div class="w-full flex flex-col items-center bg-slate-200 rounded-md py-4">
-    <div class="text-xl font-bold text-slate-800 text-center">
-        <h3>{{minigame.name}}</h3>
+<div class="w-full flex flex-col items-center bg-slate-200 rounded-md pb-4 shadow-md shadow-slate-950">
+    <div class="flex justify-between w-full">
+        <!-- Minigame Name -->
+        <h3 class="text-xl font-extrabold text-slate-700 ml-4 self-center">{{minigame.name}}</h3>
+        <!-- Minigame Type -->
+        @switch (minigame.type.name) {
+            @case ('Images Guessing') {
+                <span class="w-1/3 p-2 pr-0 bg-amber-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
+            }
+            @case ('Map Guessing') {
+                <span class="w-1/3 p-2 pr-0 bg-pink-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
+            }
+            @case ('Quizz') {
+                <span class="w-1/3 p-2 pr-0 bg-emerald-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
+            }
+            @case ('Blind Test') {
+                <span class="w-1/3 p-2 pr-0 bg-sky-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
+            }
+        }
     </div>
 
+    <!-- Minigame Cover -->
     <img [src]="minigame.cover_url" [alt]="minigame.name" class="max-h-48 w-full object-cover my-4">
 
     <div class="flex flex-row gap-x-4">
         <button type="button" (click)="startGame()"
-            class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+            class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer shadow-inner">
             Start Game
         </button>
 
         <button type="button" (click)="updateGame(minigame.id)"
-            class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+            class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">
             Update Game
         </button>
     </div>

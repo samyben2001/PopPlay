@@ -1,8 +1,8 @@
 @if (isVisible) {
-    <div class="fixed top-0 left-0 w-full h-full bg-slate-800 bg-opacity-80 flex justify-center items-center z-50">
-        <div class="w-4/6 bg-slate-500 rounded-md flex flex-col">
+    <div class="fixed top-0 left-0 w-full h-full bg-slate-800 bg-opacity-90 flex justify-center items-center z-50">
+        <div class="w-4/6 bg-slate-700 rounded-md flex flex-col">
             <!-- Cancel Button -->
-            <span (click)="dismiss()" class="self-end cursor-pointer mr-1 my-1 p-1 leading-[1.0955rem] box-content text-orange-800 text-3xl border-2 border-opacity-0 border-orange-800 rounded-full active:border-opacity-100 active:bg-slate-600">&times;</span>
+            <span (click)="dismiss()" class="self-end cursor-pointer mr-1 my-1 p-1 leading-[1.0955rem] box-content text-pink-600 text-3xl border-2 border-opacity-0 border-pink-600 rounded-full active:border-opacity-100 active:bg-slate-600">&times;</span>
             <!-- Theme Form Creation -->
             <form [formGroup]="themeForm" (ngSubmit)="submit()" class="flex flex-col p-4">
 
@@ -36,12 +36,12 @@
                 <!-- Submit Button -->
                 @if (themeForm.invalid) {
                     <button type="submit" 
-                    class="bg-orange-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
+                    class="bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
                     Ajouter le thème
                 </button>
                 }@else {   
                     <button type="submit" 
-                    class="bg-orange-700 hover:bg-orange-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+                    class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
                     Ajouter le thème
                     </button>
                 }

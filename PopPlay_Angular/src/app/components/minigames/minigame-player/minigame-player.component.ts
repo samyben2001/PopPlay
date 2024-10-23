@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { NoRightClickDirective } from '../../../shared/directives/no-right-click.directive';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AccountService } from '../../../services/account.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-minigame-player',
@@ -39,6 +40,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private _ar = inject(ActivatedRoute)
   private _gameServ = inject(MinigameService)
   private _accountServ = inject(AccountService)
+  private _authServ = inject(AuthService)
   protected MAX_ATTEMPTS: number = 3
   private BASE_BLUR: number = 25
   private MAX_TIMER: number = 30
@@ -57,6 +59,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   timerBeforeNextMedia: number = this.TIME_BETWEEN_MEDIAS
   score: number = 0
   scoreGained: number = 0
+  nbCorrectAnswers: number = 0
   userAnswer: string = ''
   attempts: number = 0
   blurAmount: number = this.BASE_BLUR
@@ -92,16 +95,12 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
 
   try() {
+    if (this.userAnswer == '') return // Check if user entered an answer
+
     let correctAnswers = this.minigame.medias[this.actualMediaIndex].answers
     this.attempts++
 
-    if (this.userAnswer != '') { // Check if user entered an answer
-      this.checkUserAnswer(correctAnswers);
-    }else{
-      this.score += this.SCORE_PER_ERROR
-    }
-
-    this.userAnswer = ''
+    this.checkUserAnswer(correctAnswers);
 
     if (this.attempts == this.MAX_ATTEMPTS) { // Check if user has used all attempts
       this.showCorrectAnswer();
@@ -113,18 +112,19 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.actualMediaIndex == this.minigame.medias.length) {
       this.isGameEnded = true
       clearInterval(this.blurIntervalId)
-      this._accountServ.addScore(this.minigame.id, this.score).subscribe({
-        next: (data) => {
-          console.log(data)
-         },
-        error: (err) => {
-          console.log(err)
-          this._router.navigate(['/error'])
-        }
-      })
+      if(this._authServ.isConnected()){
+        this._accountServ.addScore(this.minigame.id, this.score).subscribe({
+          next: (data) => {
+            console.log(data)
+           },
+          error: (err) => {
+            console.log(err)
+            this._router.navigate(['/error'])
+          }
+        })
+      }
     }
   }
-
 
   private unBlur() {
     this.blurIntervalId = setInterval(() => {
@@ -132,7 +132,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`
       this.timer--
 
-      if (!this.isGameEnded && (this.blurAmount <= 0 || this.timer <= 0)) {
+      if (!this.isGameEnded && (this.blurAmount <= 0 || this.timer <= 0)) { // Check if time is elapsed for guessing image
         this.setAnimation(false);
         clearInterval(this.blurIntervalId)
         this.score += this.SCORE_PER_ERROR
@@ -144,9 +144,8 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
   private setAnimation(state: boolean) {
     this.scoreAnimation = state;
-    let interval = setInterval(() => {
+    setTimeout(() => {
       this.scoreAnimation = null;
-      clearInterval(interval);
     }, 750);
   }
 
@@ -155,6 +154,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       if (correctAnswers[index].answer.toLowerCase() == this.userAnswer.toLowerCase()) { // Check if answer is Correct among the correct answers
         this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts
         this.score += this.scoreGained 
+        this.nbCorrectAnswers++;
         this.setAnimation(true);
         this.nextMedias();
         break;
@@ -163,21 +163,22 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
         this.score += this.SCORE_PER_ERROR;
       }
     }
+    this.userAnswer = ''
   }
 
   
   private showCorrectAnswer() {
     this.isCorrectAnswerShown = true;
+    clearInterval(this.blurIntervalId);
 
-    let i = setInterval(() => {
+    let interval = setInterval(() => {
       this.timerBeforeNextMedia--;
     }, 1000);
 
-    let interval = setInterval(() => {
+    setTimeout(() => {
       this.isCorrectAnswerShown = false;
       this.timerBeforeNextMedia = this.TIME_BETWEEN_MEDIAS;
       this.nextMedias();
-      clearInterval(i);
       clearInterval(interval);
     }, 5000);
   }

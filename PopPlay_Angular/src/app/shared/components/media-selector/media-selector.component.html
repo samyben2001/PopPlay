@@ -1,8 +1,8 @@
 @if (isVisible) {
-    <div class="fixed top-0 left-0 w-full h-full bg-slate-800 bg-opacity-80 flex justify-center items-center z-50">
-        <div class="w-4/6 max-h-[66%] bg-slate-500 rounded-md flex flex-col">
+    <div class="fixed top-0 left-0 w-full h-full bg-slate-800 bg-opacity-90 flex justify-center items-center z-50">
+        <div class="w-4/6 max-h-[66%] bg-slate-700 rounded-md flex flex-col">
             <!-- Cancel Button -->
-            <span (click)="dismiss()" class="self-end cursor-pointer mr-1 my-1 p-1 leading-[1.0955rem] box-content text-orange-800 text-3xl border-2 border-opacity-0 border-orange-800 rounded-full active:border-opacity-100 active:bg-slate-600">&times;</span>
+            <span (click)="dismiss()" class="self-end cursor-pointer mr-1 my-1 p-1 leading-[1.0955rem] box-content text-pink-600 text-3xl border-2 border-opacity-0 border-pink-600 rounded-full active:border-opacity-100 active:bg-slate-600">&times;</span>
             <!-- Media Gallery -->
             <div class="p-6 flex flex-row flex-wrap gap-4 justify-around overflow-y-auto">
                 @for (media of medias; track $index) {
@@ -14,7 +14,7 @@
                 }@empty {
                     <div>
                         <p>Vous n'avez aucun medias.</p>
-                        <button type="button" (click)="openMediasCreator()" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+                        <button type="button" (click)="openMediasCreator()" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2">
                             Ajouter un média
                         </button>
                     </div>
@@ -22,11 +22,11 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-row justify-around rounded-b-md items-center p-4 bg-slate-400">
-                <button type="button" (click)="openMediasCreator()" class="bg-indigo-700 hover:bg-indigo-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
+            <div class="flex flex-row justify-around rounded-b-md items-center p-4 bg-slate-500">
+                <button type="button" (click)="openMediasCreator()" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2">
                     Ajouter un média
                 </button>
-                <button type="button" class="bg-emerald-700 hover:bg-emerald-800 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="submit()">
+                <button type="button" class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="submit()">
                     Valider les médias
                 </button>
             </div>
