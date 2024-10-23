@@ -32,8 +32,9 @@ SECRET_KEY = 'django-insecure-t!7&$6n%7_b-28d*u8y7g1^mhfpk^t)jcs(i*_=g6u92&f&tv-
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    # '127.0.0.1',
-    # 'localhost',
+    '127.0.0.1',
+    'localhost',
+    'back',
 ]
 
 # CORS configuration
@@ -41,7 +42,9 @@ CORS_URLS_REGEX = r"^/api/.*$"
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
-    'http://127.0.0.1:8000'
+    'http://127.0.0.1:8000',
+    # 'http://back',
+    'http://back:8000'
 ]
 # CORS_ALLOW_METHODS = ()
 
@@ -105,7 +108,7 @@ DATABASES = {
         'NAME': 'DB_PopPlay',
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PWD'),
-        'HOST': 'localhost',
+        'HOST': 'localhost', # localhost || host.docker.internal
         'PORT': '5432'
     }
 }

@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DatePipe } from '@angular/common';
 import { NoRightClickDirective } from '../../../shared/directives/no-right-click.directive';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { AccountService } from '../../../services/account.service';
 
 @Component({
   selector: 'app-minigame-player',
@@ -37,6 +38,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private _router = inject(Router)
   private _ar = inject(ActivatedRoute)
   private _gameServ = inject(MinigameService)
+  private _accountServ = inject(AccountService)
   protected MAX_ATTEMPTS: number = 3
   private BASE_BLUR: number = 25
   private MAX_TIMER: number = 30
@@ -111,7 +113,15 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     if (this.actualMediaIndex == this.minigame.medias.length) {
       this.isGameEnded = true
       clearInterval(this.blurIntervalId)
-      // TODO: send score via API if user connected
+      this._accountServ.addScore(this.minigame.id, this.score).subscribe({
+        next: (data) => {
+          console.log(data)
+         },
+        error: (err) => {
+          console.log(err)
+          this._router.navigate(['/error'])
+        }
+      })
     }
   }
 

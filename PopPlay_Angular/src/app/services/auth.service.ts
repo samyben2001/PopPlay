@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,13 @@ export class AuthService {
     }
 
     return token ? token : null;
+  }
+
+  getConnectedUser(): number | null {
+    let token = this.getToken();
+    if (!token)
+      return null;
+    token = jwtDecode(token.access);
+    return token.user_id;
   }
 }
