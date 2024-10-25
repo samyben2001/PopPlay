@@ -1,8 +1,9 @@
-.venv/
 .vscode/
-secrets/
 __pycache__/
+.venv/
+.env
 **/migrations/
 SchemaDB.lo1
 SchemaDB.png
-.env
+PopPlay/dumped_data.json
+secrets/
