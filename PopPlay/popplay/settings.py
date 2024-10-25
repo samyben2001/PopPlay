@@ -43,7 +43,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'http://127.0.0.1:8000',
-    # 'http://back',
     'http://back:8000'
 ]
 # CORS_ALLOW_METHODS = ()
@@ -106,10 +105,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'DB_PopPlay',
-        'USER': 'postgres',
+        'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PWD'),
-        'HOST': 'localhost', # localhost || host.docker.internal
-        'PORT': '5432'
+        'HOST': os.getenv('DB_HOST'), # localhost || host.docker.internal
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 

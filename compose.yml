@@ -2,14 +2,34 @@ networks:
   popplay:
 
 services:
+  DB:
+    image: postgres:13.16-bookworm
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_DB=DB_PopPlay
+    ports:
+      - "5432:5432"
+    networks:
+      - popplay
+    secrets:
+       - db_password
+
+  back:
+    build: PopPlay
+    depends_on:
+      - DB
+    environment:
+      - DB_HOST=DB
+    networks:
+      - popplay
+
   front:
     build: PopPlay_Angular
     networks:
       - popplay
-  back:
-    build: PopPlay
-    networks:
-      - popplay
+
+  # cf: proxy/nginx.conf 
   proxy:
     image: nginx
     ports:
@@ -18,3 +38,10 @@ services:
       - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf
     networks:
       - popplay
+    depends_on:
+      - back
+      - front
+
+secrets:
+  db_password:
+    file: secrets/DB_PWD.txt
