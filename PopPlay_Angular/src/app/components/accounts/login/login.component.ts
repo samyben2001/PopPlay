@@ -16,7 +16,6 @@ import { PasswordModule } from 'primeng/password';
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
-  accountServ = inject(AccountService);
   authServ = inject(AuthService);
   router = inject(Router);
   loginForm: FormGroup = new FormGroup({});
@@ -34,7 +33,7 @@ export class LoginComponent implements OnInit {
   submit() {
     // send login request to api
     if (this.loginForm.valid) {
-      this.accountServ.login(this.loginForm.value).subscribe({
+      this.authServ.login(this.loginForm.value).subscribe({
         next: (token) => { // login successful
           this.authServ.setToken(token);
           this.router.navigate(['/']);

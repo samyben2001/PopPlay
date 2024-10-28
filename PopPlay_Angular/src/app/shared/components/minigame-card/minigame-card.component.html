@@ -4,16 +4,16 @@
         <h3 class="text-xl font-extrabold text-slate-700 ml-4 self-center">{{minigame.name}}</h3>
         <!-- Minigame Type -->
         @switch (minigame.type.name) {
-            @case ('Images Guessing') {
+            @case (GameTypes.IMAGE_GUESSING) {
                 <span class="w-1/3 p-2 pr-0 bg-amber-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
             }
-            @case ('Map Guessing') {
+            @case (GameTypes.MAP_GUESSING) {
                 <span class="w-1/3 p-2 pr-0 bg-pink-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
             }
-            @case ('Quizz') {
+            @case (GameTypes.QUIZZ) {
                 <span class="w-1/3 p-2 pr-0 bg-emerald-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
             }
-            @case ('Blind Test') {
+            @case (GameTypes.BLIND_TEST) {
                 <span class="w-1/3 p-2 pr-0 bg-sky-600 rounded-bl rounded-tr font-bold">{{minigame.type.name}}</span>
             }
         }

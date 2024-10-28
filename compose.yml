@@ -45,3 +45,9 @@ services:
 secrets:
   db_password:
     file: secrets/DB_PWD.txt
+  # cf_id:
+  #   file: secrets/CF_ID.txt
+  # cf_acc_key:
+  #   file: secrets/CF_ACC_KEY.txt
+  # cf_sec_key:
+  #   file: secrets/CF_SEC_KEY.txt

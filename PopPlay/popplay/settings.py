@@ -165,8 +165,9 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5), # custom lifetime for access token
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=1), # custom lifetime for access token
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1), # custom lifetime for refresh token
+    'ROTATE_REFRESH_TOKENS': True 
 }
 
 # storage configuration

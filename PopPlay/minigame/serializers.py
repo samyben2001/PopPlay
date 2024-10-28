@@ -64,6 +64,14 @@ class TypeSerializer(serializers.ModelSerializer):
         fields = '__all__'   
 # endregion  
 
+# region Quizz
+# TODO: quizz serializer
+# endregion
+
+# region MapGuess
+# TODO: mapguess serializer
+# endregion
+
 # region Minigame + MinigameUserNote   
 class MinigameExtraLightSerializer(serializers.ModelSerializer):
     theme = ThemeLightSerializer(read_only=True)
@@ -106,6 +114,7 @@ class MinigameSerializer(serializers.ModelSerializer):
     type_id = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, source='type', label='Type')
     medias = MediaSerializer(many=True, read_only=True)
     medias_id = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, source='medias', label='Medias')
+    # TODO: add quizz/mapGuess
     
     notes = MinigameUserNoteSerializer(source='minigame_notes', many=True, read_only=True)
     

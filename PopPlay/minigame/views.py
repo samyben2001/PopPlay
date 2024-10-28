@@ -36,7 +36,8 @@ class MediaAnswerViewSet(ModelViewSet):
     queryset = MediaAnswer.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaAnswerSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]   
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    # TODO: check if answer not already used else return it 
     
 
 class MediaViewSet(ModelViewSet):

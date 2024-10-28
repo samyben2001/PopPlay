@@ -60,8 +60,8 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   score: number = 0
   scoreGained: number = 0
   nbCorrectAnswers: number = 0
-  userAnswer: string = ''
   attempts: number = 0
+  userAnswer: string = ''
   blurAmount: number = this.BASE_BLUR
   isCorrectAnswerShown: boolean = false
   isGameEnded: boolean = false

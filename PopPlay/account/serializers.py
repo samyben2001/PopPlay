@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import Account, UserMinigameScore
 from minigame.models import Minigame, Theme
 from minigame.serializers import ThemeLightSerializer, MinigameExtraLightSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -76,3 +78,15 @@ class AccountMinigameScoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMinigameScore
         fields = ['minigame', 'game', 'score']
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['name'] = user.name
+        # ...
+
+        return token

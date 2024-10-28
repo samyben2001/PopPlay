@@ -20,10 +20,6 @@ export class AccountService {
     return this.httpClient.post(this.apiUrl + 'account/register/', account);
   }
 
-  login(credential: AccountLogin): Observable<any> {
-    return this.httpClient.post(this.apiUrl + 'account/token/', credential);
-  }
-
   addScore(gameid: number, score: number): Observable<any> {
     let userid = this.authServ.getConnectedUser()
 

@@ -1,11 +1,25 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
+import { AccountLogin } from '../models/models';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   isConnected = signal<boolean>(false);
+  httpClient = inject(HttpClient);
+  apiUrl = environment.apiUrl
+
+  login(credential: AccountLogin): Observable<any> {
+    return this.httpClient.post(this.apiUrl + 'account/token/', credential);
+  }
+
+  refreshToken(refreshToken: string): Observable<any> {
+    return this.httpClient.post(this.apiUrl + 'account/token/refresh/', {refresh: refreshToken})
+  }
 
   setToken(token: any) {
     token = JSON.stringify(token);
