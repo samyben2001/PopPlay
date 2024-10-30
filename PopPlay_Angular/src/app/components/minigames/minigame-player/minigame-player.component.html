@@ -37,7 +37,6 @@
                     <p class="text-2xl text-pink-600">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
                     <p class="relative text-2xl text-slate-800"> 
                         Score: <span class="font-bold">{{score}}</span>
-                        <!-- TODO: add animation for score -->
                         <span [@hiddenVisible]="scoreAnimation == true ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-emerald-700" #scoreUp>+{{scoreGained}}</span>
                         <span [@hiddenVisible]="scoreAnimation == false ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-pink-600" #scoreDown>-100</span>
                     </p>

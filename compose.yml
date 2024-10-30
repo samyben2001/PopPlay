@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
       - POSTGRES_DB=DB_PopPlay
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - popplay
     secrets:

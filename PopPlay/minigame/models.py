@@ -26,7 +26,7 @@ class Media(models.Model):
     def __str__(self):
         return self.name
 
-# TODO: implement create mapGuess/Questions serializer/views
+# TODO: implement create mapGuess serializer/views
 class MapGuess(models.Model):
     media = models.ForeignKey(Media, on_delete=models.CASCADE)
     map = models.FileField(storage=storages["cloudflare"])
@@ -36,7 +36,7 @@ class MapGuess(models.Model):
     def __str__(self):
         return self.name
     
-class Questions(models.Model):
+class Question(models.Model):
     question = models.CharField()
     answers = models.ManyToManyField(MediaAnswer)
     
@@ -74,7 +74,7 @@ class Minigame(models.Model):
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING)
     type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
     medias = models.ManyToManyField(Media)
-    quizz = models.ManyToManyField(Questions)
+    quizz = models.ManyToManyField(Question)
     maps = models.ManyToManyField(MapGuess)
     notes = models.ManyToManyField('account.Account', through='MinigameUserNote')
     

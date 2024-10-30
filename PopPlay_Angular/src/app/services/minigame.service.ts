@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Media, Minigame, MinigameCreate, Theme, ThemeCategory, Type } from '../models/models';
+import { Media, Minigame, MinigameCreate, QuestionCreate, Theme, ThemeCategory, Type } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -76,5 +76,9 @@ export class MinigameService {
 
   get_medias(): Observable<Media[]> {
     return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/');
+  }
+
+  create_quizz(question: QuestionCreate): Observable<any> {
+    return this.httpClient.post(this.apiUrl + 'minigame/question/', question);
   }
 }

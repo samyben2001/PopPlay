@@ -52,7 +52,8 @@
         <!-- Type -->
         <div class="flex flex-col mb-6">
             <p-floatLabel>
-                <p-dropdown id="type"
+                <p-dropdown 
+                inputId="type"
                 [options]="types" 
                  formControlName="type_id"
                  optionLabel="name" 
@@ -76,7 +77,8 @@
         <div class="flex flex-col mb-6">
             <div class="flex flex-row ">
                 <p-floatLabel class="grow">
-                    <p-dropdown id="theme"
+                    <p-dropdown 
+                        inputId="theme"
                         [options]="themes" 
                         formControlName="theme_id"
                         optionLabel="name" 
@@ -98,24 +100,44 @@
         </div>
 
         <!-- if type is 'Image Guessing' then display the medias section -->
-        @if (creationForm.get('type_id')!.value == imageGuessId) { 
-            <!-- Medias -->
-            <div class="flex flex-col mb-6">
-                <div class="flex flex-row flex-wrap gap-2">
-                    @for (media of mediasSelected; track $index) {
-                        <div class="h-24 relative">
-                            <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
-                            <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
-                        </div>
-                    }@empty {
-                        <p class="text-slate-200">Aucun média sélectionné</p>
-                    }
+         @switch (creationForm.get('type_id')!.value) {
+            @case (imageGuessId) {
+                <!-- Medias -->
+                <div class="flex flex-col mb-6">
+                    <div class="flex flex-row flex-wrap gap-2">
+                        @for (media of mediasSelected; track $index) {
+                            <div class="h-24 relative">
+                                <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
+                                <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
+                            </div>
+                        }@empty {
+                            <p class="text-slate-200">Aucun média sélectionné</p>
+                        }
+                    </div>
+                    <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
+                        {{mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'}}
+                    </button>
                 </div>
-                <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
-                    {{mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'}}
-                </button>
-            </div>
-        }
+            }
+            @case (quizzId) {
+                <!-- Quizz -->
+                <div class="flex flex-col mb-6">
+
+                    <div class="flex flex-col gap-2">
+                        @for (quizz of quizzSelected; track $index) {
+                            <div class="h-24 relative">
+                                <p class="h-full w-auto peer">{{quizz.question}}</p>
+                            </div>
+                        }@empty {
+                            <p class="text-slate-200">Aucune question sélectionnée</p>
+                        }
+                    </div>
+                    <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openQuizzCreator()">
+                        {{mediasSelected.length > 0 ? 'Modifier le quizz' : 'Ajouter un quizz'}}
+                    </button>
+                </div>
+            }
+         }
     
         <!-- Submit -->
          @if (creationForm.invalid) {
@@ -135,3 +157,4 @@
 
 <app-media-selector [isVisible]="isMediasSelectorVisible" [medias]="medias" [selectedMedias]="mediasSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
 <app-theme-creator [isVisible]="isThemeCreatorVisible" (themeCreatedEvent)="onThemeCreated($event)"/>
+<app-quizz-creator [isVisible]="isQuizzCreatorVisible" (quizzCreatedEvent)="onQuizzCreated($event)"/>

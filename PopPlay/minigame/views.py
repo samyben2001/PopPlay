@@ -37,7 +37,14 @@ class MediaAnswerViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaAnswerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    # TODO: check if answer not already used else return it 
+    
+    # create an answer if it doesn't exist already else return it
+    def create(self, request, *args, **kwargs):
+        try:
+            answer = MediaAnswer.objects.get(answer=request.data['answer'])
+            return Response(MediaAnswerSerializer(answer).data, status=status.HTTP_200_OK)
+        except MediaAnswer.DoesNotExist:
+            return super().create(request, *args, **kwargs)
     
 
 class MediaViewSet(ModelViewSet):
@@ -47,6 +54,14 @@ class MediaViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]   
     # parser_classes = [MultiPartParser, FormParser]
     
+    
+class QuestionViewSet(ModelViewSet):
+    queryset = Question.objects.all().order_by('id').prefetch_related('answers')
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+# TODO: mapguess ViewSet
 
 class TypeViewSet(ModelViewSet):
     queryset = Type.objects.all().order_by('id')
@@ -56,7 +71,7 @@ class TypeViewSet(ModelViewSet):
 
 
 class MinigameViewSet(ModelViewSet):
-    queryset = Minigame.objects.all().order_by('id').prefetch_related('type', 'theme', 'medias', 'notes')
+    queryset = Minigame.objects.all().order_by('id').prefetch_related('type', 'theme', 'medias', 'notes', 'quizz')
     filter_backends = [DjangoFilterBackend]
     permission_classes = [IsAuthenticatedOrReadOnly]
     # TODO: check if name of medias not already used in cloudflare

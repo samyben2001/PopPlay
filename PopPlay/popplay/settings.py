@@ -148,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -165,7 +166,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=1), # custom lifetime for access token
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=60), # custom lifetime for access token
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1), # custom lifetime for refresh token
     'ROTATE_REFRESH_TOKENS': True 
 }

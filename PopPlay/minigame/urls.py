@@ -8,6 +8,7 @@ router.register('theme', views.ThemeViewSet, basename='create-theme')
 router.register('mediaType', views.MediaTypeViewSet, basename='create-mediaType')
 router.register('mediaAnswer', views.MediaAnswerViewSet, basename='create-mediaAnswer')
 router.register('media', views.MediaViewSet, basename='create-media')
+router.register('question', views.QuestionViewSet, basename='create-question')
 router.register('type', views.TypeViewSet, basename='create-type')
 router.register('', views.MinigameViewSet, basename='create-minigame')
 

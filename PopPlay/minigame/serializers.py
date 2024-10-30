@@ -35,6 +35,20 @@ class MediaSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'url', 'type','type_id', 'answers', 'answers_id'] 
 # endregion
 
+# region Quizz
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = MediaAnswerSerializer(many=True, read_only=True)
+    answers_id = serializers.PrimaryKeyRelatedField(queryset=MediaAnswer.objects.all(), many=True, write_only=True, source='answers', label='Answers')
+    
+    class Meta:
+        model = Question
+        fields = ['id','question', 'answers', 'answers_id']
+# endregion
+
+# region MapGuess
+# TODO: mapguess serializer
+# endregion
+
 # region Theme
 class ThemeCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,14 +77,6 @@ class TypeSerializer(serializers.ModelSerializer):
         model = Type
         fields = '__all__'   
 # endregion  
-
-# region Quizz
-# TODO: quizz serializer
-# endregion
-
-# region MapGuess
-# TODO: mapguess serializer
-# endregion
 
 # region Minigame + MinigameUserNote   
 class MinigameExtraLightSerializer(serializers.ModelSerializer):
@@ -114,11 +120,12 @@ class MinigameSerializer(serializers.ModelSerializer):
     type_id = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, source='type', label='Type')
     medias = MediaSerializer(many=True, read_only=True)
     medias_id = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, source='medias', label='Medias')
-    # TODO: add quizz/mapGuess
+    quizz = QuestionSerializer(many=True, read_only=True)
+    quizz_id = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), many=True, write_only=True, source='quizz', label='Quizz')
     
     notes = MinigameUserNoteSerializer(source='minigame_notes', many=True, read_only=True)
     
     class Meta:
         model = Minigame
-        fields = ['id', 'name', 'type', 'theme', 'theme_id', 'type_id', 'medias', 'medias_id','cover_url', 'notes', 'date_created', 'date_updated']
+        fields = ['id', 'name', 'type', 'theme', 'theme_id', 'type_id', 'medias', 'medias_id','quizz', 'quizz_id','cover_url', 'notes', 'date_created', 'date_updated']
 # endregion

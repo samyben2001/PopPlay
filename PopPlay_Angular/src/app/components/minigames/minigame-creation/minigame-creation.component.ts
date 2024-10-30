@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Media, Minigame, Theme, Type } from '../../../models/models';
+import { Media, Minigame, Question, Theme, Type } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MediaSelectorComponent } from '../../../shared/components/media-selector/media-selector.component';
@@ -12,6 +12,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/theme-creator.component";
 import { ActivatedRoute } from '@angular/router';
+import { GameTypes } from '../../../enums/GameTypes';
+import { QuizzCreatorComponent } from '../../../shared/components/quizz-creator/quizz-creator.component';
 
 @Component({
   selector: 'app-minigame-creation',
@@ -21,6 +23,7 @@ import { ActivatedRoute } from '@angular/router';
     ReactiveFormsModule,
     MediaSelectorComponent,
     ThemeCreatorComponent,
+    QuizzCreatorComponent,
     InputTextModule,
     AutoCompleteModule,
     DropdownModule,
@@ -39,10 +42,13 @@ export class MinigameCreationComponent implements OnInit {
   @ViewChild('themeDropdown') themeDropdown!: Dropdown;
   types: Type[] = [];
   medias: Media[] = [];
-  imageGuessId: number = 0;
+  imageGuessId!: number;
+  quizzId!: number
   isMediasSelectorVisible: boolean = false;
   isThemeCreatorVisible: boolean = false;
+  isQuizzCreatorVisible: boolean = false;
   mediasSelected: Media[] = [];
+  quizzSelected: Question[] = [];
   selectedCover: string | null = null;
   
   gameID?: number = -1;
@@ -55,7 +61,8 @@ export class MinigameCreationComponent implements OnInit {
     this.minigameServ.get_types().subscribe({
       next: (data) => {
         this.types = data;
-        this.imageGuessId = this.types.find(type => type.name == "Images Guessing")!.id;
+        this.imageGuessId = this.types.find(type => type.name == GameTypes.IMAGE_GUESSING)!.id;
+        this.quizzId = this.types.find(type => type.name == GameTypes.QUIZZ)!.id;
       },
       error: (err) => { console.log(err); }
     });
@@ -83,8 +90,10 @@ export class MinigameCreationComponent implements OnInit {
             type_id: [this.gameToUpdate.type.id, [Validators.required]],
             theme_id: [this.gameToUpdate.theme.id, [Validators.required]],
             medias_id: [this.gameToUpdate.medias],
+            quizz_id: [this.gameToUpdate.quizz],
           });
           this.mediasSelected = this.gameToUpdate.medias
+          this.quizzSelected = this.gameToUpdate.quizz
           this.selectedCover = this.gameToUpdate.cover_url
         }
       })
@@ -93,13 +102,15 @@ export class MinigameCreationComponent implements OnInit {
       this.creationForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
         cover_url: ['', [Validators.required]],
-        type_id: ['', [Validators.required]],
+        type_id: [2, [Validators.required]],
         theme_id: ['', [Validators.required]],
         medias_id: [[]],
+        quizz_id: [[]],
       });
     }
   }
 
+  // Cover
   onCoverSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
@@ -111,6 +122,7 @@ export class MinigameCreationComponent implements OnInit {
     };
   }
 
+  // Theme
   openThemesCreator() {
     this.isThemeCreatorVisible = true;
   }
@@ -124,6 +136,7 @@ export class MinigameCreationComponent implements OnInit {
     this.isThemeCreatorVisible = false;
   }
 
+  // Medias
   openMediasSelector() {
     this.isMediasSelectorVisible = true;
   }
@@ -137,6 +150,18 @@ export class MinigameCreationComponent implements OnInit {
     this.mediasSelected = this.mediasSelected.filter((m) => m.id != media.id);
   }
 
+  // Quizz
+  openQuizzCreator() {
+    this.isQuizzCreatorVisible = true;
+  }
+
+  onQuizzCreated(quizz: Question[] | null) {
+    this.quizzSelected = quizz ? [...quizz] : [];
+    this.isQuizzCreatorVisible = false;
+    console.log(this.quizzSelected)
+  }
+
+  // Submit
   submit() {
     if (this.creationForm.invalid)
       return;
@@ -149,6 +174,7 @@ export class MinigameCreationComponent implements OnInit {
 
   private createGame() {
     this.creationForm.patchValue({ medias_id: this.mediasSelected });
+    this.creationForm.patchValue({ quizz_id: this.quizzSelected });
 
     this.minigameServ.create(this.creationForm.value).subscribe({
       next: (data) => {
@@ -159,8 +185,6 @@ export class MinigameCreationComponent implements OnInit {
   }
 
   private updateGame() {
-    console.log('Update game to do ...');
-    // TODO: implement update method (check if cover has been changed, ...)
     this.creationForm.patchValue({ medias_id: this.mediasSelected });
 
     this.minigameServ.update(this.creationForm.value).subscribe({

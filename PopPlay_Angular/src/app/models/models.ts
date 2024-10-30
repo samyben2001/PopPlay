@@ -11,6 +11,7 @@ export interface MinigameCreate {
     theme_id: number;
     type_id: number;
     medias_id: number[];
+    quizz_id: Question[];
 }
 
 export interface Minigame {
@@ -20,10 +21,22 @@ export interface Minigame {
     theme: Theme;
     type: Type;
     medias: Media[];
+    quizz: Question[];
     dateCreated: Date; // DateTime type in Django (string?)
     dateUpdated?: Date; // Nullable DateTime in Django
     notes: MinigameUserNote[];
 
+}
+
+export interface Question{
+    id?: number;
+    question: string;
+    answers: MediaAnswer[];
+}
+
+export interface QuestionCreate{
+    question: string;
+    answers_id: number[];
 }
 
 export interface Theme {
