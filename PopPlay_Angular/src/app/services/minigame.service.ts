@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { Media, Minigame, MinigameCreate, QuestionCreate, Theme, ThemeCategory, Type } from '../models/models';
+import { Media, Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,11 @@ export class MinigameService {
     if (minigame.medias_id.length > 0){
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
       minigame.medias_id.forEach((media: any) => formData.append('medias_id', media.id.toString()));
+    }
+
+    if (minigame.quizz_id.length > 0){
+      // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
+      minigame.quizz_id.forEach((quizz: any) => formData.append('quizz_id', quizz.id.toString()));
     }
 
     return this.httpClient.post<Minigame>(this.apiUrl + 'minigame/', formData);
@@ -74,11 +79,20 @@ export class MinigameService {
     return this.httpClient.get<Type[]>(this.apiUrl + 'minigame/type/');
   }
 
+  create_answer(answer: string): Observable<Answer> {
+    return this.httpClient.post<Answer>(this.apiUrl + 'minigame/answer/' , {answer: answer});
+  }
+
   get_medias(): Observable<Media[]> {
     return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/');
   }
 
-  create_quizz(question: QuestionCreate): Observable<any> {
-    return this.httpClient.post(this.apiUrl + 'minigame/question/', question);
+  
+  create_question(question: string): Observable<Question> {
+    return this.httpClient.post<Question>(this.apiUrl + 'minigame/question/', {question: question});
+  }
+
+  create_quizz(quiz: QuizCreate): Observable<Quiz> {
+    return this.httpClient.post<Quiz>(this.apiUrl + 'minigame/quiz/', quiz);
   }
 }

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MediaAnswer, Minigame } from '../../../models/models';
+import { Answer, Minigame } from '../../../models/models';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -10,6 +10,7 @@ import { NoRightClickDirective } from '../../../shared/directives/no-right-click
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AccountService } from '../../../services/account.service';
 import { AuthService } from '../../../services/auth.service';
+import { GameTypes } from '../../../enums/GameTypes';
 
 @Component({
   selector: 'app-minigame-player',
@@ -52,9 +53,11 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChildren('imgOverlay') imgsToFind!: QueryList<ElementRef>
   @ViewChild('scoreUp') scoreUp!: ElementRef
   @ViewChild('scoreDown') scoreDown!: ElementRef
+  gameTypes = GameTypes
   imgToFind!: ElementRef
   blurIntervalId?: ReturnType<typeof setInterval>
   actualMediaIndex: number = 0
+  maxMediaIndex: number = 0
   timer: number = this.MAX_TIMER
   timerBeforeNextMedia: number = this.TIME_BETWEEN_MEDIAS
   score: number = 0
@@ -71,7 +74,14 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
-        this.shuffle(this.minigame.medias)
+        if(this.minigame.type.name == GameTypes.IMAGE_GUESSING){
+          this.shuffle(this.minigame.medias)
+          this.maxMediaIndex = this.minigame.medias.length
+        }else if(this.minigame.type.name == GameTypes.QUIZZ){
+          this.shuffle(this.minigame.quizz)
+          this.maxMediaIndex = this.minigame.quizz.length
+        }
+        console.log(this.minigame)
       },
       error: (err) => {
         console.log(err)
@@ -96,8 +106,13 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
   try() {
     if (this.userAnswer == '') return // Check if user entered an answer
+    let correctAnswers: any[] = []
+    if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+      correctAnswers = this.minigame.medias[this.actualMediaIndex].answers
+    }else if (this.minigame.type.name == GameTypes.QUIZZ) {
+      correctAnswers = this.minigame.quizz[this.actualMediaIndex].answers
+    }
 
-    let correctAnswers = this.minigame.medias[this.actualMediaIndex].answers
     this.attempts++
 
     this.checkUserAnswer(correctAnswers);
@@ -109,7 +124,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   }
   
   private checkIfGameEnded() {
-    if (this.actualMediaIndex == this.minigame.medias.length) {
+    if (!this.isGameEnded && (this.actualMediaIndex == this.maxMediaIndex)) {
       this.isGameEnded = true
       clearInterval(this.blurIntervalId)
       if(this._authServ.isConnected()){
@@ -149,7 +164,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     }, 750);
   }
 
-  private checkUserAnswer(correctAnswers: MediaAnswer[]) {
+  private checkUserAnswer(correctAnswers: Answer[]) {
     for (let index = 0; index < correctAnswers.length; index++) {
       if (correctAnswers[index].answer.toLowerCase() == this.userAnswer.toLowerCase()) { // Check if answer is Correct among the correct answers
         this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts

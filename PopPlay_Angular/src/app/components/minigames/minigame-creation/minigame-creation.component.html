@@ -125,9 +125,7 @@
 
                     <div class="flex flex-col gap-2">
                         @for (quizz of quizzSelected; track $index) {
-                            <div class="h-24 relative">
-                                <p class="h-full w-auto peer">{{quizz.question}}</p>
-                            </div>
+                            <p class="text-slate-200">Question {{$index + 1 | number:'2.0'}}: <span>{{quizz.question.question}}</span></p>
                         }@empty {
                             <p class="text-slate-200">Aucune question sélectionnée</p>
                         }

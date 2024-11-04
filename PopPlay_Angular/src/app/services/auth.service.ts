@@ -50,6 +50,6 @@ export class AuthService {
     if (!token)
       return null;
     token = jwtDecode(token.access);
-    return token.user_id;
+    return token.account_id;
   }
 }

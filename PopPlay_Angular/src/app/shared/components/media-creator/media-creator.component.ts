@@ -2,11 +2,12 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { MediaService } from '../../../services/media.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Media, MediaAnswer, MediaCreate, MediaType } from '../../../models/models';
+import { Media, Answer, MediaCreate, MediaType } from '../../../models/models';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
+import { MinigameService } from '../../../services/minigame.service';
 
 @Component({
   selector: 'app-media-creator',
@@ -17,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 })
 export class MediaCreatorComponent implements OnInit {
   mediaServ = inject(MediaService);
+  minigameServ = inject(MinigameService);
   router = inject(Router);
   fb = inject(FormBuilder);
   @Input() isVisible: boolean = false
@@ -104,13 +106,13 @@ export class MediaCreatorComponent implements OnInit {
   createAllAnswers() {
     if (this.answers.length > 0) {
       // Create an array of observables for each answer creation
-      const answerRequests: Observable<MediaAnswer>[] = this.answers.map(answer => this.mediaServ.createAnswer(answer.trim()));
+      const answerRequests: Observable<Answer>[] = this.answers.map(answer => this.minigameServ.create_answer(answer.trim()));
 
       // Use forkJoin to wait for all requests to complete
       forkJoin(answerRequests).subscribe({
-          next: (responses: MediaAnswer[]) => {
+          next: (responses: Answer[]) => {
               // Iterate over the responses to patch the form
-              const createdIds = responses.map((response: MediaAnswer) => response.id!);
+              const createdIds = responses.map((response: Answer) => response.id!);
               this.mediaToCreate.answers_id = [...createdIds]
 
               this.answersCreatedSubject.next(true);  // Notify that all answers have been created

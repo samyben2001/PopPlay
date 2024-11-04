@@ -3,13 +3,14 @@ from rest_framework import serializers
 from account.models import Account
 from .models import *
 
-# region Media
-class MediaAnswerSerializer(serializers.ModelSerializer):
+
+class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MediaAnswer
-        fields = '__all__'   
-            
-            
+        model = Answer
+        fields = '__all__' 
+        
+        
+# region Media  
 class MediaTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = MediaType
@@ -25,8 +26,8 @@ class MediaLightSerializer(serializers.ModelSerializer):
             
             
 class MediaSerializer(serializers.ModelSerializer):
-    answers = MediaAnswerSerializer(many=True, read_only=True)
-    answers_id = serializers.PrimaryKeyRelatedField(queryset=MediaAnswer.objects.all(), many=True, write_only=True, source='answers', label='Answers')
+    answers = AnswerSerializer(many=True, read_only=True)
+    answers_id = serializers.PrimaryKeyRelatedField(queryset=Answer.objects.all(), many=True, write_only=True, source='answers', label='Answers')
     type = MediaTypeSerializer(read_only=True)
     type_id = serializers.PrimaryKeyRelatedField(queryset=MediaType.objects.all(), write_only=True, source='type', label='Type')
     
@@ -37,12 +38,20 @@ class MediaSerializer(serializers.ModelSerializer):
 
 # region Quizz
 class QuestionSerializer(serializers.ModelSerializer):
-    answers = MediaAnswerSerializer(many=True, read_only=True)
-    answers_id = serializers.PrimaryKeyRelatedField(queryset=MediaAnswer.objects.all(), many=True, write_only=True, source='answers', label='Answers')
-    
     class Meta:
         model = Question
-        fields = ['id','question', 'answers', 'answers_id']
+        fields = '__all__'
+        
+        
+class QuizSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer(read_only=True)
+    question_id = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), write_only=True, source='question', label='Question')
+    answers = AnswerSerializer(many=True, read_only=True)
+    answers_id = serializers.PrimaryKeyRelatedField(queryset=Answer.objects.all(), many=True, write_only=True, source='answers', label='Answers')
+    
+    class Meta:
+        model = Quiz
+        fields = ['id','question', 'question_id', 'answers' , 'answers_id']
 # endregion
 
 # region MapGuess
@@ -120,8 +129,8 @@ class MinigameSerializer(serializers.ModelSerializer):
     type_id = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), write_only=True, source='type', label='Type')
     medias = MediaSerializer(many=True, read_only=True)
     medias_id = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, source='medias', label='Medias')
-    quizz = QuestionSerializer(many=True, read_only=True)
-    quizz_id = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), many=True, write_only=True, source='quizz', label='Quizz')
+    quizz = QuizSerializer(many=True, read_only=True)
+    quizz_id = serializers.PrimaryKeyRelatedField(queryset=Quiz.objects.all(), many=True, write_only=True, source='quizz', label='Quizz')
     
     notes = MinigameUserNoteSerializer(source='minigame_notes', many=True, read_only=True)
     

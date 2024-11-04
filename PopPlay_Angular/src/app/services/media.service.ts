@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Media, MediaAnswer, MediaCreate, MediaType } from '../models/models';
+import { Media, Answer, MediaCreate, MediaType } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +29,6 @@ export class MediaService {
     }
   
     return this.httpClient.post<Media>(this.apiUrl + 'minigame/media/', formData);
-  }
-
-
-  createAnswer(answer: string): Observable<MediaAnswer> {
-    return this.httpClient.post<MediaAnswer>(this.apiUrl + 'minigame/mediaAnswer/' , {answer: answer});
   }
 
   getAllTypes(): Observable<MediaType[]> {

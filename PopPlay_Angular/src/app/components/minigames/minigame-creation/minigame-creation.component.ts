@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Media, Minigame, Question, Theme, Type } from '../../../models/models';
+import { Media, Minigame, Quiz, Theme, Type } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MediaSelectorComponent } from '../../../shared/components/media-selector/media-selector.component';
@@ -48,9 +48,9 @@ export class MinigameCreationComponent implements OnInit {
   isThemeCreatorVisible: boolean = false;
   isQuizzCreatorVisible: boolean = false;
   mediasSelected: Media[] = [];
-  quizzSelected: Question[] = [];
+  quizzSelected: Quiz[] = [];
   selectedCover: string | null = null;
-  
+
   gameID?: number = -1;
   gameToUpdate?: Minigame
   isCoverUpdated: boolean = false
@@ -155,7 +155,7 @@ export class MinigameCreationComponent implements OnInit {
     this.isQuizzCreatorVisible = true;
   }
 
-  onQuizzCreated(quizz: Question[] | null) {
+  onQuizzCreated(quizz: Quiz[] | null) {
     this.quizzSelected = quizz ? [...quizz] : [];
     this.isQuizzCreatorVisible = false;
     console.log(this.quizzSelected)

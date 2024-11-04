@@ -26,25 +26,59 @@ class ThemeViewSet(ModelViewSet):
     serializer_class = ThemeSerializer 
     permission_classes = [IsAuthenticatedOrReadOnly]   
     
+    
 class MediaTypeViewSet(ModelViewSet):
     queryset = MediaType.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaTypeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   
     
-class MediaAnswerViewSet(ModelViewSet):
-    queryset = MediaAnswer.objects.all().order_by('id')
+    
+class AnswerViewSet(ModelViewSet):
+    queryset = Answer.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
-    serializer_class = MediaAnswerSerializer
+    serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     
     # create an answer if it doesn't exist already else return it
     def create(self, request, *args, **kwargs):
         try:
-            answer = MediaAnswer.objects.get(answer=request.data['answer'])
-            return Response(MediaAnswerSerializer(answer).data, status=status.HTTP_200_OK)
-        except MediaAnswer.DoesNotExist:
+            answer = Answer.objects.get(answer=request.data['answer'])
+            return Response(AnswerSerializer(answer).data, status=status.HTTP_200_OK)
+        except Answer.DoesNotExist:
+            return super().create(request, *args, **kwargs)    
+  
+  
+class QuestionViewSet(ModelViewSet):
+    queryset = Question.objects.all().order_by('id').prefetch_related('answers')
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  
+    
+    # create an question if it doesn't exist already else return it
+    def create(self, request, *args, **kwargs):
+        try:
+            question = Question.objects.get(question=request.data['question'])
+            return Response(QuestionSerializer(question).data, status=status.HTTP_200_OK)
+        except Question.DoesNotExist:
             return super().create(request, *args, **kwargs)
+    
+    
+class QuizViewSet(ModelViewSet):
+    queryset = Quiz.objects.all().order_by('id').prefetch_related('answers', 'question')
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = QuizSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    # create an quizz if it doesn't exist already else return it
+    def create(self, request, *args, **kwargs):
+        quiz = Quiz.objects.prefetch_related('answers').filter(question=request.data['question_id'])
+        
+        for q in quiz:
+            if [a.id for a in q.answers.all().order_by('id')] == request.data['answers_id']:
+                return Response(QuizSerializer(q).data, status=status.HTTP_200_OK)
+                
+        return super().create(request, *args, **kwargs)
     
 
 class MediaViewSet(ModelViewSet):
@@ -53,13 +87,7 @@ class MediaViewSet(ModelViewSet):
     serializer_class = MediaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   
     # parser_classes = [MultiPartParser, FormParser]
-    
-    
-class QuestionViewSet(ModelViewSet):
-    queryset = Question.objects.all().order_by('id').prefetch_related('answers')
-    filter_backends = [DjangoFilterBackend]
-    serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+
     
 # TODO: mapguess ViewSet
 
@@ -91,6 +119,7 @@ class MinigameViewSet(ModelViewSet):
             
             if account != request.user and request.user.is_staff is False:
                 return Response({"error": "Vous n'avez pas le droit d'effectuer cette action."}, status=status.HTTP_403_FORBIDDEN)
+            
         except Minigame.DoesNotExist:
             return Response({"error": "Minigame introuvable."}, status=status.HTTP_404_NOT_FOUND)
         except Account.DoesNotExist:
@@ -103,4 +132,4 @@ class MinigameViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         user_note = MinigameUserNote.objects.create(minigame=minigame, account=account, note=request.data['note'])
         
-        return Response({'response': 'Le score a bien été ajouté'}, status=status.HTTP_201_CREATED)
+        return Response({'response': 'La note a bien été ajoutée'}, status=status.HTTP_201_CREATED)

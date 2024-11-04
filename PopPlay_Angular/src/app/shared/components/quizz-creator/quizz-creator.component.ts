@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
-import { MediaAnswer, Question, QuestionCreate } from '../../../models/models';
+import { Answer, Question, Quiz, QuizCreate } from '../../../models/models';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,15 +16,15 @@ import { MinigameService } from '../../../services/minigame.service';
 })
 export class QuizzCreatorComponent implements OnInit {
   fb = inject(FormBuilder);
-  mediaServ = inject(MediaService)
   minigameServ = inject(MinigameService)
   @Input() isVisible: boolean = false
-  @Output() quizzCreatedEvent = new EventEmitter<Question[] | null>()
+  @Output() quizzCreatedEvent = new EventEmitter<Quiz[] | null>()
+  questionsCreated: Question[] = []
+  answersCreated: Answer[][] = []
   quizzForm: FormGroup = new FormGroup({})
-  fullQuizzToCreate: QuestionCreate[] = []
-  fullQuizz: Question[] = []
   answers: string[][] = [[]]
   answersCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  responsesCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 
   ngOnInit(): void {
@@ -67,53 +67,80 @@ export class QuizzCreatorComponent implements OnInit {
   }
 
   submit() {
+    this.createAllQuestions()
     this.createAllAnswers()
     this.createQuizz()
   }
 
+  createAllQuestions() {
+    const questionRequests: Observable<Question>[] = this.quizz.value.map((quizz: any) => this.minigameServ.create_question(quizz.question));
+
+    forkJoin(questionRequests).subscribe({
+      next: (responses: Question[]) => {
+        this.questionsCreated = responses
+      },
+      error: (err) => {
+        console.error("Error creating questions: ", err);
+      },
+      complete: () => {
+        this.responsesCreatedSubject.next(true);
+      }
+    });
+  }
+
 
   createAllAnswers() {
-    this.answers.forEach((answer, index) => {
-      console.log("answers", answer, index)
-      const answerRequests: Observable<MediaAnswer>[] = answer.map(answer => this.mediaServ.createAnswer(answer.trim()));
-
-      // Use forkJoin to wait for all requests to complete
-      forkJoin(answerRequests).subscribe({
-          next: (responses: MediaAnswer[]) => {
-              // Iterate over the responses to patch the form
-              const question = this.quizz.at(index).get('question')?.value;
-              const createdIds = responses.map((response: MediaAnswer) => response.id!);
-
-              this.fullQuizzToCreate.push({ question: question, answers_id:createdIds });
-              
-          },
-          error: (err) => {
-              console.error("Error creating answers: ", err);
-          },
-          complete: () => {
-              console.log("finally")
-              this.answersCreatedSubject.next(true);  // Notify that all answers have been created // FIXME: detect last 
-              
-          }
-      });
+    this.responsesCreatedSubject.subscribe({
+      next: (data) => {
+        if (data) {
+          this.answers.forEach((answer, index) => {
+            const answerRequests: Observable<Answer>[] = answer.map(answer => this.minigameServ.create_answer(answer.trim()));
+            // Use forkJoin to wait for all requests to complete
+            forkJoin(answerRequests).subscribe({
+              next: (responses: Answer[]) => {
+                // Iterate over the responses to patch the form
+                this.answersCreated.push(responses)
+              },
+              error: (err) => {
+                console.error("Error creating answers: ", err);
+              },
+              complete: () => {
+                if (index === this.answers.length - 1) {
+                  this.answersCreatedSubject.next(true);  // Notify that all answers have been created
+                }
+              }
+            });
+          })
+        }
+      }
     })
+
   }
 
   createQuizz() {
     this.answersCreatedSubject.subscribe({
-      next: (data) => { 
-        if (data) { 
-          this.fullQuizzToCreate.forEach((quizz, index) => {
-            this.minigameServ.create_quizz(quizz).subscribe({
-              next: (data) => { 
-                console.log(data); 
-                this.fullQuizz.push(data);
-                if (index === this.fullQuizzToCreate.length - 1) {
-                  this.quizzCreatedEvent.emit(this.fullQuizz);
-                }
-              },
-              error: (err) => { console.log(err); }
-            })
+      next: (data) => {
+        if (data) {
+          let quizRequests: Observable<Quiz>[] = []
+          for (let i = 0; i < this.quizz.value.length; i++) {
+            console.log(this.questionsCreated)
+            console.log(this.answersCreated)
+            const quiz: QuizCreate = {
+              question_id: this.questionsCreated[i].id!,
+              answers_id: this.answersCreated[i].map((answer) => answer.id!)
+            }
+            quizRequests.push(this.minigameServ.create_quizz(quiz));
+          }
+          
+          // FIXME: sometimes error 'map ...' on adding quiz
+          forkJoin(quizRequests).subscribe({
+            next: (responses: Quiz[]) => {
+              this.quizzCreatedEvent.emit(responses)
+              this.resetForm();
+            },
+            error: (err) => {
+              console.error("Error creating quizz: ", err);
+            }
           })
         }
       },
@@ -121,4 +148,15 @@ export class QuizzCreatorComponent implements OnInit {
     })
   }
 
+  resetForm() {
+    this.quizzForm.reset();
+    this.answers = [[]];
+    this.questionsCreated = [];
+    this.answersCreated = [];
+    this.responsesCreatedSubject.next(false);
+    this.answersCreatedSubject.next(false);
+  }
+
 }
+
+

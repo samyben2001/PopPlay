@@ -1,62 +1,71 @@
 <div class="flex flex-col items-center">
 @if (minigame) {
-        <!-- TODO: Create Image Guessing Component -->
-        <!-- Game Title -->
-        <h2 class="text-3xl underline text-slate-200">{{minigame.name}}</h2>
-
-        <div class="relative flex flex-col justify-center h-[50vh] my-6">
-            @if (!isGameEnded) {
-                @if (!isCorrectAnswerShown) { <!-- Game Image to Find & Blurred Overlay -->
-                    <img appNoRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
-                    <div appNoRightClick class="absolute top-0 left-0 h-full w-full"  #imgOverlay></div>
-                }@else { <!-- Game Answer -->
-                    <div class="flex flex-col items-center my-6">
-                        <p class="text-3xl text-slate-200">La bonne réponse était: </p>
-                        <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
-                        <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+            <!-- TODO: Create Image Guessing/Quizz/BlindTest Component -->
+            <!-- Game Title -->
+            <h2 class="text-3xl underline text-slate-200">{{minigame.name}}</h2>
+    
+            <div class="relative flex flex-col justify-center h-[50vh] my-6">
+                @if (!isGameEnded) {
+                    @if (!isCorrectAnswerShown) { <!-- Game Image to Find & Blurred Overlay -->
+                        @if (minigame.type.name == gameTypes.IMAGE_GUESSING) {
+                            <img appNoRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
+                            <div appNoRightClick class="absolute top-0 left-0 h-full w-full"  #imgOverlay></div>
+                        }@else if (minigame.type.name == gameTypes.QUIZZ) {
+                            <p class="w-3/4 m-auto text-3xl text-slate-200 font-bold">{{minigame.quizz[actualMediaIndex].question.question}}</p>
+                        }
+                    }@else { <!-- Game Answer -->
+                        <div class="flex flex-col items-center my-6">
+                            <p class="text-3xl text-slate-200">La bonne réponse était: </p>
+                            @if (minigame.type.name == gameTypes.IMAGE_GUESSING) {
+                                <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
+                                <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                            }@else if (minigame.type.name == gameTypes.QUIZZ) {
+                                <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.quizz[actualMediaIndex].answers[0].answer}}</p>
+                                <p class="text-2xl text-slate-200">Prochaine question dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                            }
+                        </div>
+                    }
+                }@else { <!-- Game Result -->
+                    <div class="flex flex-col items-center my-6 p-6 bg-slate-200 rounded-md">
+                        <div class="flex flex-col items-center gap-y-2 text-3xl text-slate-800">
+                            <p>Partie Terminée !</p>
+                            <p>Vous avez trouvez <span class="text-pink-600 font-bold">{{nbCorrectAnswers}} images sur {{maxMediaIndex}}</span></p>
+                            <p>Score Total :</p>
+                            <p class="relative text-4xl text-pink-600 font-bold">{{score}} points</p>
+                        </div>
+                        <!-- TODO: add replay button -->
                     </div>
-                }
-            }@else { <!-- Game Result -->
-                <div class="flex flex-col items-center my-6 p-6 bg-slate-200 rounded-md">
-                    <div class="flex flex-col items-center gap-y-2 text-3xl text-slate-800">
-                        <p>Partie Terminée !</p>
-                        <p>Vous avez trouvez <span class="text-pink-600 font-bold">{{nbCorrectAnswers}} images sur {{minigame.medias.length}}</span></p>
-                        <p>Score Total :</p>
-                        <p class="relative text-4xl text-pink-600 font-bold">{{score}} points</p>
-                    </div>
-                    <!-- TODO: add replay button -->
-                </div>
-            }
-        </div>
-
-        @if (!isGameEnded) {
-        <!-- Timer & Score & Answer Input -->
-            <div class="flex flex-col items-center w-3/4 p-6 bg-slate-200 rounded-md">
-                <span class="text-lg text-slate-800 self-end -mr-3 -mt-3">{{actualMediaIndex + 1}} / {{minigame.medias.length}}</span>
-                <div class="w-full flex flex-col lg:flex-row items-center lg:justify-around text-center">
-                    <p class="text-2xl text-pink-600">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
-                    <p class="relative text-2xl text-slate-800"> 
-                        Score: <span class="font-bold">{{score}}</span>
-                        <span [@hiddenVisible]="scoreAnimation == true ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-emerald-700" #scoreUp>+{{scoreGained}}</span>
-                        <span [@hiddenVisible]="scoreAnimation == false ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-pink-600" #scoreDown>-100</span>
-                    </p>
-                </div>
-                
-                <div class="w-full my-6 flex flex-col lg:flex-row items-center justify-around">
-                    <p-floatLabel class="w-7/12">
-                        <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer" [disabled]="isGameEnded || isCorrectAnswerShown" (keydown.enter)="try()">
-                        <label for="anwser" class="peer-focus:text-slate-800">Entrez votre réponse</label>
-                    </p-floatLabel>
-                    <span class="text-xl text-slate-800 pt-2 lg:pt-0">{{attempts}}/{{MAX_ATTEMPTS}} tentatives</span>
-                </div>
-                
-                @if (!isGameEnded && !isCorrectAnswerShown && userAnswer != '') {
-                    <button (click)="try()" class="min-w-[50%] bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">Valider</button>
-                }@else {
-                    <button (click)="try()" class="min-w-[50%] bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>Valider</button>
                 }
             </div>
-        }
+    
+            @if (!isGameEnded) {
+            <!-- Timer & Score & Answer Input -->
+                <div class="flex flex-col items-center w-3/4 p-6 bg-slate-200 rounded-md">
+                    <span class="text-lg text-slate-800 self-end -mr-3 -mt-3">{{actualMediaIndex + 1}} / {{maxMediaIndex}}</span>
+                    <div class="w-full flex flex-col lg:flex-row items-center lg:justify-around text-center">
+                        <p class="text-2xl text-pink-600">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
+                        <p class="relative text-2xl text-slate-800"> 
+                            Score: <span class="font-bold">{{score}}</span>
+                            <span [@hiddenVisible]="scoreAnimation == true ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-emerald-700" #scoreUp>+{{scoreGained}}</span>
+                            <span [@hiddenVisible]="scoreAnimation == false ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-pink-600" #scoreDown>-100</span>
+                        </p>
+                    </div>
+                    
+                    <div class="w-full my-6 flex flex-col lg:flex-row items-center justify-around">
+                        <p-floatLabel class="w-7/12">
+                            <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer" [disabled]="isGameEnded || isCorrectAnswerShown" (keydown.enter)="try()">
+                            <label for="anwser" class="peer-focus:text-slate-800">Entrez votre réponse</label>
+                        </p-floatLabel>
+                        <span class="text-xl text-slate-800 pt-2 lg:pt-0">{{attempts}}/{{MAX_ATTEMPTS}} tentatives</span>
+                    </div>
+                    
+                    @if (!isGameEnded && !isCorrectAnswerShown && userAnswer != '') {
+                        <button (click)="try()" class="min-w-[50%] bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">Valider</button>
+                    }@else {
+                        <button (click)="try()" class="min-w-[50%] bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>Valider</button>
+                    }
+                </div>
+            }
     }@else {
         <h2>Chargement du jeu ...</h2>
     }

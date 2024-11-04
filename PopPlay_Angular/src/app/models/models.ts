@@ -11,7 +11,7 @@ export interface MinigameCreate {
     theme_id: number;
     type_id: number;
     medias_id: number[];
-    quizz_id: Question[];
+    quizz_id: Quiz[];
 }
 
 export interface Minigame {
@@ -21,21 +21,25 @@ export interface Minigame {
     theme: Theme;
     type: Type;
     medias: Media[];
-    quizz: Question[];
+    quizz: Quiz[];
     dateCreated: Date; // DateTime type in Django (string?)
     dateUpdated?: Date; // Nullable DateTime in Django
     notes: MinigameUserNote[];
 
 }
-
-export interface Question{
+export interface Question {
     id?: number;
     question: string;
-    answers: MediaAnswer[];
 }
 
-export interface QuestionCreate{
-    question: string;
+export interface Quiz{
+    id?: number;
+    question: Question;
+    answers: Answer[];
+}
+
+export interface QuizCreate{
+    question_id: number;
     answers_id: number[];
 }
 
@@ -72,7 +76,7 @@ export interface Media {
     name: string;
     url: string; // FileField in Django maps to string for file URL
     type: MediaType;
-    answers: MediaAnswer[];
+    answers: Answer[];
 }
 
 export interface Media {
@@ -80,10 +84,10 @@ export interface Media {
     name: string;
     url: string; // FileField in Django maps to string for file URL
     type: MediaType;
-    answers: MediaAnswer[];
+    answers: Answer[];
 }
 
-export interface MediaAnswer {
+export interface Answer {
     id?: number;
     answer: string;
 }
