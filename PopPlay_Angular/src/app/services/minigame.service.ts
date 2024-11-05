@@ -46,6 +46,11 @@ export class MinigameService {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
       minigame.medias_id.forEach((media: any) => formData.append('medias_id', media.id.toString()));
     }
+
+    if (minigame.quizz_id.length > 0){
+      // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
+      minigame.quizz_id.forEach((quizz: any) => formData.append('quizz_id', quizz.id.toString()));
+    }
     
     return this.httpClient.put<Minigame>(this.apiUrl + 'minigame/' + minigame.id + '/', formData)
   }

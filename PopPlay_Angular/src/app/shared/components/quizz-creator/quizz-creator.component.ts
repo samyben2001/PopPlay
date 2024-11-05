@@ -98,7 +98,6 @@ export class QuizzCreatorComponent implements OnInit {
             // Use forkJoin to wait for all requests to complete
             forkJoin(answerRequests).subscribe({
               next: (responses: Answer[]) => {
-                // Iterate over the responses to patch the form
                 this.answersCreated.push(responses)
               },
               error: (err) => {
@@ -123,16 +122,14 @@ export class QuizzCreatorComponent implements OnInit {
         if (data) {
           let quizRequests: Observable<Quiz>[] = []
           for (let i = 0; i < this.quizz.value.length; i++) {
-            console.log(this.questionsCreated)
-            console.log(this.answersCreated)
             const quiz: QuizCreate = {
               question_id: this.questionsCreated[i].id!,
-              answers_id: this.answersCreated[i].map((answer) => answer.id!)
+              answers_id: this.answersCreated[i].map((answer) => answer.id!) // FIXME: sometimes error answerCreated undefined: 'TypeError: Cannot read properties of undefined (reading 'map')' on adding quiz
             }
             quizRequests.push(this.minigameServ.create_quizz(quiz));
           }
           
-          // FIXME: sometimes error 'map ...' on adding quiz
+          
           forkJoin(quizRequests).subscribe({
             next: (responses: Quiz[]) => {
               this.quizzCreatedEvent.emit(responses)

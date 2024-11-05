@@ -6,12 +6,12 @@
     
             <div class="relative flex flex-col justify-center h-[50vh] my-6">
                 @if (!isGameEnded) {
-                    @if (!isCorrectAnswerShown) { <!-- Game Image to Find & Blurred Overlay -->
-                        @if (minigame.type.name == gameTypes.IMAGE_GUESSING) {
+                    @if (!isCorrectAnswerShown) { <!-- Game Conatianer -->
+                        @if (minigame.type.name == gameTypes.IMAGE_GUESSING) { <!-- Image to Find & Blurred Overlay -->
                             <img appNoRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
-                            <div appNoRightClick class="absolute top-0 left-0 h-full w-full"  #imgOverlay></div>
-                        }@else if (minigame.type.name == gameTypes.QUIZZ) {
-                            <p class="w-3/4 m-auto text-3xl text-slate-200 font-bold">{{minigame.quizz[actualMediaIndex].question.question}}</p>
+                            <div appNoRightClick class="absolute top-0 left-0 h-full w-full"  #question></div>
+                        }@else if (minigame.type.name == gameTypes.QUIZZ) { <!-- Question -->
+                            <p class="w-3/4 m-auto text-3xl text-slate-200 font-bold text-center" #question>{{minigame.quizz[actualMediaIndex].question.question}}</p>
                         }
                     }@else { <!-- Game Answer -->
                         <div class="flex flex-col items-center my-6">
@@ -33,7 +33,10 @@
                             <p>Score Total :</p>
                             <p class="relative text-4xl text-pink-600 font-bold">{{score}} points</p>
                         </div>
-                        <!-- TODO: add replay button -->
+                    </div>
+                    <div class="flex flex-row gap-x-4">
+                        <button (click)="restart()" class="min-w-[50%] bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">Réessayer</button>
+                        <button (click)="back()" class="min-w-[50%] bg-sky-400 hover:bg-sky-500 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">Retour</button>
                     </div>
                 }
             </div>

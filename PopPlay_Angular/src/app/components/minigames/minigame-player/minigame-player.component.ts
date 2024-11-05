@@ -50,12 +50,12 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
   minigame!: Minigame
 
-  @ViewChildren('imgOverlay') imgsToFind!: QueryList<ElementRef>
+  @ViewChildren('question') questions!: QueryList<ElementRef>
   @ViewChild('scoreUp') scoreUp!: ElementRef
   @ViewChild('scoreDown') scoreDown!: ElementRef
   gameTypes = GameTypes
   imgToFind!: ElementRef
-  blurIntervalId?: ReturnType<typeof setInterval>
+  timerIntervalId?: ReturnType<typeof setInterval>
   actualMediaIndex: number = 0
   maxMediaIndex: number = 0
   timer: number = this.MAX_TIMER
@@ -74,14 +74,15 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
-        if(this.minigame.type.name == GameTypes.IMAGE_GUESSING){
+        console.log(this.minigame)
+
+        if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
           this.shuffle(this.minigame.medias)
           this.maxMediaIndex = this.minigame.medias.length
-        }else if(this.minigame.type.name == GameTypes.QUIZZ){
+        } else if (this.minigame.type.name == GameTypes.QUIZZ) {
           this.shuffle(this.minigame.quizz)
           this.maxMediaIndex = this.minigame.quizz.length
         }
-        console.log(this.minigame)
       },
       error: (err) => {
         console.log(err)
@@ -91,15 +92,17 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit(): void {
-    this.imgsToFind.changes.subscribe((img: QueryList<ElementRef>) => {
-      if(!img.first) return
+    this.questions.changes.subscribe((question: QueryList<ElementRef>) => {
+      if (!question.first) return
 
-      this.imgToFind = img.first
-      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
+      if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+        this.imgToFind = question.first
+        this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
+      }
 
-      if(this.blurIntervalId != undefined)
-        clearInterval(this.blurIntervalId)
-      this.unBlur()
+      if (this.timerIntervalId != undefined)
+        clearInterval(this.timerIntervalId)
+      this.activateTimer()
     })
   }
 
@@ -109,7 +112,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     let correctAnswers: any[] = []
     if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
       correctAnswers = this.minigame.medias[this.actualMediaIndex].answers
-    }else if (this.minigame.type.name == GameTypes.QUIZZ) {
+    } else if (this.minigame.type.name == GameTypes.QUIZZ) {
       correctAnswers = this.minigame.quizz[this.actualMediaIndex].answers
     }
 
@@ -122,16 +125,45 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     }
     this.checkIfGameEnded();
   }
-  
+
+  restart() {
+    this.score = 0
+    this.attempts = 0
+    this.userAnswer = ''
+    this.isCorrectAnswerShown = false
+    this.actualMediaIndex = 0
+    this.scoreAnimation = null
+    this.nbCorrectAnswers = 0
+    this.timer = this.MAX_TIMER
+    this.timerBeforeNextMedia = this.TIME_BETWEEN_MEDIAS
+    this.isGameEnded = false
+
+    switch (this.minigame.type.name) {
+      case GameTypes.IMAGE_GUESSING:
+        this.blurAmount = this.BASE_BLUR
+        this.shuffle(this.minigame.medias)
+        break;
+      case GameTypes.QUIZZ:
+        this.shuffle(this.minigame.quizz)
+        break;
+    }
+
+    this.activateTimer()
+  }
+
+  back() {
+    this._router.navigate(['/'])
+  }
+
   private checkIfGameEnded() {
     if (!this.isGameEnded && (this.actualMediaIndex == this.maxMediaIndex)) {
       this.isGameEnded = true
-      clearInterval(this.blurIntervalId)
-      if(this._authServ.isConnected()){
+      clearInterval(this.timerIntervalId)
+      if (this._authServ.isConnected()) {
         this._accountServ.addScore(this.minigame.id, this.score).subscribe({
           next: (data) => {
             console.log(data)
-           },
+          },
           error: (err) => {
             console.log(err)
             this._router.navigate(['/error'])
@@ -141,21 +173,29 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
-  private unBlur() {
-    this.blurIntervalId = setInterval(() => {
-      this.blurAmount -= this.BASE_BLUR / this.MAX_TIMER
-      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`
+  private activateTimer() {
+    this.timerIntervalId = setInterval(() => {
+
+      if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+        this.unblur();
+      }
+
       this.timer--
 
-      if (!this.isGameEnded && (this.blurAmount <= 0 || this.timer <= 0)) { // Check if time is elapsed for guessing image
+      if (!this.isGameEnded && this.timer <= 0) { // Check if time is elapsed for giving answer
         this.setAnimation(false);
-        clearInterval(this.blurIntervalId)
+        clearInterval(this.timerIntervalId)
         this.score += this.SCORE_PER_ERROR
         this.showCorrectAnswer()
       }
     }, 1000);
   }
 
+
+  private unblur() {
+    this.blurAmount -= this.BASE_BLUR / this.MAX_TIMER;
+    this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`;
+  }
 
   private setAnimation(state: boolean) {
     this.scoreAnimation = state;
@@ -167,11 +207,22 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private checkUserAnswer(correctAnswers: Answer[]) {
     for (let index = 0; index < correctAnswers.length; index++) {
       if (correctAnswers[index].answer.toLowerCase() == this.userAnswer.toLowerCase()) { // Check if answer is Correct among the correct answers
-        this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts
-        this.score += this.scoreGained 
+        if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+          this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts
+        } else if (this.minigame.type.name == GameTypes.QUIZZ) {
+          this.scoreGained = Math.round(this.timer * this.timer) + 100; // Calculate score based on time and attempts
+        }
+        this.score += this.scoreGained
         this.nbCorrectAnswers++;
         this.setAnimation(true);
-        this.nextMedias();
+        // Check if it's the last media 
+        if (this.actualMediaIndex == this.maxMediaIndex - 1) {
+          setTimeout(() => {
+            this.nextMedias();
+          }, 1000);
+        }else{
+          this.nextMedias();
+        }
         break;
       } else if (index == correctAnswers.length - 1) { // Check if answer is incorrect
         this.setAnimation(false);
@@ -181,10 +232,10 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this.userAnswer = ''
   }
 
-  
+
   private showCorrectAnswer() {
     this.isCorrectAnswerShown = true;
-    clearInterval(this.blurIntervalId);
+    clearInterval(this.timerIntervalId);
 
     let interval = setInterval(() => {
       this.timerBeforeNextMedia--;
@@ -200,29 +251,32 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
 
   private nextMedias() {
-    clearInterval(this.blurIntervalId);
+    clearInterval(this.timerIntervalId);
     this.actualMediaIndex++;
     this.checkIfGameEnded();
     this.userAnswer = '';
     if (this.isGameEnded) return;
-    
-    this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
-    this.blurAmount = this.BASE_BLUR;
+
+    if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
+      this.blurAmount = this.BASE_BLUR;
+    }
+
     this.timer = this.MAX_TIMER;
     this.attempts = 0;
-    this.unBlur();
+    this.activateTimer();
   }
 
   private shuffle(array: any[]) {
     let currentIndex: number = array.length;
-  
+
     // While there remain elements to shuffle...
     while (currentIndex != 0) {
-  
+
       // Pick a remaining element...
       let randomIndex: number = Math.floor(Math.random() * currentIndex);
       currentIndex--;
-  
+
       // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [
         array[randomIndex], array[currentIndex]];

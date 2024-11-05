@@ -186,6 +186,7 @@ export class MinigameCreationComponent implements OnInit {
 
   private updateGame() {
     this.creationForm.patchValue({ medias_id: this.mediasSelected });
+    this.creationForm.patchValue({ quizz_id: this.quizzSelected });
 
     this.minigameServ.update(this.creationForm.value).subscribe({
       next: (data) => {
