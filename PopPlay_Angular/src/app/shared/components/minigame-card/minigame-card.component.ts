@@ -3,11 +3,12 @@ import { Minigame } from '../../../models/models';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { GameTypes } from '../../../enums/GameTypes';
+import { LikeButtonComponent } from '../like-button/like-button.component';
 
 @Component({
   selector: 'app-minigame-card',
   standalone: true,
-  imports: [],
+  imports: [LikeButtonComponent],
   templateUrl: './minigame-card.component.html',
   styleUrl: './minigame-card.component.css'
 })

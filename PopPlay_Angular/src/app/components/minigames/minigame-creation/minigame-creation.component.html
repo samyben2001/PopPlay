@@ -1,13 +1,13 @@
 <div class="flex flex-col items-center">
     <!-- Title -->
     <div class="w-9/12 mb-6 border-b-2 border-pink-600">
-        <h2 class="text-2xl text-slate-200">Création d'un jeu</h2>
+        <h2 class="text-2xl text-slate-200"> {{!gameToUpdate ? 'Création d\'un jeu':'Modifier le jeu'}}</h2>
     </div>
 
     @if (!gameID || (gameID && gameToUpdate)) {
-    
+    <!-- TODO: if gameToUpdate: add delete button -->
     <!-- Game Creation Form -->
-    <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full lg:w-1/2 p-6 rounded bg-slate-700">
+    <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full md:w-1/2 p-6 rounded bg-slate-700">
         <!-- Game name -->
         <div class="flex flex-col mb-6">
             <p-floatLabel>

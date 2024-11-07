@@ -92,6 +92,9 @@ export class MinigameService {
     return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/');
   }
 
+  get_likes(id: number): Observable<number[]> {
+    return this.httpClient.get<number[]>(this.apiUrl + 'minigame/' + id + '/likes/');
+  }
   
   create_question(question: string): Observable<Question> {
     return this.httpClient.post<Question>(this.apiUrl + 'minigame/question/', {question: question});

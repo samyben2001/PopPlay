@@ -45,7 +45,7 @@
             <!-- Timer & Score & Answer Input -->
                 <div class="flex flex-col items-center w-3/4 p-6 bg-slate-200 rounded-md">
                     <span class="text-lg text-slate-800 self-end -mr-3 -mt-3">{{actualMediaIndex + 1}} / {{maxMediaIndex}}</span>
-                    <div class="w-full flex flex-col lg:flex-row items-center lg:justify-around text-center">
+                    <div class="w-full flex flex-col md:flex-row items-center md:justify-around text-center">
                         <p class="text-2xl text-pink-600">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
                         <p class="relative text-2xl text-slate-800"> 
                             Score: <span class="font-bold">{{score}}</span>
@@ -54,12 +54,12 @@
                         </p>
                     </div>
                     
-                    <div class="w-full my-6 flex flex-col lg:flex-row items-center justify-around">
+                    <div class="w-full my-6 flex flex-col md:flex-row items-center justify-around">
                         <p-floatLabel class="w-7/12">
                             <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer" [disabled]="isGameEnded || isCorrectAnswerShown" (keydown.enter)="try()">
                             <label for="anwser" class="peer-focus:text-slate-800">Entrez votre réponse</label>
                         </p-floatLabel>
-                        <span class="text-xl text-slate-800 pt-2 lg:pt-0">{{attempts}}/{{MAX_ATTEMPTS}} tentatives</span>
+                        <span class="text-xl text-slate-800 pt-2 md:pt-0">{{attempts}}/{{MAX_ATTEMPTS}} tentatives</span>
                     </div>
                     
                     @if (!isGameEnded && !isCorrectAnswerShown && userAnswer != '') {

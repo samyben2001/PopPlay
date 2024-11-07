@@ -120,9 +120,9 @@ export interface AccountLogin{
 export interface Account {
     id: number;
     user: User;
-    gamesLiked: Minigame[];
-    themesLiked: Theme[];
-    gamesScore: UserMinigameScore[];
+    games_liked: Minigame[];
+    themes_liked: Theme[];
+    games_score: UserMinigameScore[];
     minigamesNotes: MinigameUserNote[];
 }
 

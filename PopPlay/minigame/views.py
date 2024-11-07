@@ -8,6 +8,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 
+from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly
+
 from .models import *
 from .serializers import *
 
@@ -94,7 +96,7 @@ class MediaViewSet(ModelViewSet):
 class TypeViewSet(ModelViewSet):
     queryset = Type.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
-    serializer_class = TypeSerializer  
+    serializer_class = TypeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   
 
 
@@ -108,10 +110,12 @@ class MinigameViewSet(ModelViewSet):
             return MinigameLightSerializer
         elif self.action == 'add_note':
             return MinigameUserNoteSerializer
+        elif self.action == 'get_likes':
+            return MinigameLikesSerializer
         return MinigameSerializer
     
     # ajout note
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, IsAccountOwnerOrIsStaffOrReadOnly], url_path='notes')
     def add_note(self, request, pk):
         try:   
             minigame = self.get_object()
@@ -133,3 +137,13 @@ class MinigameViewSet(ModelViewSet):
         user_note = MinigameUserNote.objects.create(minigame=minigame, account=account, note=request.data['note'])
         
         return Response({'response': 'La note a bien été ajoutée'}, status=status.HTTP_201_CREATED)
+    
+    # get likes
+    @action(detail=True, methods=['get'],url_path='likes')
+    def get_likes(self, request, pk):
+        try:
+            minigame = self.get_object()
+            serializers = self.get_serializer(minigame, many=False)
+            return Response(serializers.data, status=status.HTTP_200_OK)
+        except Minigame.DoesNotExist:
+            return Response({"error": "Minigame introuvable."}, status=status.HTTP_404_NOT_FOUND)

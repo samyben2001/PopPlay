@@ -24,13 +24,11 @@ export class MediaSelectorComponent implements OnChanges{
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedMedias'] && changes['selectedMedias'].currentValue) {
-      console.log("MediaChange", changes);
       this.selectedMedias = changes['selectedMedias'].currentValue;
     }
 
     if (changes['isVisible'] && changes['isVisible'].currentValue) {
       let interval = setInterval(() => {
-        console.log("VisibleChange ", changes, this.selectedMedias);
         this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
         clearInterval(interval);
       }, 50);

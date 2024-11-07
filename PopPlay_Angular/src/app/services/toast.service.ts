@@ -13,6 +13,14 @@ export class ToastService {
   private _timeout: any
   //TODO: gerer plusieurs toasts en même temps => toast[]?
 
+  /**
+   * Displays a toast notification with the specified title, message, and type.
+   *
+   * @param titre - The title of the toast notification.
+   * @param message - The message content of the toast notification.
+   * @param type - The type of the toast notification, which influences its appearance. Defaults to ToastTypes.SUCCESS.
+   * @param duration - The duration in milliseconds for which the toast is visible. Defaults to 5000 milliseconds.
+   */
   Show(titre: string, message: string, type: ToastTypes = ToastTypes.SUCCESS, duration: number = 5000) {
     clearTimeout(this._timeout);
     this.type.set(type);

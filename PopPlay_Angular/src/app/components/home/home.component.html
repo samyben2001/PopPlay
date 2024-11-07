@@ -1,10 +1,10 @@
 <div class="mb-6">
     <button (click)="goToMinigameCreation()" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">Ajouter un jeu</button>
 </div>
-<div class="flex flex-row flex-wrap gap-y-4 justify-around items-start">
+<div class="flex flex-row flex-wrap gap-y-4 justify-around items-start ">
     @if (minigames) {
         @for (game of minigames; track $index) {
-            <div class="w-10/12 lg:w-5/12">
+            <div class="w-11/12 md:w-5/12">
                 <app-minigame-card [minigame]="game"/>
             </div>
         }

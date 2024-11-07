@@ -42,9 +42,9 @@ class AccountView(ModelViewSet):
     def get_serializer_class(self, *args, **kwargs):
         if self.action == 'list' or self.action == 'create':
             return AccountLightSerializer
-        elif self.action == 'add_theme':
+        elif self.action == 'themeLike':
             return AccountThemeLikedSerializer
-        elif self.action == 'add_game':
+        elif self.action == 'gameLike':
             return AccountMinigameLikedSerializer
         elif self.action == 'add_score':
             return AccountMinigameScoreSerializer
@@ -52,7 +52,7 @@ class AccountView(ModelViewSet):
     
     # add theme as favorite
     @action(detail=True, methods=['post', 'get'], permission_classes=[IsAuthenticated, IsAccountOwnerOrIsStaffOrReadOnly], url_path='favoris/themes')
-    def add_theme(self, request, pk):
+    def themeLike(self, request, pk):
         try:
             account = self.get_object()
             
@@ -78,13 +78,16 @@ class AccountView(ModelViewSet):
     
     # add game as favorite
     @action(detail=True, methods=['post', 'get'], permission_classes=[IsAuthenticated, IsAccountOwnerOrIsStaffOrReadOnly], url_path='favoris/games')
-    def add_game(self, request, pk):
+    def gameLike(self, request, pk):
         try:
             account = self.get_object()
+            serializers = self.get_serializer(account)
             
             # Get method: get the list of favorite games else POST method: add a favorite game
             if request.method == 'GET':
-                return Response({'games_liked': MinigameExtraLightSerializer(account.games_liked, many=True).data}, status=status.HTTP_200_OK)
+                # return Response({'games_liked': MinigameExtraLightSerializer(account.games_liked, many=True).data}, status=status.HTTP_200_OK)
+                return Response(serializers.data, status=status.HTTP_200_OK)
+            
             
             minigame = Minigame.objects.get(id=request.data['games_liked'])
             

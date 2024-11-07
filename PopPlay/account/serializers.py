@@ -38,6 +38,16 @@ class UserLightSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email']
     
     
+   
+class AccountMinigameScoreSerializer(serializers.ModelSerializer):
+    minigame = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=False, label='Game')
+    game = MinigameExtraLightSerializer(read_only=True)
+    
+    class Meta:
+        model = UserMinigameScore
+        fields = ['minigame', 'game', 'score']
+        
+           
 class AccountLightSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     
@@ -49,6 +59,7 @@ class AccountLightSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     themes_liked = ThemeLightSerializer(label='Themes', many=True, read_only=True)
     games_liked = MinigameExtraLightSerializer(label='Games', many=True, read_only=True)
+    # games_score = AccountMinigameScoreSerializer(label='Games scores', many=True, read_only=True)
     user = UserLightSerializer()
     
     class Meta:
@@ -57,27 +68,18 @@ class AccountSerializer(serializers.ModelSerializer):
   
   
 class AccountThemeLikedSerializer(serializers.ModelSerializer):
-    themes_liked = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), write_only=False, label='Theme', many=False)
+    themes_liked = serializers.PrimaryKeyRelatedField(queryset=Theme.objects.all(), label='Theme', many=False)
     class Meta:
         model = Account
         fields = ['themes_liked']
  
  
 class AccountMinigameLikedSerializer(serializers.ModelSerializer):
-    games_liked = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=False, label='Game')
-    games = MinigameExtraLightSerializer(read_only=True, source='games_liked')
+    games_liked = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), many=False, write_only=True, label='Game')
+    games = MinigameExtraLightSerializer(read_only=True, many=True, source='games_liked')
     class Meta:
         model = Account
         fields = ['games_liked', 'games']
-        
-class AccountMinigameScoreSerializer(serializers.ModelSerializer):
-    minigame = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=False, label='Game')
-    game = MinigameExtraLightSerializer(read_only=True, source='minigame')
-    
-    
-    class Meta:
-        model = UserMinigameScore
-        fields = ['minigame', 'game', 'score']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

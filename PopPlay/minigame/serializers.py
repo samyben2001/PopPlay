@@ -136,5 +136,10 @@ class MinigameSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Minigame
-        fields = ['id', 'name', 'type', 'theme', 'theme_id', 'type_id', 'medias', 'medias_id','quizz', 'quizz_id','cover_url', 'notes', 'date_created', 'date_updated']
+        fields = ['id', 'name', 'type', 'theme', 'theme_id', 'type_id', 'medias', 'medias_id','quizz', 'quizz_id','cover_url', 'notes', 'date_created', 'date_updated','liked_by']
+        
+class MinigameLikesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Minigame
+        fields = ['liked_by']
 # endregion

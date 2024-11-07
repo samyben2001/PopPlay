@@ -17,6 +17,7 @@ import { PasswordModule } from 'primeng/password';
 })
 export class LoginComponent implements OnInit {
   authServ = inject(AuthService);
+  accountServ = inject(AccountService);
   router = inject(Router);
   loginForm: FormGroup = new FormGroup({});
   errorLogin: string ='';
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit {
       this.authServ.login(this.loginForm.value).subscribe({
         next: (token) => { // login successful
           this.authServ.setToken(token);
+          this.accountServ.setAccount(this.authServ.getConnectedUser()!)
           this.router.navigate(['/']);
         },
         error: (err) => { // login failed

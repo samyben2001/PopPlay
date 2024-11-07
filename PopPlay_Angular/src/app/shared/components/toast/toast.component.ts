@@ -1,12 +1,12 @@
 import { Component, computed, inject, Signal, WritableSignal } from '@angular/core';
 import { ToastTypes } from '../../../enums/ToastTypes';
 import { ToastService } from '../../../services/toast.service';
-import { TitleCasePipe } from '@angular/common';
+import { UpperFirstPipe } from '../../pipes/upper-first.pipe';
 
 @Component({
   selector: 'app-toast',
   standalone: true,
-  imports: [TitleCasePipe],
+  imports: [UpperFirstPipe],
   templateUrl: './toast.component.html',
   styleUrl: './toast.component.css'
 })
@@ -20,13 +20,13 @@ export class ToastComponent {
   cssBg: Signal<string> = computed(() => {
     switch (this._type()) {
       case ToastTypes.SUCCESS:
-        return "bg-green-800";
+        return "bg-emerald-600";
       case ToastTypes.ERROR:
-        return "bg-red-800";
+        return "bg-pink-600";
       case ToastTypes.WARNING:
-        return "border-yellow-800";
+        return "bg-amber-600";
       case ToastTypes.INFO:
-        return "border-blue-800";
+        return "bg-sky-600";
     }
   });
 

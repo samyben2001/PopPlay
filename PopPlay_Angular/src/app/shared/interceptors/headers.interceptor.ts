@@ -3,10 +3,12 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { jwtDecode } from 'jwt-decode';
+import { AccountService } from '../../services/account.service';
 
 export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
   const router = inject(Router);
   const authServ = inject(AuthService);
+  const accountServ = inject(AccountService);
   const token = authServ.getToken();
 
   if (token != null) { // check if token exists
@@ -35,13 +37,14 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
             return next(clone);
           }
         })
-      } else { // refresh token is expired
+      } else { // refresh token is expired => logout
         console.log("refresh token expired")
         authServ.removeToken();
+        accountServ.account.set(null);
         router.navigate(['accounts/login']);
         alert("Votre session à expiré. Veuillez vous reconnecter.")
       }
-    } else { // token is not expired
+    } else { // token is not expired 
       console.log("token not expired")
       let clone = req.clone({
         setHeaders: {
