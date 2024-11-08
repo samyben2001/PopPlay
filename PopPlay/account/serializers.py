@@ -40,8 +40,8 @@ class UserLightSerializer(serializers.ModelSerializer):
     
    
 class AccountMinigameScoreSerializer(serializers.ModelSerializer):
-    minigame = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=False, label='Game')
-    game = MinigameExtraLightSerializer(read_only=True)
+    minigame = serializers.PrimaryKeyRelatedField(queryset=Minigame.objects.all(), write_only=True, label='Game')
+    game = MinigameExtraLightSerializer(source='minigame', read_only=True)
     
     class Meta:
         model = UserMinigameScore
@@ -59,7 +59,7 @@ class AccountLightSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     themes_liked = ThemeLightSerializer(label='Themes', many=True, read_only=True)
     games_liked = MinigameExtraLightSerializer(label='Games', many=True, read_only=True)
-    # games_score = AccountMinigameScoreSerializer(label='Games scores', many=True, read_only=True)
+    games_score = AccountMinigameScoreSerializer(label='Scores', source='userminigamescore_set', many=True, read_only=True)
     user = UserLightSerializer()
     
     class Meta:

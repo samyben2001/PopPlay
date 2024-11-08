@@ -31,10 +31,11 @@
             class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer shadow-inner">
             Start Game
         </button>
-
-        <button type="button" (click)="updateGame(minigame.id)"
-            class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">
-            Update Game
-        </button>
+        @if (isConnected()) {
+            <button type="button" (click)="updateGame(minigame.id)"
+                class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">
+                Update Game
+            </button>
+        }
     </div>
 </div>
