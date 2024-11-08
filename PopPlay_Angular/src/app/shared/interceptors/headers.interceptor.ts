@@ -10,6 +10,7 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
   const authServ = inject(AuthService);
   const accountServ = inject(AccountService);
   const token = authServ.getToken();
+  console.log(req.url)
 
   if (token != null) { // check if token exists
     const accessToken = token.access

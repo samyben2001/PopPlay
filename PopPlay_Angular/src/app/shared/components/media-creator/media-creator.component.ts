@@ -67,13 +67,10 @@ export class MediaCreatorComponent implements OnInit {
   }
 
   filterMediaTypes(event: any) {
-    console.log("filterMediaTypes")
     //in a real application, make a request to a remote url with the query and return filtered results, for demo purposes we filter at client side
     this.filteredMediaTypes = this.mediaTypes.filter((type) => {
       return type.name.toLowerCase().startsWith(event.query.toLowerCase())
     })
-
-    console.log(this.filteredMediaTypes)
   }
 
   /**

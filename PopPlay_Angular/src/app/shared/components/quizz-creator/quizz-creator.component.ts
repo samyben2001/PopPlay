@@ -122,8 +122,6 @@ export class QuizzCreatorComponent implements OnInit {
         if (data) {
           let quizRequests: Observable<Quiz>[] = []
           for (let i = 0; i < this.quizz.value.length; i++) {
-            console.log(this.answersCreated)
-            console.log(this.answersCreated[i])
             const quiz: QuizCreate = {
               question_id: this.questionsCreated[i].id!,
               answers_id: this.answersCreated[i].map((answer) => answer.id!) // FIXME: sometimes error answerCreated undefined: 'TypeError: Cannot read properties of undefined (reading 'map')' on adding quiz

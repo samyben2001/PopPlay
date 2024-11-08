@@ -33,7 +33,6 @@ export class LikeButtonComponent {
   }
 
   nbLikes: number = 0
-  isConnected = this._authServ.isConnected
   account = this._accountServ.account;
 
   get minigameId(): number | undefined {
@@ -51,7 +50,6 @@ export class LikeButtonComponent {
 
   toggleLikeMinigame(id: number) {
     try {
-      console.log(id)
       this._accountServ.addLikedGame(id).subscribe({
         next: (data) => {
           if (this.userGamesLiked().includes(id)) {

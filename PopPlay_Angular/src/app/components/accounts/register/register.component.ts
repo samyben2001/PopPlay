@@ -41,8 +41,6 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.authServ.register(this.registerForm.value).subscribe({
         next: (token) => { // Registration successful
-          console.log('Registered successfully');
-          console.log(token);
           this.router.navigate(['/']);
         },
         error: (err) => { // Registration failed

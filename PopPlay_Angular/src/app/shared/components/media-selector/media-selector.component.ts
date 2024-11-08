@@ -44,13 +44,11 @@ export class MediaSelectorComponent implements OnChanges{
       this.selectedMedias = this.selectedMedias.filter((m) => m.id != media.id);
       this.ToggleCheckbox(media, false);
     }
-    // check the checkbox mathcing the media id
-    console.log(this.selectedMedias); 
   }
 
   private ToggleCheckbox(media: Media, value: boolean) {
+    // (un)check the checkbox mathcing the media id
     let box = this.checkboxes.find((checkbox: ElementRef<HTMLInputElement>) => checkbox.nativeElement.value == media.id.toString());
-    console.log(box, this.checkboxes, media)
     if (box)
       box.nativeElement.checked = value;
   }

@@ -158,7 +158,6 @@ export class MinigameCreationComponent implements OnInit {
   onQuizzCreated(quizz: Quiz[] | null) {
     this.quizzSelected = quizz ? [...quizz] : [];
     this.isQuizzCreatorVisible = false;
-    console.log(this.quizzSelected)
   }
 
   // Submit

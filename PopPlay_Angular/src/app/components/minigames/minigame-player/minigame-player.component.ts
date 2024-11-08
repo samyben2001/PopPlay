@@ -74,7 +74,6 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
-        console.log(this.minigame)
 
         if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
           this.shuffle(this.minigame.medias)
@@ -163,6 +162,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
         this._accountServ.addScore(this.minigame.id, this.score).subscribe({
           next: (data) => {
             console.log(data)
+            // TODO: Show score toast
           },
           error: (err) => {
             console.log(err)
