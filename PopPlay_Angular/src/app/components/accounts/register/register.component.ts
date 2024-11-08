@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { AbstractControlOptions, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { checkPasswordIdenticalValidator } from '../../../shared/validators/checkPasswordIdenticalValidator';
-import { AccountService } from '../../../services/account.service';
 import { Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +16,7 @@ import { PasswordModule } from 'primeng/password';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit {
-  accountServ = inject(AccountService);
+  authServ = inject(AuthService);
   router = inject(Router);
   fb = inject(FormBuilder);
   registerForm: FormGroup = new FormGroup({});
@@ -32,14 +32,14 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.pattern(this.StrongPasswordRegx)]],
       password2: ['', [Validators.required]],
     },{
-      validator: [checkPasswordIdenticalValidator] 
+      validators: [checkPasswordIdenticalValidator] 
     });
   }
 
   submit() {
     // send registration request to api
     if (this.registerForm.valid) {
-      this.accountServ.register(this.registerForm.value).subscribe({
+      this.authServ.register(this.registerForm.value).subscribe({
         next: (token) => { // Registration successful
           console.log('Registered successfully');
           console.log(token);

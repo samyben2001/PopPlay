@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
-import { AccountLogin } from '../models/models';
+import { AccountLogin, AccountRegister } from '../models/models';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -15,6 +15,10 @@ export class AuthService {
 
   login(credential: AccountLogin): Observable<any> {
     return this.httpClient.post(this.apiUrl + 'account/token/', credential);
+  }
+  
+  register(account: AccountRegister): Observable<any> {
+    return this.httpClient.post(this.apiUrl + 'account/register/', account);
   }
 
   refreshToken(refreshToken: string): Observable<any> {

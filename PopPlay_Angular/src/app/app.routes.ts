@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/accounts/register/register.compo
 import { MinigameCreationComponent } from './components/minigames/minigame-creation/minigame-creation.component';
 import { MinigamePlayerComponent } from './components/minigames/minigame-player/minigame-player.component';
 import { Error404Component } from './shared/components/error404/error404.component';
+import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent, pathMatch: 'full'},
@@ -15,8 +16,8 @@ export const routes: Routes = [
     ]},
 
     {path: 'minigame', children: [
-        {path: 'creation', component: MinigameCreationComponent},
-        {path: 'update/:gameID', component: MinigameCreationComponent},
+        {path: 'creation', component: MinigameCreationComponent, canActivate:[authGuard]},
+        {path: 'update/:gameID', component: MinigameCreationComponent, canActivate:[authGuard]},
         {path: 'play/:gameId', component: MinigamePlayerComponent},
     ]},
 

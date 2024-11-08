@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Account, AccountLogin, AccountRegister } from '../models/models';
+import { Account } from '../models/models';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
@@ -13,10 +13,6 @@ export class AccountService {
   authServ = inject(AuthService)
   apiUrl = environment.apiUrl
   account = signal<Account | null>(null)
-
-  register(account: AccountRegister): Observable<any> {
-    return this.httpClient.post(this.apiUrl + 'account/register/', account);
-  }
 
   setAccount(id: number) {
     this.httpClient.get<Account>(this.apiUrl + 'account/' + id).subscribe({
