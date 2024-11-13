@@ -159,18 +159,22 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       this.isGameEnded = true
       clearInterval(this.timerIntervalId)
       if (this._authServ.isConnected()) {
-        this._accountServ.addScore(this.minigame.id, this.score).subscribe({
-          next: (data) => {
-            console.log(data)
-            // TODO: Show score toast
-          },
-          error: (err) => {
-            console.log(err)
-            this._router.navigate(['/error'])
-          }
-        })
+        this.sendScore();
       }
     }
+  }
+
+  private sendScore() {
+    this._accountServ.addScore(this.minigame.id, this.score).subscribe({
+      next: (data) => {
+        console.log(data);
+        // TODO: Show score toast + get score position
+      },
+      error: (err) => {
+        console.log(err);
+        this._router.navigate(['/error']);
+      }
+    });
   }
 
   private activateTimer() {

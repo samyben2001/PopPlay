@@ -15,7 +15,7 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
   if (token != null) { // check if token exists
     const accessToken = token.access
     const refreshToken = token.refresh
-    console.log(accessToken, jwtDecode(accessToken))
+    console.log(jwtDecode(accessToken))
     const tokenExpirationDate: number = jwtDecode(accessToken).exp! * 1000;
     const refreshTokenExpirationDate = jwtDecode(refreshToken).exp! * 1000;
 

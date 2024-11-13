@@ -102,6 +102,8 @@ export interface MinigameUserNote {
 export interface User {
     id: number;
     username: string;
+    email: string;
+    date_joined: Date;
     // other fields for User model as needed
 }
 

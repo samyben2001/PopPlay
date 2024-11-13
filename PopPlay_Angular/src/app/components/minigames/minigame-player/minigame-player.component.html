@@ -8,8 +8,8 @@
                 @if (!isGameEnded) {
                     @if (!isCorrectAnswerShown) { <!-- Game Conatianer -->
                         @if (minigame.type.name == gameTypes.IMAGE_GUESSING) { <!-- Image to Find & Blurred Overlay -->
-                            <img appNoRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
-                            <div appNoRightClick class="absolute top-0 left-0 h-full w-full"  #question></div>
+                            <img noRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
+                            <div noRightClick class="absolute top-0 left-0 h-full w-full"  #question></div>
                         }@else if (minigame.type.name == gameTypes.QUIZZ) { <!-- Question -->
                             <p class="w-3/4 m-auto text-3xl text-slate-200 font-bold text-center" #question>{{minigame.quizz[actualMediaIndex].question.question}}</p>
                         }
@@ -44,22 +44,22 @@
             @if (!isGameEnded) {
             <!-- Timer & Score & Answer Input -->
                 <div class="flex flex-col items-center w-3/4 p-6 bg-slate-200 rounded-md">
-                    <span class="text-lg text-slate-800 self-end -mr-3 -mt-3">{{actualMediaIndex + 1}} / {{maxMediaIndex}}</span>
+                    <span class="text-lg text-slate-800 self-end -mr-3 -mt-3">{{actualMediaIndex + 1}} / {{maxMediaIndex}}</span> <!-- Quiz index -->
                     <div class="w-full flex flex-col md:flex-row items-center md:justify-around text-center">
-                        <p class="text-2xl text-pink-600">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p>
-                        <p class="relative text-2xl text-slate-800"> 
+                        <p class="text-2xl text-pink-600">Temps restant: <span class="font-bold">{{timer * 1000 | date:'mm:ss'}}</span></p><!-- Timer Answer -->
+                        <p class="relative text-2xl text-slate-800"> <!-- Actual Score -->
                             Score: <span class="font-bold">{{score}}</span>
                             <span [@hiddenVisible]="scoreAnimation == true ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-emerald-700" #scoreUp>+{{scoreGained}}</span>
                             <span [@hiddenVisible]="scoreAnimation == false ? 'visible' : 'hidden'" class="absolute top-3 right-0 text-pink-600" #scoreDown>-100</span>
                         </p>
                     </div>
-                    
+                    <!--  -->
                     <div class="w-full my-6 flex flex-col md:flex-row items-center justify-around">
-                        <p-floatLabel class="w-7/12">
+                        <p-floatLabel class="w-7/12"><!-- Input Answer -->
                             <input pInputText id="anwser" [(ngModel)]="userAnswer" class="w-full py-3 px-2 peer" [disabled]="isGameEnded || isCorrectAnswerShown" (keydown.enter)="try()">
                             <label for="anwser" class="peer-focus:text-slate-800">Entrez votre réponse</label>
                         </p-floatLabel>
-                        <span class="text-xl text-slate-800 pt-2 md:pt-0">{{attempts}}/{{MAX_ATTEMPTS}} tentatives</span>
+                        <span class="text-xl text-slate-800 pt-2 md:pt-0">{{attempts}}/{{MAX_ATTEMPTS}} tentatives</span><!-- Attempts count -->
                     </div>
                     
                     @if (!isGameEnded && !isCorrectAnswerShown && userAnswer != '') {

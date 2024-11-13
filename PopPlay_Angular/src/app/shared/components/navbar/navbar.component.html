@@ -2,16 +2,37 @@
     <div class="h-full flex items-center w-1/4">
         <a routerLink="/" class="h-full"><img src="assets/img/PopPlay_nobg.png" alt="logo" class="h-full w-auto p-1"></a>
     </div>
+
     <div class="h-full flex grow justify-center items-center">
     </div>
+
     <div class="h-full flex items-center justify-end w-1/4 gap-x-4">
         @if(!isConnected()){
             <a routerLink="accounts/register">S'inscrire</a>
             <a routerLink="accounts/login">Se connecter</a>
         }@else {
-            <!-- TODO:  add account page (gameliked, scores) + create DropdownMenu when connected -->
-            <!-- <a routerLink="account">Account</a> -->
-            <a (click)="logout()">Se Déconnecter</a>
+            <!-- TODO:  add account page (gameliked, scores) -->
+             <div class="relative w-full h-full flex flex-col justify-center items-end">
+                <span (click)="isSubNavVisible = true" class="cursor-pointer rounded-full border-2 border-pink-600 p-2 aspect-square bg-slate-800">{{account()?.user?.username | uppercase | slice:0:2}}</span> <!-- User 'avatar' -->
+
+                @if (isSubNavVisible) { 
+                    <!-- Sub Nav -->
+                    <div (clickOutside)="closeSubNav()" 
+                        class="flex flex-col absolute top-[calc(100%+2px)] right-0 w-[50vw] md:w-[25vw] text-slate-300 rounded-b-md border-2 border-t-0 border-pink-600 bg-slate-950 shadow-sm shadow-slate-950 nth-child(odd)]:bg-slate-800">
+                        <div class="text-lg text-end px-4 py-2 text-slate-50 font-bold border-b-[1px] border-slate-400 border-opacity-50">
+                            <span>{{account()?.user?.username}}</span> <!-- Username -->
+                        </div>                        
+
+                        <div (click)="navigate('account')" class="px-4 py-2 cursor-pointer hover:underline hover:text-slate-50">
+                            <span>Mon compte</span>
+                        </div>
+
+                        <div (click)="logout()" class="px-4 py-2 cursor-pointer hover:underline hover:text-slate-50">
+                            <span>Se Déconnecter</span>
+                        </div>
+                    </div>
+                }
+             </div>
         }
     </div>
 </div>
