@@ -21,8 +21,8 @@
                     <!-- Sub Nav -->
                     <div (clickOutside)="closeSubNav()" 
                         class="flex flex-col absolute top-[calc(100%+2px)] right-0 w-[50vw] md:w-[25vw] text-slate-300 rounded-b-md border-2 border-t-0 border-pink-600 bg-slate-950 shadow-sm shadow-slate-950 nth-child(odd)]:bg-slate-800">
-                        <div class="text-lg text-end px-4 py-2 text-slate-50 font-bold border-b-[1px] border-slate-400 border-opacity-50">
-                            <span>{{account()?.user?.username}}</span> <!-- Username -->
+                        <div class="px-4 py-2 text-end border-b-[1px] border-slate-400 border-opacity-50">
+                            <span class="text-base md:text-lg text-slate-50 font-bold italic">{{account()?.user?.username | upperFirst}}</span> <!-- Username -->
                         </div>                        
 
                         <div (click)="navigate('account')" class="px-4 py-2 cursor-pointer hover:underline hover:text-slate-50">

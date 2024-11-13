@@ -16,13 +16,9 @@ export class MyAccountComponent{
   private _accountServ = inject(AccountService)
   account = this._accountServ.account
 
-  isProfileActive: boolean = false
+  isProfileActive: boolean = true
   isFavoritesActive: boolean = false
-  isScoreActive: boolean = true
-
-  constructor() { 
-    console.log(this.account())
-  }
+  isScoreActive: boolean = false
 
   goToProfile(){
     this.isProfileActive = true

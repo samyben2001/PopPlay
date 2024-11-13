@@ -4,11 +4,12 @@ import { AuthService } from '../../../services/auth.service';
 import { AccountService } from '../../../services/account.service';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { CommonModule } from '@angular/common';
+import { UpperFirstPipe } from '../../pipes/upper-first.pipe';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, ClickOutsideDirective, CommonModule],
+  imports: [RouterLink, ClickOutsideDirective, CommonModule, UpperFirstPipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -44,5 +45,6 @@ export class NavbarComponent {
     this.closeSubNav()
     this.authServ.removeToken();
     this.accountServ.account.set(null);
+    this.router.navigate(['/']);
   }
 }
