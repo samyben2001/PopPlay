@@ -1,7 +1,6 @@
 import { Component, computed, inject, Input, OnInit } from '@angular/core';
 import { AccountService } from '../../../services/account.service';
 import { ToastService } from '../../../services/toast.service';
-import { AuthService } from '../../../services/auth.service';
 import { ToastTypes } from '../../../enums/ToastTypes';
 import { MinigameService } from '../../../services/minigame.service';
 import { Minigame } from '../../../models/models';
@@ -14,7 +13,6 @@ import { Minigame } from '../../../models/models';
   styleUrl: './like-button.component.css'
 })
 export class LikeButtonComponent {
-  private _authServ = inject(AuthService);
   private _accountServ = inject(AccountService);
   private _minigameServ = inject(MinigameService);
   private _toastServ = inject(ToastService);

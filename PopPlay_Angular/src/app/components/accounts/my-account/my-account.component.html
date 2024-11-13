@@ -9,5 +9,5 @@
 }@else if (isFavoritesActive) {
     <app-minigame-gallery [minigames]="account()?.games_liked!"/>
 }@else if (isScoreActive) {
-
+    <app-account-scores [scores]="account()?.games_score!"/>
 }

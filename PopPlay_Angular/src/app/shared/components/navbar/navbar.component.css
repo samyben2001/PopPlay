@@ -2,6 +2,6 @@
 
 @layer components {
     :host {
-      @apply w-full h-28 top-0 z-50;
+      @apply w-full h-20 md:h-28 top-0 z-50;
     }
   }

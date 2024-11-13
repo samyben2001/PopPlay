@@ -131,7 +131,7 @@ export interface Account {
 export interface UserMinigameScore {
     id: number;
     account: Account;
-    minigame: Minigame;
+    game: Minigame;
     score: number;
     date: Date; // DateTime field
 }
