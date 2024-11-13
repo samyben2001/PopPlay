@@ -1,27 +1,13 @@
 <!-- Account navbar (profile, likes, scores) -->
 <div class="flex flex-row flex-wrap md:gap-x-4 px-2 md:px-4 mb-2 md:mb-4 text-slate-200 font-semibold text-lg">
-    <span [class]="'px-2 md:px-4 py-2 rounded-full hover:underline' + (isProfileActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToProfile()">Profil</span>
-    <span [class]="'px-2 md:px-4 py-2 rounded-full hover:underline' + (isFavoritesActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToFavorites()">Favoris</span>
-    <span [class]="'px-2 md:px-4 py-2 rounded-full hover:underline' + (isScoreActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToScore()">Scores</span>
+    <span [class]="'px-2 md:px-4 py-2 rounded-full cursor-pointer hover:underline' + (isProfileActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToProfile()">Profil</span>
+    <span [class]="'px-2 md:px-4 py-2 rounded-full cursor-pointer hover:underline' + (isFavoritesActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToFavorites()">Favoris</span>
+    <span [class]="'px-2 md:px-4 py-2 rounded-full cursor-pointer hover:underline' + (isScoreActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToScore()">Scores</span>
 </div>
 @if (isProfileActive) {
-    <div class="bg-slate-700 p-4 flex flex-col gap-y-2 text-slate-200">
-        <div class="flex flex-col md:flex-row justify-between">
-            <span class="font-semibold">Nom d'utilisateur: </span>
-            <span class="italic">{{account()?.user?.username}}</span>
-        </div>
-        
-        <div class="flex flex-col md:flex-row justify-between">
-            <span class="font-semibold">Adresse e-mail:</span>
-            <span class="italic">{{account()?.user?.email}}</span>
-        </div>
+    <app-account-infos [accountInfos]="account()?.user"/>
+}@else if (isFavoritesActive) {
+    <app-minigame-gallery [minigames]="account()?.games_liked!"/>
+}@else if (isScoreActive) {
 
-        
-        <div class="flex flex-col md:flex-row justify-between">
-            <span class="font-semibold">Date d'inscription:</span>
-            <span class="italic">{{account()?.user?.date_joined | date: "fullDate"}}</span><!-- TODO: translate to french -->
-        </div>
-
-        <!-- TODO: add a delete account button -->
-    </div>
 }

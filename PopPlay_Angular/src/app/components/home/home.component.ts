@@ -4,11 +4,12 @@ import { Minigame } from '../../models/models';
 import { MinigameCardComponent } from '../../shared/components/minigame-card/minigame-card.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { MinigameGalleryComponent } from '../../shared/components/minigame-gallery/minigame-gallery.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MinigameCardComponent],
+  imports: [MinigameGalleryComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,6 +23,7 @@ export class HomeComponent {
   constructor() {
     this.gameServ.get_all().subscribe(data => {
       this.minigames = data;
+      console.log(data);
     });
   }
 

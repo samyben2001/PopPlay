@@ -1,0 +1,8 @@
+
+<div class="flex flex-row flex-wrap gap-y-4 justify-around items-start">
+    @for (game of minigames; track $index) {
+        <div class="w-11/12 md:w-5/12">
+            <app-minigame-card [minigame]="game"/>
+        </div>
+    }
+</div>

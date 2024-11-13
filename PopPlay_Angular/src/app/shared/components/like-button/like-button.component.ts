@@ -4,6 +4,7 @@ import { ToastService } from '../../../services/toast.service';
 import { AuthService } from '../../../services/auth.service';
 import { ToastTypes } from '../../../enums/ToastTypes';
 import { MinigameService } from '../../../services/minigame.service';
+import { Minigame } from '../../../models/models';
 
 @Component({
   selector: 'app-like-button',
@@ -18,11 +19,11 @@ export class LikeButtonComponent {
   private _minigameServ = inject(MinigameService);
   private _toastServ = inject(ToastService);
 
-  private _minigameId?: number;
-  @Input() set minigameId(value: number) {
-    this._minigameId = value;
+  private _minigame?: Minigame;
+  @Input() set minigame(value: Minigame) {
+    this._minigame = value;
 
-    this._minigameServ.get_likes(value).subscribe({
+    this._minigameServ.get_likes(value.id).subscribe({
       next: (data: any) => {
         this.nbLikes = data.liked_by.length;
       },
@@ -35,8 +36,8 @@ export class LikeButtonComponent {
   nbLikes: number = 0
   account = this._accountServ.account;
 
-  get minigameId(): number | undefined {
-    return this._minigameId;
+  get minigame(): Minigame | undefined {
+    return this._minigame;
   }
 
 
@@ -55,9 +56,11 @@ export class LikeButtonComponent {
           if (this.userGamesLiked().includes(id)) {
             let index = this.userGamesLiked().indexOf(id);
             this.userGamesLiked().splice(index, 1);
+            this.account()!.games_liked = this.account()!.games_liked.filter((game) => game.id !== id);
             this.nbLikes = this.nbLikes - 1
           } else {
             this.userGamesLiked().push(id);
+            this.account()!.games_liked.push(this._minigame!);
             this.nbLikes = this.nbLikes + 1
           }
           this._toastServ.Show('Game Liked', data.response);

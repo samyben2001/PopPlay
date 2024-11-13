@@ -1,5 +1,5 @@
-@if(minigameId){
-    <span (click)="toggleLikeMinigame(minigameId)" class="cursor-pointer flex items-center">{{userGamesLiked().includes(minigameId) ? '❤️' : '🤍'}}
+@if(minigame){
+    <span (click)="toggleLikeMinigame(minigame.id)" class="cursor-pointer flex items-center">{{userGamesLiked().includes(minigame.id) ? '❤️' : '🤍'}}
         <span class="text-base font-normal">({{nbLikes}})</span>
     </span>
 }

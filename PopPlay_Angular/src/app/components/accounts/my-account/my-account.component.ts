@@ -1,12 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { AccountService } from '../../../services/account.service';
-import { Account } from '../../../models/models';
 import { CommonModule } from '@angular/common';
+import { AccountInfosComponent } from '../../../shared/components/account-infos/account-infos.component';
+import { MinigameGalleryComponent } from '../../../shared/components/minigame-gallery/minigame-gallery.component';
 
 @Component({
   selector: 'app-my-account',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AccountInfosComponent, MinigameGalleryComponent],
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css'
 })

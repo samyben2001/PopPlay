@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Account } from '../models/models';
+import { Account, Minigame } from '../models/models';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
@@ -13,11 +13,13 @@ export class AccountService {
   authServ = inject(AuthService)
   apiUrl = environment.apiUrl
   account = signal<Account | null>(null)
+  accountFavorites = signal<Minigame[]>([])
 
   setAccount(id: number) {
     this.httpClient.get<Account>(this.apiUrl + 'account/' + id).subscribe({
       next: (data) => { // get user data
         this.account.set(data);
+        this.accountFavorites.set(data.games_liked);
         console.log(data);
       },
       error: (err) => { console.log(err); }

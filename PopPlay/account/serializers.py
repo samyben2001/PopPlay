@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 from .models import Account, UserMinigameScore
 from minigame.models import Minigame, Theme
-from minigame.serializers import ThemeLightSerializer, MinigameExtraLightSerializer
+from minigame.serializers import MinigameLightSerializer, ThemeLightSerializer, MinigameExtraLightSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -58,7 +58,7 @@ class AccountLightSerializer(serializers.ModelSerializer):
     
 class AccountSerializer(serializers.ModelSerializer):
     themes_liked = ThemeLightSerializer(label='Themes', many=True, read_only=True)
-    games_liked = MinigameExtraLightSerializer(label='Games', many=True, read_only=True)
+    games_liked = MinigameLightSerializer(label='Games', many=True, read_only=True)
     games_score = AccountMinigameScoreSerializer(label='Scores', source='userminigamescore_set', many=True, read_only=True)
     user = UserLightSerializer()
     
