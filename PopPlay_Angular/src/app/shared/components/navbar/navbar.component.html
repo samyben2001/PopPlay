@@ -15,7 +15,7 @@
         }@else {
             <!-- TODO:  add account page (gameliked, scores) -->
              <div class="relative w-full h-full flex flex-col justify-center items-end">
-                <span (click)="isSubNavVisible = true" class="cursor-pointer rounded-full border-2 border-pink-600 p-2 aspect-square bg-slate-800">{{account()?.user?.username | uppercase | slice:0:2}}</span> <!-- User 'avatar' -->
+                <span (click)="isSubNavVisible = true" class="cursor-pointer rounded-full border-2 border-pink-600 p-2 aspect-square bg-slate-800 font-bold">{{account()?.user?.username | uppercase | slice:0:2}}</span> <!-- User 'avatar' -->
 
                 @if (isSubNavVisible) { 
                     <!-- Sub Nav -->

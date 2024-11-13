@@ -1,16 +1,17 @@
-<div class="flex flex-col w-full md:w-3/4 h-[75vh] overflow-auto m-auto text-slate-200 rounded-md border-2 border-pink-600">
-    <div class="flex flex-row justify-around font-semibold py-2 border-b-2 border-pink-600 bg-slate-700">
-            <span>Minigame</span>
-            <span>Type</span>
-            <span>Score</span>
+<div class="flex flex-col w-full md:w-3/4 h-[75vh] m-auto text-slate-200 rounded-md border-2 border-pink-600">
+    <!-- TODO: add sorting + filtering -->
+    <div class="flex flex-row p-2 font-semibold py-2 border-b-2 rounded-t-md  border-pink-600 bg-slate-700">
+            <span class="w-[42.5%]">Minigame</span>
+            <span class="w-[42.5%] px-2">Type</span>
+            <span class="w-[15%] text-right">Score</span>
     </div>
 
-    <div class="flex flex-col [&>*:nth-child(even)]:bg-slate-700">
+    <div class="flex flex-col [&>*:nth-child(even)]:bg-slate-700 overflow-auto scrollbar rounded-b-md ">
         @for (score of scores; track $index) {
-            <div class="flex flex-row gap-x-4 justify-around py-2">
-                <span class="text-ellipsis text-nowrap overflow-hidden">{{score.game.name}}</span>
-                <span class="text-ellipsis text-nowrap overflow-hidden">{{score.game.type.name}}</span>
-                <span class="text-ellipsis text-nowrap overflow-hidden">{{score.score}}</span>
+            <div class="flex flex-row p-2">
+                <span class="w-[42.5%] text-ellipsis text-nowrap overflow-hidden">{{score.game.name}}</span>
+                <span class="px-2 w-[42.5%] text-ellipsis text-nowrap overflow-hidden">{{score.game.type.name}}</span>
+                <span class="w-[15%] text-ellipsis text-nowrap overflow-hidden text-right">{{score.score}}</span>
             </div>
         }
     </div>
