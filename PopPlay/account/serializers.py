@@ -45,7 +45,7 @@ class AccountMinigameScoreSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserMinigameScore
-        fields = ['minigame', 'game', 'score']
+        fields = ['minigame', 'game', 'score', 'date']
         
            
 class AccountLightSerializer(serializers.ModelSerializer):
@@ -59,12 +59,16 @@ class AccountLightSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     themes_liked = ThemeLightSerializer(label='Themes', many=True, read_only=True)
     games_liked = MinigameLightSerializer(label='Games', many=True, read_only=True)
-    games_score = AccountMinigameScoreSerializer(label='Scores', source='userminigamescore_set', many=True, read_only=True)
+    games_score = serializers.SerializerMethodField(label='Scores', read_only=True)
     user = UserLightSerializer()
     
     class Meta:
         model = Account
         fields = '__all__'
+        
+    def get_games_score(self, instance):
+        scores = instance.userminigamescore_set.all().order_by('-date')
+        return AccountMinigameScoreSerializer(scores, many=True).data
   
   
 class AccountThemeLikedSerializer(serializers.ModelSerializer):

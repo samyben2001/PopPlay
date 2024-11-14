@@ -1,17 +1,19 @@
-<div class="flex flex-col w-full md:w-3/4 h-[75vh] m-auto text-slate-200 rounded-md border-2 border-pink-600">
+<div class="flex flex-col w-full md:w-4/5 h-[75vh] m-auto text-slate-200 rounded-md border-2 border-pink-600">
     <!-- TODO: add sorting + filtering -->
-    <div class="flex flex-row p-2 font-semibold py-2 border-b-2 rounded-t-md  border-pink-600 bg-slate-700">
-            <span class="w-[42.5%]">Minigame</span>
-            <span class="w-[42.5%] px-2">Type</span>
-            <span class="w-[15%] text-right">Score</span>
+    <div class="flex flex-row p-1 md:p-2 font-semibold py-1 md:py-2 border-b-2 rounded-t-md border-pink-600 bg-slate-700">
+        <span (click)="sortBy('name')" class="w-[32.5%] cursor-pointer">Minigame</span>
+        <span (click)="sortBy('type')" class="w-[32.5%] px-1 md:px-2 cursor-pointer">Type</span>
+        <span (click)="sortBy('score')" class="w-[14%] cursor-pointer">Score</span>
+        <span (click)="sortBy('date')" class="w-[21%] pl-1 md:pl-2 cursor-pointer">Date</span>
     </div>
 
     <div class="flex flex-col [&>*:nth-child(even)]:bg-slate-700 overflow-auto scrollbar rounded-b-md ">
         @for (score of scores; track $index) {
-            <div class="flex flex-row p-2">
-                <span class="w-[42.5%] text-ellipsis text-nowrap overflow-hidden">{{score.game.name}}</span>
-                <span class="px-2 w-[42.5%] text-ellipsis text-nowrap overflow-hidden">{{score.game.type.name}}</span>
-                <span class="w-[15%] text-ellipsis text-nowrap overflow-hidden text-right">{{score.score}}</span>
+            <div class="flex flex-row p-1 md:p-2">
+                <span class="w-[32.5%] text-ellipsis text-nowrap overflow-hidden">{{score.game.name}}</span>
+                <span class="w-[32.5%] px-1 md:px-2 text-ellipsis text-nowrap overflow-hidden">{{score.game.type.name}}</span>
+                <span class="w-[14%] text-ellipsis text-nowrap overflow-hidden">{{score.score}}</span>
+                <span class="w-[21%] pl-1 md:pl-2 text-ellipsis text-nowrap overflow-hidden">{{score.date | date: 'dd/MM/yy'}}</span>
             </div>
         }
     </div>
