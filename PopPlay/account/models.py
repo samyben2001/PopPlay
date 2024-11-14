@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from minigame.models import Theme
 from minigame.models import Minigame
 
-# TODO:  mail in user model should be unique + add username minlength(3) + get by username
+# TODO:  mail in user model should be unique: heritage de AbstractUser? + add username minlength(3) + get by username
 
 # Create your models here.
 class Account(models.Model):
@@ -18,6 +18,6 @@ class Account(models.Model):
     
 class UserMinigameScore(models.Model):
     account = models.ForeignKey(Account, on_delete=models.DO_NOTHING)
-    minigame = models.ForeignKey(Minigame, on_delete=models.DO_NOTHING)
+    minigame = models.ForeignKey(Minigame, on_delete=models.CASCADE)
     score = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)

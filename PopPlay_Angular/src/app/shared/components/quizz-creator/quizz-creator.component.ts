@@ -1,10 +1,9 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Answer, Question, Quiz, QuizCreate } from '../../../models/models';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
-import { MediaService } from '../../../services/media.service';
 import { MinigameService } from '../../../services/minigame.service';
 
 @Component({
@@ -25,7 +24,22 @@ export class QuizzCreatorComponent implements OnInit {
   answers: string[][] = [[]]
   answersCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   responsesCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
+  private _quizzSelected: Quiz[] = []
+  @Input() set quizzSelected(quizzs: Quiz[]) {
+    this._quizzSelected = quizzs;
+    
+    if (this._quizzSelected.length > 0) {
+      for (let i = 0; i < this._quizzSelected.length; i++) { 
+        if (i > 0) {
+          this.addQuestion();
+        }
+        this.quizz.controls[i].get('question')?.setValue(this._quizzSelected[i].question.question);
+        let answers = this._quizzSelected[i].answers.map(answer => answer.answer)
+        this.quizz.controls[i].get('answers')?.setValue(answers.join(','));
+        this.answers[i] = answers;
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.quizzForm = this.fb.group({
@@ -42,10 +56,10 @@ export class QuizzCreatorComponent implements OnInit {
     return this.quizzForm.get('quizz') as FormArray;
   }
 
-  addQuestion() {
+  addQuestion(questionValue: string = '', answerValue: string = '') {
     const newQuestion = this.fb.group({
-      question: ['', [Validators.required, Validators.minLength(3)]],
-      answers: ['', [Validators.required, Validators.minLength(3)]]
+      question: [questionValue, [Validators.required, Validators.minLength(3)]],
+      answers: [answerValue, [Validators.required, Validators.minLength(1)]]
     })
 
     this.answers.push([]);
@@ -78,6 +92,7 @@ export class QuizzCreatorComponent implements OnInit {
     forkJoin(questionRequests).subscribe({
       next: (responses: Question[]) => {
         this.questionsCreated = responses
+        console.log("questions", responses)
       },
       error: (err) => {
         console.error("Error creating questions: ", err);
@@ -98,6 +113,7 @@ export class QuizzCreatorComponent implements OnInit {
             // Use forkJoin to wait for all requests to complete
             forkJoin(answerRequests).subscribe({
               next: (responses: Answer[]) => {
+                console.log("answers", responses)
                 this.answersCreated.push(responses)
               },
               error: (err) => {
@@ -121,15 +137,15 @@ export class QuizzCreatorComponent implements OnInit {
       next: (data) => {
         if (data) {
           let quizRequests: Observable<Quiz>[] = []
-          for (let i = 0; i < this.quizz.value.length; i++) {
+          for (let i = 0; i < this.quizz.value.length; i++) { //FIXME: Order of question/answer not always match (especially on update)
             const quiz: QuizCreate = {
               question_id: this.questionsCreated[i].id!,
               answers_id: this.answersCreated[i].map((answer) => answer.id!) // FIXME: sometimes error answerCreated undefined: 'TypeError: Cannot read properties of undefined (reading 'map')' on adding quiz
             }
             quizRequests.push(this.minigameServ.create_quizz(quiz));
           }
-          
-          
+
+
           forkJoin(quizRequests).subscribe({
             next: (responses: Quiz[]) => {
               this.quizzCreatedEvent.emit(responses)

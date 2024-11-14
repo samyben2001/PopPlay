@@ -124,4 +124,4 @@ class AccountView(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user_score = UserMinigameScore.objects.create(account=account, minigame=minigame, score=request.data['score'])
-        return Response({'response': f'Le score a bien été ajouté'}, status=status.HTTP_201_CREATED)
+        return Response(AccountMinigameScoreSerializer(user_score).data, status=status.HTTP_201_CREATED)

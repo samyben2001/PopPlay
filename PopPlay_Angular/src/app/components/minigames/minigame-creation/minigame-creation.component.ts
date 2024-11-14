@@ -11,7 +11,7 @@ import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/theme-creator.component";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GameTypes } from '../../../enums/GameTypes';
 import { QuizzCreatorComponent } from '../../../shared/components/quizz-creator/quizz-creator.component';
 
@@ -36,6 +36,7 @@ export class MinigameCreationComponent implements OnInit {
   toastService = inject(ToastService);
   minigameServ = inject(MinigameService);
   activatedRoute = inject(ActivatedRoute);
+  router = inject(Router);
   creationForm: FormGroup = new FormGroup({});
 
   themes: Theme[] = [];
@@ -83,6 +84,7 @@ export class MinigameCreationComponent implements OnInit {
       this.minigameServ.get_by_id(this.gameID).subscribe({
         next: (game) => {
           this.gameToUpdate = game
+          console.log(this.gameToUpdate)
           this.creationForm = this.fb.group({
             id: [this.gameToUpdate.id],
             name: [this.gameToUpdate.name, [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
@@ -102,7 +104,7 @@ export class MinigameCreationComponent implements OnInit {
       this.creationForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
         cover_url: ['', [Validators.required]],
-        type_id: [2, [Validators.required]],
+        type_id: ['', [Validators.required]],
         theme_id: ['', [Validators.required]],
         medias_id: [[]],
         quizz_id: [[]],
@@ -160,6 +162,17 @@ export class MinigameCreationComponent implements OnInit {
     this.isQuizzCreatorVisible = false;
   }
 
+  delete(){
+    this.minigameServ.delete(this.gameToUpdate!.id).subscribe({
+      next: (data) => {
+        console.log(data)
+        this.toastService.Show("Minigame Supprimé", `Minigame ${this.gameToUpdate!.name} supprmimé avec succès`, ToastTypes.SUCCESS, 3000);
+        this.router.navigate(['']);
+      },
+      error: (err) => { console.log(err); }
+    })
+  }
+
   // Submit
   submit() {
     if (this.creationForm.invalid)
@@ -177,7 +190,8 @@ export class MinigameCreationComponent implements OnInit {
 
     this.minigameServ.create(this.creationForm.value).subscribe({
       next: (data) => {
-        this.toastService.Show("Minigmae Created", `Minigame ${data.name} created successfully`, ToastTypes.SUCCESS, 3000);
+        this.toastService.Show("Minigame Créé", `Minigame ${data.name} créé avec succès`, ToastTypes.SUCCESS, 3000);
+        this.router.navigate(['']);
       },
       error: (err) => { console.log(err); }
     });
@@ -189,7 +203,8 @@ export class MinigameCreationComponent implements OnInit {
 
     this.minigameServ.update(this.creationForm.value).subscribe({
       next: (data) => {
-        this.toastService.Show("Minigmae Updated", `Minigame ${data.name} updated successfully`, ToastTypes.SUCCESS, 3000);
+        this.toastService.Show("Minigame Mis à jour", `Minigame ${data.name} mis à jour avec succès`, ToastTypes.SUCCESS, 3000);
+        this.router.navigate(['']);
       },
       error: (err) => { console.log(err); }
     });

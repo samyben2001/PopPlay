@@ -36,6 +36,5 @@ export class MyAccountComponent{
     this.isProfileActive = false
     this.isFavoritesActive = false
     this.isScoreActive = true
-    console.log(this.account()?.games_score)
   }
 }

@@ -40,4 +40,8 @@ export class AccountService {
 
     return this.httpClient.post(this.apiUrl + `account/${userid}/favoris/games/`, {games_liked: gameid});
   }
+
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete(this.apiUrl + 'account/' + id + '/');
+  }
 }

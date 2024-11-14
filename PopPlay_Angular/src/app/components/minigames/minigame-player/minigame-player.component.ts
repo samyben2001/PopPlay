@@ -167,8 +167,8 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private sendScore() {
     this._accountServ.addScore(this.minigame.id, this.score).subscribe({
       next: (data) => {
-        console.log(data);
         // TODO: Show score toast + get score position
+        this._accountServ.account()?.games_score.push(data)
       },
       error: (err) => {
         console.log(err);

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { UserMinigameScore } from '../../../models/models';
 import { CommonModule } from '@angular/common';
 
@@ -9,12 +9,16 @@ import { CommonModule } from '@angular/common';
   templateUrl: './account-scores.component.html',
   styleUrl: './account-scores.component.css'
 })
-export class AccountScoresComponent {
+export class AccountScoresComponent implements OnInit {
   @Input() scores: UserMinigameScore[] = []
   isSortedByName?: boolean
   isSortedByType?: boolean
   isSortedByScore?: boolean
-  isSortedByDate?: boolean = false
+  isSortedByDate?: boolean = true
+
+  ngOnInit() {
+    this.sortBy('date')
+  }
 
   sortBy(field: string) {
     switch (field) {

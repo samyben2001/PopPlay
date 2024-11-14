@@ -39,6 +39,7 @@ export class MinigameService {
     formData.append('name', minigame.name);
     formData.append('type_id', minigame.type_id.toString());
     formData.append('theme_id', minigame.theme_id.toString());
+    console.log(minigame.cover_url)
     if (typeof minigame.cover_url === 'object') 
       formData.append('cover_url', minigame.cover_url);
 
@@ -61,6 +62,10 @@ export class MinigameService {
 
   get_by_id(id: number): Observable<Minigame> {
     return this.httpClient.get<Minigame>(this.apiUrl + 'minigame/' + id);
+  }
+
+  delete(id: number): Observable<any> {
+    return this.httpClient.delete(this.apiUrl + 'minigame/' + id + '/');
   }
 
   create_theme(theme: Theme): Observable<Theme> {
