@@ -11,6 +11,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { AccountService } from '../../../services/api/account.service';
 import { AuthService } from '../../../services/api/auth.service';
 import { GameTypes } from '../../../enums/GameTypes';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-minigame-player',
@@ -69,9 +70,10 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   isCorrectAnswerShown: boolean = false
   isGameEnded: boolean = false
   scoreAnimation: boolean | null = null
+  subscriptions: Subscription[] = []
 
   ngOnInit(): void {
-    this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
+    this.subscriptions.push(this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
 
@@ -87,11 +89,11 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
         console.log(err)
         this._router.navigate(['/error'])
       }
-    })
+    }))
   }
 
   ngAfterViewInit(): void {
-    this.questions.changes.subscribe((question: QueryList<ElementRef>) => {
+    this.subscriptions.push(this.questions.changes.subscribe((question: QueryList<ElementRef>) => {
       if (!question.first) return
 
       if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
@@ -102,7 +104,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       if (this.timerIntervalId != undefined)
         clearInterval(this.timerIntervalId)
       this.activateTimer()
-    })
+    }))
   }
 
 
@@ -165,7 +167,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private sendScore() {
-    this._accountServ.addScore(this.minigame.id, this.score).subscribe({
+    this.subscriptions.push(this._accountServ.addScore(this.minigame.id, this.score).subscribe({
       next: (data) => {
         // TODO: Show score toast + get score position
         this._accountServ.account()?.games_score.push(data)
@@ -174,7 +176,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
         console.log(err);
         this._router.navigate(['/error']);
       }
-    });
+    }));
   }
 
   private activateTimer() {
@@ -289,6 +291,6 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
 
 
   ngOnDestroy(): void {
-    // TODO: unsubscriptions
+    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
 }
