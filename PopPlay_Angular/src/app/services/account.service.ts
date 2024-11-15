@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Account, Minigame } from '../models/models';
+import { Account } from '../models/models';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 

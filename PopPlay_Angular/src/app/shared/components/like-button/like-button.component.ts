@@ -1,9 +1,10 @@
-import { Component, computed, inject, Input, OnInit } from '@angular/core';
+import { Component, computed, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { AccountService } from '../../../services/account.service';
 import { ToastService } from '../../../services/toast.service';
 import { ToastTypes } from '../../../enums/ToastTypes';
 import { MinigameService } from '../../../services/minigame.service';
 import { Minigame } from '../../../models/models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-like-button',
@@ -12,7 +13,7 @@ import { Minigame } from '../../../models/models';
   templateUrl: './like-button.component.html',
   styleUrl: './like-button.component.css'
 })
-export class LikeButtonComponent {
+export class LikeButtonComponent implements OnDestroy{
   private _accountServ = inject(AccountService);
   private _minigameServ = inject(MinigameService);
   private _toastServ = inject(ToastService);
@@ -21,16 +22,17 @@ export class LikeButtonComponent {
   @Input() set minigame(value: Minigame) {
     this._minigame = value;
 
-    this._minigameServ.get_likes(value.id).subscribe({
+    this.subscriptions.push(this._minigameServ.get_likes(value.id).subscribe({
       next: (data: any) => {
         this.nbLikes = data.liked_by.length;
       },
       error: (err) => {
         console.log(err);
       }
-    })
+    }));
   }
-
+  
+  subscriptions: Subscription[] = []
   nbLikes: number = 0
   account = this._accountServ.account;
 
@@ -49,7 +51,7 @@ export class LikeButtonComponent {
 
   toggleLikeMinigame(id: number) {
     try {
-      this._accountServ.addLikedGame(id).subscribe({
+      this.subscriptions.push(this._accountServ.addLikedGame(id).subscribe({
         next: (data) => {
           if (this.userGamesLiked().includes(id)) {
             let index = this.userGamesLiked().indexOf(id);
@@ -66,10 +68,14 @@ export class LikeButtonComponent {
         error: (err) => {
           console.log(err);
         }
-      })
+      }))
     } catch (error: any) {
       this._toastServ.Show('Erreur lors l\'ajout de favoris', error.message, ToastTypes.ERROR);
     }
 
+  }
+  
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
 }

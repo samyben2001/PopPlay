@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MinigameService } from '../../../services/minigame.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Media, Minigame, Quiz, Theme, Type } from '../../../models/models';
@@ -14,6 +14,7 @@ import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameTypes } from '../../../enums/GameTypes';
 import { QuizzCreatorComponent } from '../../../shared/components/quizz-creator/quizz-creator.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-minigame-creation',
@@ -32,7 +33,7 @@ import { QuizzCreatorComponent } from '../../../shared/components/quizz-creator/
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
 })
-export class MinigameCreationComponent implements OnInit {
+export class MinigameCreationComponent implements OnInit, OnDestroy {
   toastService = inject(ToastService);
   minigameServ = inject(MinigameService);
   activatedRoute = inject(ActivatedRoute);
@@ -51,37 +52,40 @@ export class MinigameCreationComponent implements OnInit {
   mediasSelected: Media[] = [];
   quizzSelected: Quiz[] = [];
   selectedCover: string | null = null;
+  subscriptions: Subscription[] = []
 
   gameID?: number = -1;
   gameToUpdate?: Minigame
   isCoverUpdated: boolean = false
 
   constructor(private fb: FormBuilder) { }
+
   ngOnInit(): void {
     // Get all themes, types and medias from API
-    this.minigameServ.get_types().subscribe({
+    this.subscriptions.push(this.minigameServ.get_types().subscribe({
       next: (data) => {
         this.types = data;
         this.imageGuessId = this.types.find(type => type.name == GameTypes.IMAGE_GUESSING)!.id;
         this.quizzId = this.types.find(type => type.name == GameTypes.QUIZZ)!.id;
       },
       error: (err) => { console.log(err); }
-    });
+    }));
 
-    this.minigameServ.get_themes().subscribe({
+    this.subscriptions.push(this.minigameServ.get_themes().subscribe({
       next: (data) => { this.themes = data; },
       error: (err) => { console.log(err); }
-    });
+    }));
 
-    this.minigameServ.get_medias().subscribe({
+    this.subscriptions.push(this.minigameServ.get_medias().subscribe({
       next: (data) => { this.medias = data; },
       error: (err) => { console.log(err); }
-    });
+    }));
 
     // if gameID is provided, Update else Creation
     this.gameID = this.activatedRoute.snapshot.params['gameID'];
     if (this.gameID) {
-      this.minigameServ.get_by_id(this.gameID).subscribe({
+      // Get gameInfos by id from API and populate the form
+      this.subscriptions.push(this.minigameServ.get_by_id(this.gameID).subscribe({
         next: (game) => {
           this.gameToUpdate = game
           console.log(this.gameToUpdate)
@@ -98,7 +102,7 @@ export class MinigameCreationComponent implements OnInit {
           this.quizzSelected = this.gameToUpdate.quizz
           this.selectedCover = this.gameToUpdate.cover_url
         }
-      })
+      }))
     } else {
       // Using FormBuilder to create the FormGroup.
       this.creationForm = this.fb.group({
@@ -163,14 +167,14 @@ export class MinigameCreationComponent implements OnInit {
   }
 
   delete(){
-    this.minigameServ.delete(this.gameToUpdate!.id).subscribe({
+    this.subscriptions.push(this.minigameServ.delete(this.gameToUpdate!.id).subscribe({
       next: (data) => {
         console.log(data)
         this.toastService.Show("Minigame Supprimé", `Minigame ${this.gameToUpdate!.name} supprmimé avec succès`, ToastTypes.SUCCESS, 3000);
         this.router.navigate(['']);
       },
       error: (err) => { console.log(err); }
-    })
+    }))
   }
 
   // Submit
@@ -188,25 +192,29 @@ export class MinigameCreationComponent implements OnInit {
     this.creationForm.patchValue({ medias_id: this.mediasSelected });
     this.creationForm.patchValue({ quizz_id: this.quizzSelected });
 
-    this.minigameServ.create(this.creationForm.value).subscribe({
+    this.subscriptions.push(this.minigameServ.create(this.creationForm.value).subscribe({
       next: (data) => {
         this.toastService.Show("Minigame Créé", `Minigame ${data.name} créé avec succès`, ToastTypes.SUCCESS, 3000);
         this.router.navigate(['']);
       },
       error: (err) => { console.log(err); }
-    });
+    }));
   }
 
   private updateGame() {
     this.creationForm.patchValue({ medias_id: this.mediasSelected });
     this.creationForm.patchValue({ quizz_id: this.quizzSelected });
 
-    this.minigameServ.update(this.creationForm.value).subscribe({
+    this.subscriptions.push(this.minigameServ.update(this.creationForm.value).subscribe({
       next: (data) => {
         this.toastService.Show("Minigame Mis à jour", `Minigame ${data.name} mis à jour avec succès`, ToastTypes.SUCCESS, 3000);
         this.router.navigate(['']);
       },
       error: (err) => { console.log(err); }
-    });
+    }));
+  }
+  
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
 }

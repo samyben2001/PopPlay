@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { checkPasswordIdenticalValidator } from '../../../shared/validators/checkPasswordIdenticalValidator';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -15,11 +16,13 @@ import { AuthService } from '../../../services/auth.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   authServ = inject(AuthService);
   router = inject(Router);
   fb = inject(FormBuilder);
   registerForm: FormGroup = new FormGroup({});
+  
+  subscription: Subscription = new Subscription();
   StrongPasswordRegx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$.])[A-Za-z\d!@#$.]{8,}$/; // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,.)
 
   constructor() {}
@@ -39,7 +42,7 @@ export class RegisterComponent implements OnInit {
   submit() {
     // send registration request to api
     if (this.registerForm.valid) {
-      this.authServ.register(this.registerForm.value).subscribe({
+      this.subscription = this.authServ.register(this.registerForm.value).subscribe({
         next: (token) => { // Registration successful
           this.router.navigate(['/']);
         },
@@ -49,5 +52,9 @@ export class RegisterComponent implements OnInit {
         }
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

@@ -1,9 +1,9 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MediaService } from '../../../services/media.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Media, Answer, MediaCreate, MediaType } from '../../../models/models';
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,7 +16,7 @@ import { MinigameService } from '../../../services/minigame.service';
   templateUrl: './media-creator.component.html',
   styleUrl: './media-creator.component.css'
 })
-export class MediaCreatorComponent implements OnInit {
+export class MediaCreatorComponent implements OnInit, OnDestroy {
   mediaServ = inject(MediaService);
   minigameServ = inject(MinigameService);
   router = inject(Router);
@@ -31,17 +31,18 @@ export class MediaCreatorComponent implements OnInit {
   answersCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   selectedFileName: string = ''
   mediaToCreate!: MediaCreate
+  subscriptions: Subscription[] = []
 
   constructor() { }
 
   ngOnInit(): void {
     // Get all media types
-    this.mediaServ.getAllTypes().subscribe({
+    this.subscriptions.push(this.mediaServ.getAllTypes().subscribe({
       next: (data) => { 
         this.mediaTypes = data;
        },
       error: (err) => { console.log(err); }
-    });
+    }));
 
     // Initialize the form
     this.mediaForm = this.fb.group({
@@ -106,7 +107,7 @@ export class MediaCreatorComponent implements OnInit {
       const answerRequests: Observable<Answer>[] = this.answers.map(answer => this.minigameServ.create_answer(answer.trim()));
 
       // Use forkJoin to wait for all requests to complete
-      forkJoin(answerRequests).subscribe({
+      this.subscriptions.push(forkJoin(answerRequests).subscribe({
           next: (responses: Answer[]) => {
               // Iterate over the responses to patch the form
               const createdIds = responses.map((response: Answer) => response.id!);
@@ -117,7 +118,7 @@ export class MediaCreatorComponent implements OnInit {
           error: (err) => {
               console.error("Error creating answers: ", err);
           }
-      });
+      }));
     }
   }
 
@@ -126,7 +127,7 @@ export class MediaCreatorComponent implements OnInit {
    */
   createMedia() {
     // Wait for all answers to be created before creating the media
-    this.answersCreatedSubject.subscribe({
+    this.subscriptions.push(this.answersCreatedSubject.subscribe({
       next: (data) => { 
         if (data) { 
           // Create the media
@@ -134,17 +135,20 @@ export class MediaCreatorComponent implements OnInit {
           this.mediaToCreate.url = this.mediaForm.value.url
           this.mediaToCreate.type_id = this.mediaForm.value.type_id
 
-          this.mediaServ.create(this.mediaToCreate).subscribe({
+          this.subscriptions.push(this.mediaServ.create(this.mediaToCreate).subscribe({
             next: (data) => { 
               console.log(data); 
               this.mediaCreatedEvent.emit(data); 
             },
             error: (err) => { console.log(err); }
-          })
+          }));
        } 
       },
       error: (err) => { console.log(err); }
-    });
+    }));
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 }
