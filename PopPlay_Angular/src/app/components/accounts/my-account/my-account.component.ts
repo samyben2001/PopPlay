@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { AccountService } from '../../../services/account.service';
+import { AccountService } from '../../../services/api/account.service';
 import { CommonModule } from '@angular/common';
-import { AccountInfosComponent } from '../../../shared/components/account-infos/account-infos.component';
-import { MinigameGalleryComponent } from '../../../shared/components/minigame-gallery/minigame-gallery.component';
-import { AccountScoresComponent } from '../../../shared/components/account-scores/account-scores.component';
+import { AccountInfosComponent } from '../../../shared/components/account/account-infos/account-infos.component';
+import { MinigameGalleryComponent } from '../../../shared/components/minigames/minigame-gallery/minigame-gallery.component';
+import { AccountScoresComponent } from '../../../shared/components/account/account-scores/account-scores.component';
 
 @Component({
   selector: 'app-my-account',

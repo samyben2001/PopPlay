@@ -5,9 +5,10 @@
     </div>
 
     @if (!gameID || (gameID && gameToUpdate)) {
-    <!-- TODO: create confirmation pop-up component -->
      @if(gameToUpdate) {
-         <button class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer self-end mr-2 mb-2" (click)="delete()">
+        <app-confirm-pop-up (confirmEvent)="onPopupConfirm()"/>
+        <button class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer self-end mr-2 mb-2" 
+            (click)="delete()">
             Supprimer le jeu
         </button>
      }
@@ -146,12 +147,12 @@
         <!-- Submit -->
          @if (creationForm.invalid) {
             <button type="submit" 
-            class="bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
+            class="bg-emerald-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
             {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
            </button>
          }@else {   
              <button type="submit" 
-             class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
+             class="bg-emerald-600 hover:bg-emerald-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
              {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
             </button>
         }

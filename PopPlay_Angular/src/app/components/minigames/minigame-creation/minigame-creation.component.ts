@@ -1,25 +1,28 @@
-import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MinigameService } from '../../../services/minigame.service';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Media, Minigame, Quiz, Theme, Type } from '../../../models/models';
 import { CommonModule } from '@angular/common';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { MediaSelectorComponent } from '../../../shared/components/media-selector/media-selector.component';
-import { ToastService } from '../../../services/toast.service';
-import { ToastTypes } from '../../../enums/ToastTypes';
-import { Dropdown, DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { ThemeCreatorComponent } from "../../../shared/components/theme-creator/theme-creator.component";
 import { ActivatedRoute, Router } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { Media, Minigame, Quiz, Theme, Type } from '../../../models/models';
+import { MinigameService } from '../../../services/api/minigame.service';
+import { ToastService } from '../../../services/tools/toast.service';
+import { PopUpService } from '../../../services/tools/pop-up.service';
+import { ToastTypes } from '../../../enums/ToastTypes';
 import { GameTypes } from '../../../enums/GameTypes';
-import { QuizzCreatorComponent } from '../../../shared/components/quizz-creator/quizz-creator.component';
+import { MediaSelectorComponent } from '../../../shared/components/minigames/media-selector/media-selector.component';
+import { ConfirmPopUpComponent } from '../../../shared/components/tools/confirm-pop-up/confirm-pop-up.component';
+import { ThemeCreatorComponent } from "../../../shared/components/minigames/theme-creator/theme-creator.component";
+import { QuizzCreatorComponent } from '../../../shared/components/minigames/quizz-creator/quizz-creator.component';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-minigame-creation',
   standalone: true,
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MediaSelectorComponent,
@@ -29,12 +32,15 @@ import { Subscription } from 'rxjs';
     AutoCompleteModule,
     DropdownModule,
     FloatLabelModule,
-    ThemeCreatorComponent],
+    ThemeCreatorComponent,
+    ConfirmPopUpComponent
+  ],
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
 })
 export class MinigameCreationComponent implements OnInit, OnDestroy {
   toastService = inject(ToastService);
+  popupService = inject(PopUpService);
   minigameServ = inject(MinigameService);
   activatedRoute = inject(ActivatedRoute);
   fb = inject(FormBuilder);
@@ -165,7 +171,11 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
     this.isQuizzCreatorVisible = false;
   }
 
-  delete(){
+  delete() {
+    this.popupService.Show("Êtes vous sur de vouloir supprimer ce minigame ?");
+  }
+
+  onPopupConfirm() {
     this.subscriptions.push(this.minigameServ.delete(this.gameToUpdate!.id).subscribe({
       next: (data) => {
         this.toastService.Show("Minigame Supprimé", `Minigame ${this.gameToUpdate!.name} supprmimé avec succès`, ToastTypes.SUCCESS, 3000);
@@ -211,7 +221,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
       error: (err) => { console.log(err); }
     }));
   }
-  
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())
   }

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
-import { AccountService } from '../../../services/account.service';
+import { AuthService } from '../../../services/api/auth.service';
+import { AccountService } from '../../../services/api/account.service';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { CommonModule } from '@angular/common';
 import { UpperFirstPipe } from '../../pipes/upper-first.pipe';

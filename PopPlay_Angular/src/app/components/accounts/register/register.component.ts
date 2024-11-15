@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../services/api/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({

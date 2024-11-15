@@ -1,10 +1,10 @@
 import { Component, inject, OnDestroy } from '@angular/core';
-import { MinigameService } from '../../services/minigame.service';
+import { MinigameService } from '../../services/api/minigame.service';
 import { Minigame } from '../../models/models';
-import { MinigameCardComponent } from '../../shared/components/minigame-card/minigame-card.component';
+import { MinigameCardComponent } from '../../shared/components/minigames/minigame-card/minigame-card.component';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { MinigameGalleryComponent } from '../../shared/components/minigame-gallery/minigame-gallery.component';
+import { AuthService } from '../../services/api/auth.service';
+import { MinigameGalleryComponent } from '../../shared/components/minigames/minigame-gallery/minigame-gallery.component';
 import { Subscription } from 'rxjs';
 
 @Component({

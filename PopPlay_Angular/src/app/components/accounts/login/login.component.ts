@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AccountService } from '../../../services/account.service';
+import { AccountService } from '../../../services/api/account.service';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../services/api/auth.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';

@@ -1,8 +1,8 @@
 import { HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { AccountService } from '../../services/account.service';
+import { AuthService } from '../../services/api/auth.service';
+import { AccountService } from '../../services/api/account.service';
 import { catchError, throwError } from 'rxjs';
 
 // export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
@@ -24,7 +24,7 @@ import { catchError, throwError } from 'rxjs';
 //       if (Date.now() <= refreshTokenExpirationDate) { // check if refresh token is not expired
 
 //         console.log("refresh token not expired")
-//         // FIXME: multiple calls on refresh token => fixed in 'headersInterceptor' function below
+//         // FIXME(done): multiple calls on refresh token => fixed in 'headersInterceptor' function below
 //         authServ.refreshToken(refreshToken).subscribe({ // get new token from refresh token
 //           next: (token) => {
 //             console.log("token is refreshed")

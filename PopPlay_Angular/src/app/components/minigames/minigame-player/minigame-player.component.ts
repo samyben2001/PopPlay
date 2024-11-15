@@ -1,15 +1,15 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Answer, Minigame } from '../../../models/models';
-import { MinigameService } from '../../../services/minigame.service';
+import { MinigameService } from '../../../services/api/minigame.service';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { DatePipe } from '@angular/common';
 import { NoRightClickDirective } from '../../../shared/directives/no-right-click.directive';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { AccountService } from '../../../services/account.service';
-import { AuthService } from '../../../services/auth.service';
+import { AccountService } from '../../../services/api/account.service';
+import { AuthService } from '../../../services/api/auth.service';
 import { GameTypes } from '../../../enums/GameTypes';
 
 @Component({
