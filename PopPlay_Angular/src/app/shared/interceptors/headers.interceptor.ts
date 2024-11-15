@@ -23,11 +23,11 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
       console.log("token expired", "check for refresh token")
       if (Date.now() <= refreshTokenExpirationDate) { // check if refresh token is not expired
 
-        console.log("refresh token not expired", refreshToken)
+        console.log("refresh token not expired")
         // FIXME: multiple calls on refresh token
         authServ.refreshToken(refreshToken).subscribe({ // get new token from refresh token
           next: (token) => {
-            console.log("refreshed token", token)
+            console.log("token is refreshed")
             authServ.setToken(token);
 
             let clone = req.clone({

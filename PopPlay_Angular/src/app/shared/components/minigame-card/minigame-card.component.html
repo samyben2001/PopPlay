@@ -1,7 +1,7 @@
 <div class="w-full flex flex-col items-center bg-slate-200 rounded-md pb-4 shadow-md shadow-slate-950">
     <div class="flex justify-between w-full pl-4">
         <!-- Minigame Name -->
-        <div class="flex flex-row flex-wrap justify-between w-2/3 text-lg break-words md:text-xl font-extrabold text-slate-700 self-center">
+        <div class="flex flex-row flex-wrap justify-between w-2/3 text-lg md:text-xl font-extrabold text-slate-700 break-words self-center">
             <h3>{{minigame.name}}</h3>
             <app-like-button [minigame]="minigame" class="pr-2"/>
         </div>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Minigame Cover -->
-    <img [src]="minigame.cover_url" [alt]="minigame.name" class="max-h-48 w-full object-cover my-4">
+    <img [src]="minigame.cover_url" [alt]="minigame.name" class="max-h-32 md:max-h-48 w-full object-cover my-4">
 
     <div class="flex flex-row gap-x-4">
         <button type="button" (click)="startGame()"

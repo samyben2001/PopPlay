@@ -1,7 +1,7 @@
 
 <div class="flex flex-row flex-wrap gap-y-4 justify-around items-start">
     @for (game of minigames; track $index) {
-        <div class="w-11/12 md:w-5/12">
+        <div class="w-[95%] md:w-[45%] w xl:w-[30%]">
             <app-minigame-card [minigame]="game"/>
         </div>
     }

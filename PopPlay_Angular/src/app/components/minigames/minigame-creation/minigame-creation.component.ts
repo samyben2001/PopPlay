@@ -37,6 +37,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   toastService = inject(ToastService);
   minigameServ = inject(MinigameService);
   activatedRoute = inject(ActivatedRoute);
+  fb = inject(FormBuilder);
   router = inject(Router);
   creationForm: FormGroup = new FormGroup({});
 
@@ -58,7 +59,6 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   gameToUpdate?: Minigame
   isCoverUpdated: boolean = false
 
-  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
     // Get all themes, types and medias from API
@@ -88,7 +88,6 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
       this.subscriptions.push(this.minigameServ.get_by_id(this.gameID).subscribe({
         next: (game) => {
           this.gameToUpdate = game
-          console.log(this.gameToUpdate)
           this.creationForm = this.fb.group({
             id: [this.gameToUpdate.id],
             name: [this.gameToUpdate.name, [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
@@ -169,7 +168,6 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   delete(){
     this.subscriptions.push(this.minigameServ.delete(this.gameToUpdate!.id).subscribe({
       next: (data) => {
-        console.log(data)
         this.toastService.Show("Minigame Supprimé", `Minigame ${this.gameToUpdate!.name} supprmimé avec succès`, ToastTypes.SUCCESS, 3000);
         this.router.navigate(['']);
       },
