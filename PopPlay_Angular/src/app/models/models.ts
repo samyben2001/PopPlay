@@ -123,6 +123,7 @@ export interface AccountLogin{
 export interface Account {
     id: number;
     user: User;
+    minigames: Minigame[];
     games_liked: Minigame[];
     themes_liked: Theme[];
     games_score: UserMinigameScore[];

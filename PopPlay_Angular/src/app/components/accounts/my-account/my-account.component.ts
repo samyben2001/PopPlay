@@ -19,22 +19,33 @@ export class MyAccountComponent{
   isProfileActive: boolean = true
   isFavoritesActive: boolean = false
   isScoreActive: boolean = false
+  isMyGamesActive: boolean = false
 
   goToProfile(){
     this.isProfileActive = true
     this.isFavoritesActive = false
     this.isScoreActive = false
+    this.isMyGamesActive = false
   }
 
   goToFavorites(){
     this.isProfileActive = false
     this.isFavoritesActive = true
     this.isScoreActive = false
+    this.isMyGamesActive = false
   }
 
   goToScore(){
     this.isProfileActive = false
     this.isFavoritesActive = false
     this.isScoreActive = true
+    this.isMyGamesActive = false
+  }
+
+  goToMyGames(){
+    this.isProfileActive = false
+    this.isFavoritesActive = false
+    this.isScoreActive = false
+    this.isMyGamesActive = true
   }
 }

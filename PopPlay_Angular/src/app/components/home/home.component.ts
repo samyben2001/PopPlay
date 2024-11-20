@@ -17,8 +17,6 @@ import { Subscription } from 'rxjs';
 export class HomeComponent implements OnDestroy{
   router = inject(Router);
   gameServ = inject(MinigameService);
-  authServ = inject(AuthService);
-  isConnected = this.authServ.isConnected;
   minigames?: Minigame[];
   subscription: Subscription = new Subscription();
 
@@ -26,10 +24,6 @@ export class HomeComponent implements OnDestroy{
     this.subscription = this.gameServ.get_all().subscribe(data => {
       this.minigames = data;
     });
-  }
-
-  goToMinigameCreation() { 
-    this.router.navigate(['/minigame/creation']);
   }
 
   ngOnDestroy(): void {

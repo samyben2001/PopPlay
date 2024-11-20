@@ -34,6 +34,10 @@ export class NavbarComponent {
         this.router.navigate(['/accounts/'+ this.account()?.user.username]);
         break
       }
+      case 'gameCreation': {
+        this.router.navigate(['/minigame/creation']);
+        break
+      }
       default: {
         this.router.navigate(['/']);
       }

@@ -24,14 +24,19 @@
                             <span class="text-base md:text-lg text-slate-50 font-bold italic">{{account()?.user?.username | upperFirst}}</span> <!-- Username -->
                         </div>                        
 
-                        <div (click)="navigate('account')" class="px-4 py-2 cursor-pointer hover:underline hover:text-slate-50 flex flex-row gap-x-2 items-center">
+                        <div (click)="navigate('account')" class="px-4 py-2 cursor-pointer group hover:text-slate-50 flex flex-row gap-x-2 items-center">
                             <i class="fa-solid fa-user w-[7%]"></i>
-                            <span>Mon compte</span>
+                            <span class="group-hover:underline">Mon compte</span>
                         </div>
 
-                        <div (click)="logout()" class="px-4 py-2 cursor-pointer hover:underline hover:text-slate-50 flex flex-row gap-x-2 items-center">
+                        <div (click)="navigate('gameCreation')" class="px-4 py-2 cursor-pointer group hover:text-slate-50 flex flex-row gap-x-2 items-center">
+                            <i class="fa-solid fa-circle-plus w-[7%]"></i>
+                            <span class="group-hover:underline">Créer un jeu</span>
+                        </div>
+
+                        <div (click)="logout()" class="px-4 py-2 cursor-pointer group hover:text-slate-50 flex flex-row gap-x-2 items-center">
                             <i class="fa-solid fa-arrow-right-from-bracket w-[7%]"></i>
-                            <span>Se Déconnecter</span>
+                            <span class="group-hover:underline">Se Déconnecter</span>
                         </div>
                     </div>
                 }

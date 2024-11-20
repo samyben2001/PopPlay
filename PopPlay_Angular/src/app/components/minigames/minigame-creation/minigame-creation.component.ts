@@ -106,7 +106,9 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
           this.mediasSelected = this.gameToUpdate.medias
           this.quizzSelected = this.gameToUpdate.quizz
           this.selectedCover = this.gameToUpdate.cover_url
-        }
+        },
+        error: (err) => { 
+          this.router.navigate(['error']);}
       }))
     } else {
       // Using FormBuilder to create the FormGroup.
