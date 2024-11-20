@@ -18,6 +18,7 @@ export interface Minigame {
     id: number;
     name: string;
     cover_url: string;
+    author: Account;
     theme: Theme;
     type: Type;
     medias: Media[];

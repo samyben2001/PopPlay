@@ -115,11 +115,16 @@ class MinigameLightSerializer(serializers.ModelSerializer):
     theme = ThemeLightSerializer(read_only=True)
     type = TypeSerializer(read_only=True)
     
+    author = serializers.SerializerMethodField(read_only=True)
     notes = MinigameUserNoteLightSerializer(source='minigame_notes', many=True, read_only=True)
     
     class Meta:
         model = Minigame
-        fields = ['id', 'name', 'type', 'theme','cover_url', 'notes', 'date_created', 'date_updated']
+        fields = ['id', 'name', 'type', 'theme','cover_url', 'notes', 'date_created', 'date_updated', 'author']
+        
+    def get_author(self, obj):
+        from account.serializers import AccountLightSerializer
+        return AccountLightSerializer(obj.author).data
         
                   
 class MinigameSerializer(serializers.ModelSerializer):
@@ -131,12 +136,27 @@ class MinigameSerializer(serializers.ModelSerializer):
     medias_id = serializers.PrimaryKeyRelatedField(queryset=Media.objects.all(), many=True, write_only=True, source='medias', label='Medias')
     quizz = QuizSerializer(many=True, read_only=True)
     quizz_id = serializers.PrimaryKeyRelatedField(queryset=Quiz.objects.all(), many=True, write_only=True, source='quizz', label='Quizz')
+    author = serializers.SerializerMethodField(read_only=True)
     
     notes = MinigameUserNoteSerializer(source='minigame_notes', many=True, read_only=True)
     
     class Meta:
         model = Minigame
-        fields = ['id', 'name', 'type', 'theme', 'theme_id', 'type_id', 'medias', 'medias_id','quizz', 'quizz_id','cover_url', 'notes', 'date_created', 'date_updated','liked_by']
+        fields = ['id', 'name', 'type', 'theme', 'theme_id', 'type_id', 'medias', 'medias_id','quizz', 'quizz_id','cover_url', 'notes', 'date_created', 'date_updated','liked_by', 'author']
+        
+    def get_author(self, obj):
+        from account.serializers import AccountLightSerializer
+        return AccountLightSerializer(obj.author).data
+        
+    def create(self, validated_data):
+        accountID = self.context.get('request').user.account
+        if accountID is None:
+            raise serializers.ValidationError("You must be logged in to create a minigame")
+        
+        validated_data['author'] = accountID
+        print(accountID)
+        print(validated_data)
+        return super().create(validated_data)
         
 class MinigameLikesSerializer(serializers.ModelSerializer):
     class Meta:

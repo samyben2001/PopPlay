@@ -58,6 +58,7 @@ class AccountLightSerializer(serializers.ModelSerializer):
     
 class AccountSerializer(serializers.ModelSerializer):
     themes_liked = ThemeLightSerializer(label='Themes', many=True, read_only=True)
+    minigames = MinigameLightSerializer(label='Games', many=True, read_only=True)
     games_liked = MinigameLightSerializer(label='Games', many=True, read_only=True)
     games_score = serializers.SerializerMethodField(label='Scores', read_only=True)
     user = UserLightSerializer()

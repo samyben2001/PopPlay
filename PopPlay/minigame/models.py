@@ -78,7 +78,7 @@ class Minigame(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
     cover_url = models.FileField(storage=storages["cloudflare"], blank=True)
-    
+    author = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING, related_name='minigames')
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING)
     type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
     medias = models.ManyToManyField(Media)
