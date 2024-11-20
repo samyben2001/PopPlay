@@ -28,8 +28,9 @@ class RegisterView(CreateAPIView):
 
         # Générer un token JWT après création de l'utilisateur
         refresh = RefreshToken.for_user(user)
+        print(refresh)
         return Response({
-            'account': AccountLightSerializer(account).data,
+            'account_id': account.id,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })

@@ -53,7 +53,13 @@ export class AuthService {
     let token = this.getToken();
     if (!token)
       return null;
-    token = jwtDecode(token.access);
-    return token.account_id;
+    
+    let tokenDecoded: any = jwtDecode(token.access);
+
+    if(!tokenDecoded.account_id){
+      return token.account_id ? token.account_id : null
+    }
+
+    return tokenDecoded.account_id;
   }
 }

@@ -21,7 +21,7 @@ class IsAccountOwnerOrIsStaffOrReadOnly(permissions.BasePermission):
         return obj.user == request.user
     
 
-class IsMinigameOwnerOrIsStaff(permissions.BasePermission):
+class IsMinigameOwnerOrIsStaffOrReadOnly(permissions.BasePermission):
     message = {'error': "Vous n'avez pas le droit d'effectuer cette action. Vous n'êtes pas l'auteur de ce jeu."}
 
     def has_object_permission(self, request, view, obj):

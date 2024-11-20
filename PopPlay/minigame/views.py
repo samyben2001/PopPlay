@@ -8,7 +8,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 
-from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly, IsMinigameOwnerOrIsStaff
+from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly, IsMinigameOwnerOrIsStaffOrReadOnly
 
 from .models import *
 from .serializers import *
@@ -103,7 +103,7 @@ class TypeViewSet(ModelViewSet):
 class MinigameViewSet(ModelViewSet):
     queryset = Minigame.objects.all().order_by('id').prefetch_related('type', 'theme', 'medias', 'notes', 'quizz')
     filter_backends = [DjangoFilterBackend]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsMinigameOwnerOrIsStaff]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsMinigameOwnerOrIsStaffOrReadOnly]
     # TODO: check if name of medias not already used in cloudflare
     def get_serializer_class(self, *args, **kwargs):
         if self.action == 'list':

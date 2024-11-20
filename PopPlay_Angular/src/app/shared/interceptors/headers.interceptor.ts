@@ -72,6 +72,7 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
   const accessToken = token.access
   const refreshToken = token.refresh
   
+  console.log("token exists")
   let clone = req.clone({
     setHeaders: {
       authorization: 'Bearer ' + accessToken,
@@ -90,16 +91,19 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
                 authorization: 'Bearer ' + token.access,
               }
             });
+            console.log("token is refreshed")
             location.reload(); // TODO: check if this is the right way
+            // return next(clone);
           },
           error: (err) => { // refresh token is expired => logout
             authServ.removeToken();
-            accountServ.account.set(null);
+            accountServ.account.set(null); 
             router.navigate(['accounts/login']);
-            alert("Votre session à expiré. Veuillez vous reconnecter.")
+            return throwError(() => err);
           }
         })
       }
+      console.log("error during request with access token")
       return throwError(() => err);
     })
   );

@@ -105,7 +105,7 @@ export interface User {
     username: string;
     email: string;
     date_joined: Date;
-    // other fields for User model as needed
+    is_staff: boolean;
 }
 
 export interface AccountRegister{

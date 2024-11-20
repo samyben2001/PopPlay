@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../services/api/auth.service';
 import { Subscription } from 'rxjs';
+import { AccountService } from '../../../services/api/account.service';
 
 @Component({
   selector: 'app-register',
@@ -18,12 +19,13 @@ import { Subscription } from 'rxjs';
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   authServ = inject(AuthService);
+  accountServ = inject(AccountService);
   router = inject(Router);
   fb = inject(FormBuilder);
   registerForm: FormGroup = new FormGroup({});
   
   subscription: Subscription = new Subscription();
-  StrongPasswordRegx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$.])[A-Za-z\d!@#$.]{8,}$/; // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,.)
+  StrongPasswordRegx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$=.])[A-Za-z\d!@#$=.]{8,}$/; // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,.)
 
   constructor() {}
 
@@ -44,6 +46,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.registerForm.valid) {
       this.subscription = this.authServ.register(this.registerForm.value).subscribe({
         next: (token) => { // Registration successful
+          console.log(token)
+          this.authServ.setToken(token);
+          this.accountServ.setAccount(this.authServ.getConnectedUser()!);
           this.router.navigate(['/']);
         },
         error: (err) => { // Registration failed

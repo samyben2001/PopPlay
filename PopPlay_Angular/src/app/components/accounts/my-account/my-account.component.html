@@ -1,5 +1,5 @@
 <!-- Account navbar (profile, likes, scores, ...) -->
-<div class="flex flex-row items-center md:gap-x-4 px-2 md:px-4 mb-2 md:mb-4 text-slate-200 font-semibold text-base md:text-lg overflow-auto">
+<div class="flex flex-row items-center md:gap-x-2 px-2 md:px-4 mb-2 md:mb-4 text-slate-200 font-semibold text-base md:text-lg overflow-auto">
     <span [class]="'px-3 md:px-4 py-1 md:py-2 whitespace-nowrap rounded-full cursor-pointer hover:underline' + (isProfileActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToProfile()">Profil</span>
     <span [class]="'px-3 md:px-4 py-1 md:py-2 whitespace-nowrap rounded-full cursor-pointer hover:underline' + (isFavoritesActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToFavorites()">Favoris</span>
     <span [class]="'px-3 md:px-4 py-1 md:py-2 whitespace-nowrap rounded-full cursor-pointer hover:underline' + (isScoreActive ? ' bg-slate-700 border-2 border-pink-600' : '')" (click)="goToScore()">Scores</span>
