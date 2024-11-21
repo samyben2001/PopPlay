@@ -20,12 +20,12 @@ export class MinigameService {
     formData.append('theme_id', minigame.theme_id.toString());
     formData.append('cover_url', minigame.cover_url);
 
-    if (minigame.medias_id.length > 0){
+    if (minigame.medias_id.length > 0) {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
       minigame.medias_id.forEach((media: any) => formData.append('medias_id', media.id.toString()));
     }
 
-    if (minigame.quizz_id.length > 0){
+    if (minigame.quizz_id.length > 0) {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
       minigame.quizz_id.forEach((quizz: any) => formData.append('quizz_id', quizz.id.toString()));
     }
@@ -33,31 +33,34 @@ export class MinigameService {
     return this.httpClient.post<Minigame>(this.apiUrl + 'minigame/', formData);
   }
 
-  update(minigame: MinigameCreate): Observable<Minigame>{
-    
+  update(minigame: MinigameCreate): Observable<Minigame> {
+
     const formData = new FormData();
     formData.append('name', minigame.name);
     formData.append('type_id', minigame.type_id.toString());
     formData.append('theme_id', minigame.theme_id.toString());
     console.log(minigame.cover_url)
-    if (typeof minigame.cover_url === 'object') 
+    if (typeof minigame.cover_url === 'object')
       formData.append('cover_url', minigame.cover_url);
 
-    if (minigame.medias_id.length > 0){
+    if (minigame.medias_id.length > 0) {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
       minigame.medias_id.forEach((media: any) => formData.append('medias_id', media.id.toString()));
     }
 
-    if (minigame.quizz_id.length > 0){
+    if (minigame.quizz_id.length > 0) {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
       minigame.quizz_id.forEach((quizz: any) => formData.append('quizz_id', quizz.id.toString()));
     }
-    
+
     return this.httpClient.put<Minigame>(this.apiUrl + 'minigame/' + minigame.id + '/', formData)
   }
 
-  get_all(): Observable<Minigame[]> {
-    return this.httpClient.get<Minigame[]>(this.apiUrl + 'minigame/');
+  get_all(name?: string, typeIds?: number[], themeIds?: number[]): Observable<Minigame[]> {
+    let nameQuery = name ? name : '';
+    let types = typeIds ? typeIds.join(',') : '';
+    let themes = themeIds ? themeIds.join(',') : '';
+    return this.httpClient.get<Minigame[]>(this.apiUrl + `minigame/?name__icontains=${nameQuery}&type__in=${types}&theme__in=${themes}`);
   }
 
   get_by_id(id: number): Observable<Minigame> {
@@ -73,7 +76,7 @@ export class MinigameService {
       name: theme.name,
       category_id: theme.category
     }
-    
+
     return this.httpClient.post<Theme>(this.apiUrl + 'minigame/theme/', body);
   }
 
@@ -90,7 +93,7 @@ export class MinigameService {
   }
 
   create_answer(answer: string): Observable<Answer> {
-    return this.httpClient.post<Answer>(this.apiUrl + 'minigame/answer/' , {answer: answer});
+    return this.httpClient.post<Answer>(this.apiUrl + 'minigame/answer/', { answer: answer });
   }
 
   get_medias(): Observable<Media[]> {
@@ -100,9 +103,9 @@ export class MinigameService {
   get_likes(id: number): Observable<number[]> {
     return this.httpClient.get<number[]>(this.apiUrl + 'minigame/' + id + '/likes/');
   }
-  
+
   create_question(question: string): Observable<Question> {
-    return this.httpClient.post<Question>(this.apiUrl + 'minigame/question/', {question: question});
+    return this.httpClient.post<Question>(this.apiUrl + 'minigame/question/', { question: question });
   }
 
   create_quizz(quiz: QuizCreate): Observable<Quiz> {

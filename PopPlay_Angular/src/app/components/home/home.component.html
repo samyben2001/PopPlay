@@ -1,3 +1,7 @@
+<div class="mb-4">
+    <app-game-search (minigameSelectedEvent)="minigames = $event"/>
+</div>
+
 @if (minigames) {
     <app-minigame-gallery [minigames]="minigames"/>
 }@else {

@@ -6,27 +6,15 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/api/auth.service';
 import { MinigameGalleryComponent } from '../../shared/components/minigames/minigame-gallery/minigame-gallery.component';
 import { Subscription } from 'rxjs';
+import { GameSearchComponent } from '../../shared/components/minigames/game-search/game-search.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MinigameGalleryComponent],
+  imports: [MinigameGalleryComponent, GameSearchComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnDestroy{
-  router = inject(Router);
-  gameServ = inject(MinigameService);
-  minigames?: Minigame[];
-  subscription: Subscription = new Subscription();
-
-  constructor() {
-    this.subscription = this.gameServ.get_all().subscribe(data => {
-      this.minigames = data;
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+export class HomeComponent{
+  minigames: Minigame[] = [];
 }

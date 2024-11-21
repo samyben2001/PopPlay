@@ -47,8 +47,8 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   router = inject(Router);
   creationForm: FormGroup = new FormGroup({});
 
-  themes: Theme[] = [];
   @ViewChild('themeDropdown') themeDropdown!: Dropdown;
+  themes: Theme[] = [];
   types: Type[] = [];
   medias: Media[] = [];
   imageGuessId!: number;

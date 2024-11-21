@@ -19,6 +19,9 @@ p-dropdown div.p-dropdown div.p-dropdown-trigger[aria-expanded='true'] {
 p-floatlabel:has(p-dropdown div.p-dropdown div.p-dropdown-trigger[aria-expanded='true']) label {
     @apply text-slate-200;
 }
+p-floatlabel:has(p-multiselect.p-inputwrapper-focus) label {
+    @apply text-slate-200;
+}
 .p-float-label .p-inputwrapper-filled ~ label,.p-float-label input.p-filled ~ label{
     @apply text-slate-200
 }
