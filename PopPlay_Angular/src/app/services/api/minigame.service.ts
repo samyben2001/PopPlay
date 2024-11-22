@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { Media, Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz } from '../../models/models';
+import { Media, Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz, MinigamePagination } from '../../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -56,11 +56,12 @@ export class MinigameService {
     return this.httpClient.put<Minigame>(this.apiUrl + 'minigame/' + minigame.id + '/', formData)
   }
 
-  get_all(name?: string, typeIds?: number[], themeIds?: number[]): Observable<Minigame[]> {
+  get_all(name?: string, typeIds?: number[], themeIds?: number[], page?: number): Observable<MinigamePagination> {
     let nameQuery = name ? name : '';
     let types = typeIds ? typeIds.join(',') : '';
     let themes = themeIds ? themeIds.join(',') : '';
-    return this.httpClient.get<Minigame[]>(this.apiUrl + `minigame/?name__icontains=${nameQuery}&type__in=${types}&theme__in=${themes}`);
+    let pageQuery = page?.toString() ? page : '1';
+    return this.httpClient.get<MinigamePagination>(this.apiUrl + `minigame/?name__icontains=${nameQuery}&type__in=${types}&theme__in=${themes}&page=${pageQuery}`);
   }
 
   get_by_id(id: number): Observable<Minigame> {

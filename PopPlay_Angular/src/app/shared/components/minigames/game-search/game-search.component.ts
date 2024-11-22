@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Minigame, Theme, Type } from '../../../../models/models';
+import { MinigamePagination, Theme, Type } from '../../../../models/models';
 import { MinigameService } from '../../../../services/api/minigame.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -16,8 +16,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class GameSearchComponent implements OnInit, OnDestroy {
   minigameServ = inject(MinigameService);
-  minigames: Minigame[] = [];
-  @Output() minigameSelectedEvent = new EventEmitter<Minigame[]>();
+  minigames?: MinigamePagination
+  @Output() minigameSelectedEvent = new EventEmitter<MinigamePagination>();
   themes: Theme[] = [];
   types: Type[] = [];
   nameSearched: string = '';

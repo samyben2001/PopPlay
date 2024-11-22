@@ -9,6 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import status
 
+from popplay.paginations import StandardResultsSetPagination
 from minigame.filters import MinigameFilter
 from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly, IsMinigameOwnerOrIsStaffOrReadOnly
 
@@ -107,6 +108,7 @@ class MinigameViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MinigameFilter
     permission_classes = [IsAuthenticatedOrReadOnly, IsMinigameOwnerOrIsStaffOrReadOnly]
+    pagination_class = StandardResultsSetPagination
     # TODO: add pagination
     # TODO: check if name of medias not already used in cloudflare
     def get_serializer_class(self, *args, **kwargs):

@@ -28,6 +28,11 @@ export interface Minigame {
     notes: MinigameUserNote[];
 
 }
+
+export interface MinigamePagination extends Pagination {
+    results: Minigame[]
+}
+
 export interface Question {
     id?: number;
     question: string;
