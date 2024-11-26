@@ -3,11 +3,12 @@ import { MinigameCardComponent } from '../minigame-card/minigame-card.component'
 import { MinigamePagination } from '../../../../models/models';
 import { GameSearchComponent } from '../game-search/game-search.component';
 import { PaginatorService } from '../../../../services/api/paginator.service';
+import { PaginatorComponent } from '../../tools/paginator/paginator.component';
 
 @Component({
   selector: 'app-minigame-gallery',
   standalone: true,
-  imports: [MinigameCardComponent, GameSearchComponent],
+  imports: [MinigameCardComponent, GameSearchComponent, PaginatorComponent],
   templateUrl: './minigame-gallery.component.html',
   styleUrl: './minigame-gallery.component.css'
 })
@@ -16,41 +17,25 @@ export class MinigameGalleryComponent {
   @Input() searchEnabled: boolean = false
 
   pages: number[] = []
-  private _minigames?: MinigamePagination
-  @Input()
-  set minigames(minigames: MinigamePagination | undefined) {
-    this._minigames = minigames
+  @Input() minigames?: MinigamePagination
 
-    for (let i = 1; i <= minigames?.total_pages!; i++) {
-      this.pages.push(i)
-      console.log(this.pages)
+  onPageChanged($event: number) {
+    let path = this.minigames?.next ? this.minigames.next : this.minigames?.previous ? this.minigames.previous : undefined
+
+    if(!path) return
+
+    let regex = new RegExp(/page=(\d+)/);
+
+    if (path?.includes('account') && path?.includes('games_liked')) {
+      regex = /games_liked=(\d+)/;
+      path.replace(regex, `games_liked=${$event}`);
+    } else if (path?.includes('account') && path?.includes('minigames')) {
+      regex = /minigames=(\d+)/;
+      path.replace(regex, `minigames=${$event}`);
+    } else {
+      path.replace(regex, `page=${$event}`);
     }
-    console.log(this.minigames)
-  }
-  get minigames() {
-    return this._minigames
-  }
-  
-
-  changePaginationPage(path: string | undefined) {
-    console.log(path)
-    this.paginatorService.navigate(path!).subscribe({
-      next: (data) => {
-        // FIXME: refacto this
-        if(path?.includes('account') && path?.includes('games_liked')) {
-          this.minigames = data.games_liked;
-        }else if(path?.includes('account') && path?.includes('minigames')) {
-          this.minigames = data.minigames;
-        }else{
-          this.minigames = data;
-        }
-      },
-      error: (err) => { console.log(err); }
-    })
-  }
-
-  goToPage(page: number) {
-    // TODO: implement this 
-    throw new Error('Method not implemented.');
+    
+    this.paginatorService.navigate(path).subscribe(data => this.minigames = data);
   }
 }

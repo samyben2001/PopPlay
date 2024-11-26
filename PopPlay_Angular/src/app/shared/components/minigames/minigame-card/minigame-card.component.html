@@ -28,7 +28,7 @@
 
     <div class="flex flex-row gap-x-4">
         <button type="button" (click)="startGame()"
-            class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer shadow-inner">
+            class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
             Start Game
         </button>
         @if (isConnected() && (account()?.id == minigame.author.id || account()?.user?.is_staff)) {

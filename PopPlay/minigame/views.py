@@ -109,7 +109,6 @@ class MinigameViewSet(ModelViewSet):
     filterset_class = MinigameFilter
     permission_classes = [IsAuthenticatedOrReadOnly, IsMinigameOwnerOrIsStaffOrReadOnly]
     pagination_class = StandardResultsSetPagination
-    # TODO: add pagination
     # TODO: check if name of medias not already used in cloudflare
     def get_serializer_class(self, *args, **kwargs):
         if self.action == 'list':

@@ -1,6 +1,6 @@
 <!-- Search -->
 @if (searchEnabled) {
-    <div class="mb-4">
+    <div class="mb-6">
         <app-game-search (minigameSelectedEvent)="minigames = $event"/>
     </div>
 }
@@ -18,28 +18,6 @@
     }
 </div>
 
-<!-- Pagination TODO: create component + refacto -->
-@if(minigames?.previous || minigames?.next) {
-    <div class=" mt-4">
-        <div class="flex flex-row flex-wrap gap-y-4 justify-center items-center text-slate-200">
-            <!-- Previous button -->
-            @if(minigames?.previous) {
-                <span class="cursor-pointer px-2 py-1 border-2 border-pink-600 hover:bg-pink-600" (click)="changePaginationPage(minigames?.previous)">
-                    &lt;&lt;
-                </span>
-            }
-            
-            <!-- Pages -->
-            <!-- @for (page of pages; track $index) {
-                <span class="cursor-pointer px-2 py-1 border-2 border-pink-600 hover:bg-pink-600" (click)="goToPage(page)">{{page}}</span>
-            } -->
-            
-            <!-- Next button -->
-            @if(minigames?.next) {
-                <span class="cursor-pointer px-2 py-1 border-2 border-pink-600 hover:bg-pink-600" (click)="changePaginationPage(minigames?.next)">
-                    &gt;&gt;
-                </span>
-            }
-        </div>
-    </div>
-}
+<div class="mt-6">
+    <app-paginator [nbItems]="minigames?.count!" (pageChanged)="onPageChanged($event)" [onePageVisible]="true"/>
+</div>

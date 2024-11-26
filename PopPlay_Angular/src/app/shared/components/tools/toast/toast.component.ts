@@ -18,7 +18,7 @@ export class ToastComponent {
   protected titre: WritableSignal<string> = this.toastService.titre;
   private _type: WritableSignal<ToastTypes> = this.toastService.type;
 
-  //TODO: add opacity css transition 
+  //TODO: add opacity css or/and position transition 
   cssBg: Signal<string> = computed(() => {
     switch (this._type()) {
       case ToastTypes.SUCCESS:
