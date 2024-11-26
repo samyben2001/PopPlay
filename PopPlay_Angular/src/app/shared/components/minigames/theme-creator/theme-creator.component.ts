@@ -7,11 +7,13 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { Theme, ThemeCategory } from '../../../../models/models';
 import { MinigameService } from '../../../../services/api/minigame.service';
+import { ButtonComponent } from '../../tools/button/button.component';
+import { BtnTypes } from '../../../../enums/BtnTypes';
 
 @Component({
   selector: 'app-theme-creator',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, DropdownModule, FloatLabelModule],
+  imports: [ReactiveFormsModule, InputTextModule, DropdownModule, FloatLabelModule, ButtonComponent],
   templateUrl: './theme-creator.component.html',
   styleUrl: './theme-creator.component.css'
 })
@@ -19,6 +21,7 @@ export class ThemeCreatorComponent implements OnInit {
   gameServ = inject(MinigameService);
   router = inject(Router);
   fb = inject(FormBuilder);
+  protected btnTypes = BtnTypes
 
   @Input() isVisible: boolean = false
   @Output() themeCreatedEvent = new EventEmitter<Theme | null>()

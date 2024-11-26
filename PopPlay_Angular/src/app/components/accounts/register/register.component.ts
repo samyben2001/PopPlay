@@ -9,11 +9,13 @@ import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../services/api/auth.service';
 import { Subscription } from 'rxjs';
 import { AccountService } from '../../../services/api/account.service';
+import { BtnTypes } from '../../../enums/BtnTypes';
+import { ButtonComponent } from '../../../shared/components/tools/button/button.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FloatLabelModule, InputTextModule,PasswordModule],
+  imports: [CommonModule, ReactiveFormsModule, FloatLabelModule, InputTextModule,PasswordModule, ButtonComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -23,6 +25,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   router = inject(Router);
   fb = inject(FormBuilder);
   registerForm: FormGroup = new FormGroup({});
+  btnTypes = BtnTypes
   
   subscription: Subscription = new Subscription();
   StrongPasswordRegx: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$=.])[A-Za-z\d!@#$=.]{8,}$/; // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character (!,@,#,$,.)

@@ -65,15 +65,9 @@
     
         <!-- Submit -->
         @if (registerForm.invalid) {
-            <button type="submit" 
-            class="bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
-            S'enregistrer
-           </button>
+            <app-button [isSubmit]="true" text="S'enregistrer" [btnType]="btnTypes.PINK" [disabled]="true"/>
          }@else {   
-             <button type="submit" 
-             class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
-             S'enregistrer
-            </button>
+            <app-button [isSubmit]="true" text="S'enregistrer" [btnType]="btnTypes.PINK"/>
         }
     </form>
 </div>

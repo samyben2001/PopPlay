@@ -3,11 +3,13 @@ import { Media } from '../../../../models/models';
 import { MediaCreatorComponent } from '../media-creator/media-creator.component';
 import { ToastService } from '../../../../services/tools/toast.service';
 import { ToastTypes } from '../../../../enums/ToastTypes';
+import { ButtonComponent } from '../../tools/button/button.component';
+import { BtnTypes } from '../../../../enums/BtnTypes';
 
 @Component({
   selector: 'app-media-selector',
   standalone: true,
-  imports: [MediaCreatorComponent],
+  imports: [MediaCreatorComponent, ButtonComponent],
   templateUrl: './media-selector.component.html',
   styleUrl: './media-selector.component.css'
 })
@@ -19,6 +21,7 @@ export class MediaSelectorComponent implements OnChanges{
   @Output() selectedMediasEvent = new EventEmitter<Media[] | null>();
 
   isCreatorVisible: boolean = false;
+  protected btnTypes = BtnTypes
 
   @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
 

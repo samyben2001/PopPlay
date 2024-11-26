@@ -35,15 +35,9 @@
 
                 <!-- Submit Button -->
                 @if (themeForm.invalid) {
-                    <button type="submit" 
-                    class="bg-pink-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
-                    Ajouter le thème
-                </button>
+                    <app-button [isSubmit]="true" text="Ajouter le thème" [btnType]="btnTypes.GREEN" [disabled]="true"/>
                 }@else {   
-                    <button type="submit" 
-                    class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
-                    Ajouter le thème
-                    </button>
+                    <app-button [isSubmit]="true" text="Ajouter le thème" [btnType]="btnTypes.GREEN"/>
                 }
             </form>
         </div>

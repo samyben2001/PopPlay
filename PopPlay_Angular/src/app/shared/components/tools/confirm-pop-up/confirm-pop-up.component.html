@@ -4,12 +4,8 @@
         <p class="text-slate-200 mb-6 text-lg md:text-xl font-semibold">{{message() | upperFirst}}</p>
 
         <div class="flex flex-row justify-center gap-x-4">
-            <button class="bg-emerald-600 hover:bg-emerald-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer"
-                (click)="confirm()">Confirmer
-            </button>
-            <button class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer"
-                (click)="dismiss()">Annuler
-            </button>
+            <app-button text="Confirmer" [btnType]="btnTypes.GREEN" (onClick)="confirm()"/>
+            <app-button text="Annuler" [btnType]="btnTypes.PINK" (onClick)="dismiss()"/>
         </div>
 
     </div>

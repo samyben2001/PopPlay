@@ -8,11 +8,13 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { MinigameService } from '../../../../services/api/minigame.service';
+import { ButtonComponent } from '../../tools/button/button.component';
+import { BtnTypes } from '../../../../enums/BtnTypes';
 
 @Component({
   selector: 'app-media-creator',
   standalone: true,
-  imports: [ ReactiveFormsModule, InputTextModule, DropdownModule, FloatLabelModule],
+  imports: [ ReactiveFormsModule, InputTextModule, DropdownModule, FloatLabelModule, ButtonComponent],
   templateUrl: './media-creator.component.html',
   styleUrl: './media-creator.component.css'
 })
@@ -32,6 +34,7 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
   selectedFileName: string = ''
   mediaToCreate!: MediaCreate
   subscriptions: Subscription[] = []
+  protected btnTypes = BtnTypes
 
   constructor() { }
 

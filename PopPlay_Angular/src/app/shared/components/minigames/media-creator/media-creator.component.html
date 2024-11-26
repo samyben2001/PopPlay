@@ -8,11 +8,10 @@
 
                 <!-- Media Selector Button -->
                 <div class="flex flex-col mb-6">
-                    <button type="button" (click)="fileInput.click()" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">
-                        <span>{{!selectedFileName ? 'Sélectionner un média' : 'Modifier le média'}}</span>
-                        <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
-                    </button>
-                    <span class="text-slate-200">{{selectedFileName ? selectedFileName : 'Aucun fichier sélectionné'}}</span>
+                    <app-button [text]="!selectedFileName ? 'Sélectionner un média' : 'Modifier le média'" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
+                    <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
+                    
+                    <span class="text-slate-200 mt-1">{{selectedFileName ? selectedFileName : 'Aucun fichier sélectionné'}}</span>
                 </div>
 
                 <!-- Media Name -->
@@ -58,17 +57,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                @if (mediaForm.invalid) {
-                    <button type="submit" 
-                    class="bg-emerald-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed mt-2" disabled>
-                    Ajouter le media
-                </button>
-                }@else {   
-                    <button type="submit" 
-                    class="bg-emerald-600 hover:bg-emerald-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer mt-2">
-                    Ajouter le media
-                    </button>
-                }
+                <app-button [isSubmit]="true" text="Ajouter le media" [btnType]="btnTypes.GREEN" [disabled]="mediaForm.invalid"/>
             </form>
         </div>
     </div>

@@ -5,11 +5,13 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs';
 import { MinigameService } from '../../../../services/api/minigame.service';
+import { BtnTypes } from '../../../../enums/BtnTypes';
+import { ButtonComponent } from '../../tools/button/button.component';
 
 @Component({
   selector: 'app-quizz-creator',
   standalone: true,
-  imports: [ReactiveFormsModule, FloatLabelModule, InputTextModule],
+  imports: [ReactiveFormsModule, FloatLabelModule, InputTextModule, ButtonComponent],
   templateUrl: './quizz-creator.component.html',
   styleUrl: './quizz-creator.component.css'
 })
@@ -25,6 +27,7 @@ export class QuizzCreatorComponent implements OnInit {
   answersCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   responsesCreatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   subscriptions: Subscription[] = []
+  protected btnTypes = BtnTypes
   private _quizzSelected: Quiz[] = []
   @Input() set quizzSelected(quizzs: Quiz[]) {
     this._quizzSelected = quizzs;

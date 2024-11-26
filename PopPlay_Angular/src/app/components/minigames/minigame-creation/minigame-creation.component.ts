@@ -17,6 +17,8 @@ import { ConfirmPopUpComponent } from '../../../shared/components/tools/confirm-
 import { ThemeCreatorComponent } from "../../../shared/components/minigames/theme-creator/theme-creator.component";
 import { QuizzCreatorComponent } from '../../../shared/components/minigames/quizz-creator/quizz-creator.component';
 import { Subscription } from 'rxjs';
+import { ButtonComponent } from '../../../shared/components/tools/button/button.component';
+import { BtnTypes } from '../../../enums/BtnTypes';
 
 @Component({
   selector: 'app-minigame-creation',
@@ -33,7 +35,8 @@ import { Subscription } from 'rxjs';
     DropdownModule,
     FloatLabelModule,
     ThemeCreatorComponent,
-    ConfirmPopUpComponent
+    ConfirmPopUpComponent,
+    ButtonComponent
   ],
   templateUrl: './minigame-creation.component.html',
   styleUrl: './minigame-creation.component.css'
@@ -64,6 +67,8 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   gameID?: number = -1;
   gameToUpdate?: Minigame
   isCoverUpdated: boolean = false
+
+  btnTypes = BtnTypes
 
 
   ngOnInit(): void {

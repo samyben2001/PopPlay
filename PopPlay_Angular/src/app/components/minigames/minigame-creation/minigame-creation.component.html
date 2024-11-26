@@ -7,10 +7,8 @@
     @if (!gameID || (gameID && gameToUpdate)) {
      @if(gameToUpdate) {
         <app-confirm-pop-up (confirmEvent)="onPopupConfirm()"/>
-        <button class="bg-pink-600 hover:bg-pink-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer self-end mr-2 mb-2" 
-            (click)="delete()">
-            Supprimer le jeu
-        </button>
+        
+        <app-button class="self-end" text="Supprimer le jeu" [btnType]="btnTypes.PINK" (onClick)="delete()"/>
      }
     <!-- Game Creation Form -->
     <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full md:w-1/2 p-6 rounded bg-slate-700">
@@ -36,12 +34,11 @@
 
         <!-- Cover -->
         <div class="flex flex-col mb-6">
-            <button type="button" (click)="fileInput.click()" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer">
-                <span>{{!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'}}</span>
-                <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
-            </button>
+            <app-button [text]="!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
+            <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
+                    
             @if (!gameToUpdate || (gameToUpdate && isCoverUpdated)) {
-                <span class="text-slate-200">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
+                <span class="text-slate-200 mt-1">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
             }@else{
                 <div class="h-24 mt-2 flex justify-center">
                     <img [src]="selectedCover" [alt]="gameToUpdate.name" class="h-full w-auto">
@@ -95,8 +92,9 @@
                         styleClass="w-full" #themeDropdown/> 
                     <label for="theme">Thème</label>
                 </p-floatLabel>
-
-                <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer ml-2" (click)="openThemesCreator()">+</button>
+                
+                    
+                <app-button class="ml-2" text="+" [btnType]="btnTypes.CYAN" (onClick)="openThemesCreator()"/>
             </div>
             @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
                 <span class="text-red-600 text-sm">
@@ -120,9 +118,8 @@
                             <p class="text-slate-200">Aucun média sélectionné</p>
                         }
                     </div>
-                    <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openMediasSelector()">
-                        {{mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'}}
-                    </button>
+                    
+                    <app-button [text]="mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'" [btnType]="btnTypes.CYAN" (onClick)="openMediasSelector()"/>
                 </div>
             }
             @case (quizzId) {
@@ -136,24 +133,17 @@
                             <p class="text-slate-200">Aucune question sélectionnée</p>
                         }
                     </div>
-                    <button type="button" class="bg-sky-400 hover:bg-sky-500 text-slate-700 font-bold py-2 px-4 rounded cursor-pointer mt-2" (click)="openQuizzCreator()">
-                        {{quizzSelected.length > 0 ? 'Modifier le quizz' : 'Ajouter un quizz'}}
-                    </button>
+                    
+                    <app-button [text]="quizzSelected.length > 0 ? 'Modifier le quizz' : 'Ajouter un quizz'" [btnType]="btnTypes.CYAN" (onClick)="openQuizzCreator()"/>
                 </div>
             }
          }
     
         <!-- Submit -->
          @if (creationForm.invalid) {
-            <button type="submit" 
-            class="bg-emerald-950 text-slate-200 font-bold py-2 px-4 rounded cursor-not-allowed" disabled>
-            {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
-           </button>
+            <app-button [isSubmit]="true" [text]="!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'" [btnType]="btnTypes.GREEN" [disabled]="true"/>
          }@else {   
-             <button type="submit" 
-             class="bg-emerald-600 hover:bg-emerald-700 text-slate-200 font-bold py-2 px-4 rounded cursor-pointer">
-             {{!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'}}
-            </button>
+            <app-button [isSubmit]="true" [text]="!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'" [btnType]="btnTypes.GREEN"/>
         }
     </form>
     }

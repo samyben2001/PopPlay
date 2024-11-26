@@ -12,11 +12,13 @@ import { AccountService } from '../../../services/api/account.service';
 import { AuthService } from '../../../services/api/auth.service';
 import { GameTypes } from '../../../enums/GameTypes';
 import { Subscription } from 'rxjs';
+import { ButtonComponent } from '../../../shared/components/tools/button/button.component';
+import { BtnTypes } from '../../../enums/BtnTypes';
 
 @Component({
   selector: 'app-minigame-player',
   standalone: true,
-  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective],
+  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective, ButtonComponent],
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css',
   animations: [trigger('hiddenVisible', [
@@ -48,6 +50,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private MAX_TIMER: number = 30
   private TIME_BETWEEN_MEDIAS: number = 5
   private SCORE_PER_ERROR: number = -100
+  protected btnTypes = BtnTypes
 
   minigame!: Minigame
 

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { MinigamePagination } from '../../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,9 @@ import { Observable, Subject } from 'rxjs';
 export class PaginatorService {
   httpClient = inject(HttpClient);
 
-  navigate(url: string): Observable<any> {
+  navigate(url: string): Observable<MinigamePagination> {
 
-    let subject = new Subject<any>();
+    let subject = new Subject<MinigamePagination>();
 
     this.httpClient.get<any>(url).subscribe({
       next: (data) => {
