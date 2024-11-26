@@ -45,7 +45,7 @@ export class LikeButtonComponent implements OnDestroy{
     if (!this.account())
       return [];
 
-    return this.account()!.games_liked.map((game) => game.id)
+    return this.account()!.games_liked.results.map((game) => game.id)
   });
 
 
@@ -56,11 +56,11 @@ export class LikeButtonComponent implements OnDestroy{
           if (this.userGamesLiked().includes(id)) {
             let index = this.userGamesLiked().indexOf(id);
             this.userGamesLiked().splice(index, 1);
-            this.account()!.games_liked = this.account()!.games_liked.filter((game) => game.id !== id);
+            this.account()!.games_liked.results = this.account()!.games_liked.results.filter((game) => game.id !== id);
             this.nbLikes = this.nbLikes - 1
           } else {
             this.userGamesLiked().push(id);
-            this.account()!.games_liked.push(this._minigame!);
+            this.account()!.games_liked.results.push(this._minigame!);
             this.nbLikes = this.nbLikes + 1
           }
           this._toastServ.Show('Game Liked', data.response);

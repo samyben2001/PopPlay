@@ -28,13 +28,6 @@ export class GameSearchComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = []
 
   ngOnInit(): void {
-    // Get all themes, types and medias from API
-    this.subscriptions.push(this.minigameServ.get_all().subscribe(data => {
-      this.minigames = data;
-      this.minigameSelectedEvent.emit(this.minigames);
-    })
-    );
-
     this.subscriptions.push(this.minigameServ.get_types().subscribe({
       next: (data) => {
         this.types = data;

@@ -1,7 +1,45 @@
+<!-- Search -->
+@if (searchEnabled) {
+    <div class="mb-4">
+        <app-game-search (minigameSelectedEvent)="minigames = $event"/>
+    </div>
+}
+
+<!-- List of minigames -->
 <div class="flex flex-row flex-wrap gap-y-4 justify-around items-start">
-    @for (game of minigames; track $index) {
+    @for (game of minigames?.results; track $index) {
         <div class="w-[95%] md:w-[45%] w xl:w-[30%]">
             <app-minigame-card [minigame]="game"/>
         </div>
+    }@empty {
+        <div class="flex justify-center">
+            <p class="text-xl md:text-3xl text-slate-200">Chargement des jeux en cours ...</p>
+        </div>
     }
 </div>
+
+<!-- Pagination TODO: create component + refacto -->
+@if(minigames?.previous || minigames?.next) {
+    <div class=" mt-4">
+        <div class="flex flex-row flex-wrap gap-y-4 justify-center items-center text-slate-200">
+            <!-- Previous button -->
+            @if(minigames?.previous) {
+                <span class="cursor-pointer px-2 py-1 border-2 border-pink-600 hover:bg-pink-600" (click)="changePaginationPage(minigames?.previous)">
+                    &lt;&lt;
+                </span>
+            }
+            
+            <!-- Pages -->
+            <!-- @for (page of pages; track $index) {
+                <span class="cursor-pointer px-2 py-1 border-2 border-pink-600 hover:bg-pink-600" (click)="goToPage(page)">{{page}}</span>
+            } -->
+            
+            <!-- Next button -->
+            @if(minigames?.next) {
+                <span class="cursor-pointer px-2 py-1 border-2 border-pink-600 hover:bg-pink-600" (click)="changePaginationPage(minigames?.next)">
+                    &gt;&gt;
+                </span>
+            }
+        </div>
+    </div>
+}

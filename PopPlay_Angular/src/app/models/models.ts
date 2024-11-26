@@ -2,6 +2,7 @@ interface Pagination {
     count: number;
     next: string;
     previous: string;
+    total_pages: number;
 }
 
 export interface MinigameCreate {
@@ -128,8 +129,8 @@ export interface AccountLogin{
 export interface Account {
     id: number;
     user: User;
-    minigames: Minigame[];
-    games_liked: Minigame[];
+    minigames: MinigamePagination;
+    games_liked: MinigamePagination;
     themes_liked: Theme[];
     games_score: UserMinigameScore[];
     minigamesNotes: MinigameUserNote[];

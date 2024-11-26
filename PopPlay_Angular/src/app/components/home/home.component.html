@@ -1,11 +1,1 @@
-<div class="mb-4">
-    <app-game-search (minigameSelectedEvent)="minigames = $event"/>
-</div>
-
-@if (minigames) {
-    <app-minigame-gallery [minigames]="minigames.results"/>
-}@else {
-    <div class="flex justify-center">
-        <p class="text-xl md:text-3xl text-slate-200">Chargement des jeux en cours ...</p>
-    </div>
-}
+<app-minigame-gallery [minigames]="minigames" [searchEnabled]="true"/>

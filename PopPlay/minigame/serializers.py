@@ -123,7 +123,7 @@ class MinigameLightSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'type', 'theme','cover_url', 'notes', 'date_created', 'date_updated', 'author']
         
     def get_author(self, obj):
-        from account.serializers import AccountLightSerializer
+        from account.serializers import AccountLightSerializer # local import to avoid circular import
         return AccountLightSerializer(obj.author).data
         
                   
@@ -154,8 +154,6 @@ class MinigameSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You must be logged in to create a minigame")
         
         validated_data['author'] = accountID
-        print(accountID)
-        print(validated_data)
         return super().create(validated_data)
         
 class MinigameLikesSerializer(serializers.ModelSerializer):

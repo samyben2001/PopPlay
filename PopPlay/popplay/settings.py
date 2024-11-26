@@ -166,8 +166,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = { 
-    # It will work instead of the default serializer(TokenObtainPairSerializer).
-    "TOKEN_OBTAIN_SERIALIZER": "account.serializers.MyTokenObtainPairSerializer",
+    
+    "TOKEN_OBTAIN_SERIALIZER": "account.serializers.MyTokenObtainPairSerializer",# custom token serializer instead of default TokenObtainPairSerializer.
     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30), # custom lifetime for access token
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1), # custom lifetime for refresh token
     'ROTATE_REFRESH_TOKENS': True 

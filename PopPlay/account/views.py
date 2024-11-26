@@ -13,6 +13,7 @@ from minigame.serializers import ThemeLightSerializer, MinigameExtraLightSeriali
 from .models import Account
 from .serializers import *
 from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly
+from account.filters import AccountMinigameFilter
 
 # Create your views here.
 class RegisterView(CreateAPIView):
@@ -38,6 +39,7 @@ class RegisterView(CreateAPIView):
 class AccountView(ModelViewSet):
     queryset = Account.objects.all().order_by('id')
     filter_backends = [DjangoFilterBackend]
+    # filter_class = AccountMinigameFilter TODO: add filters on minigames
     
     # set serializer class based on action
     def get_serializer_class(self, *args, **kwargs):
@@ -50,6 +52,12 @@ class AccountView(ModelViewSet):
         elif self.action == 'add_score':
             return AccountMinigameScoreSerializer
         return AccountSerializer
+
+    def get_serializer_context(self):
+        """
+        Pass the request to the serializer context.
+        """
+        return {'request': self.request}
     
     # add theme as favorite
     @action(detail=True, methods=['post', 'get'], permission_classes=[IsAuthenticated, IsAccountOwnerOrIsStaffOrReadOnly], url_path='favoris/themes')
