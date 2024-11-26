@@ -18,7 +18,6 @@ export class AccountService {
     this.httpClient.get<Account>(this.apiUrl + 'account/' + id).subscribe({
       next: (data) => { // get user account data
         this.account.set(data);
-        console.log(data);
       },
       error: (err) => { console.log(err); }
     });

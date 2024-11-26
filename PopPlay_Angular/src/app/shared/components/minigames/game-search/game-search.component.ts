@@ -48,7 +48,6 @@ export class GameSearchComponent implements OnInit, OnDestroy {
   }
 
   onNameChanged() {
-    console.log(this.nameSearched)
       let nameQuery = this.nameSearched.length >= 2 ? this.nameSearched : '';
       this.subscriptions.push(this.minigameServ.get_all(nameQuery, this.typesSearched, this.themesSearched).subscribe(data => {
         this.minigames = data;

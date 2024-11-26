@@ -15,8 +15,6 @@ export class PaginatorService {
 
     this.httpClient.get<any>(url).subscribe({
       next: (data) => {
-        // FIXME: refacto this
-        console.log(data);
         if (url?.includes('account') && url?.includes('games_liked')) {
           subject.next(data.games_liked);
         } else if (url?.includes('account') && url?.includes('minigames')) {
