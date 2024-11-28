@@ -3,12 +3,14 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Media, MediaCreate, MediaType } from '../../models/models';
+import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MediaService {
   httpClient = inject(HttpClient);
+  accountServ = inject(AccountService)
   apiUrl = environment.apiUrl
 
   constructor() { }
@@ -29,11 +31,19 @@ export class MediaService {
     return this.httpClient.post<Media>(this.apiUrl + 'minigame/media/', formData);
   }
 
-  getAll(typeId? : number): Observable<Media[]> {
-    console.log(typeId)
-    if (typeId == null)
-      return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/');
-    return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/?type=' + typeId);
+  getAll(typeIds? : number[]): Observable<Media[]> {
+    let types = typeIds ? typeIds.join(',') : '';
+    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}`);
+  }
+
+  getAllByUser(typeIds? : number[]): Observable<Media[]> {
+    if(this.accountServ.account() == null){
+      throw new Error("Account not connected");
+    }
+
+    let userId = this.accountServ.account()!.id;
+    let types = typeIds ? typeIds.join(',') : '';
+    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}&minigame__author=${userId}`);
   }
 
   getAllTypes(): Observable<MediaType[]> {

@@ -10,7 +10,7 @@ from rest_framework import filters
 from rest_framework import status
 
 from popplay.paginations import StandardResultsSetPagination
-from minigame.filters import MinigameFilter
+from minigame.filters import MediaFilter, MinigameFilter
 from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly, IsMinigameOwnerOrIsStaffOrReadOnly
 
 from .models import *
@@ -91,7 +91,7 @@ class MediaViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   
-    filterset_fields = ['type']
+    filterset_class = MediaFilter
     # parser_classes = [MultiPartParser, FormParser]
 
     

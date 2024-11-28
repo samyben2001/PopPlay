@@ -1,5 +1,5 @@
 import django_filters
-from minigame.models import Minigame
+from minigame.models import Media, Minigame
 
 class MinigameFilter(django_filters.FilterSet):
     class Meta:
@@ -9,3 +9,11 @@ class MinigameFilter(django_filters.FilterSet):
             'type': ['in', 'exact'],
             'theme': ['in', 'exact'],
         }
+        
+class MediaFilter(django_filters.FilterSet):
+    class Meta:
+        model = Media
+        fields = {
+                  'type': ['in', 'exact'],
+                  'minigame__author': ['exact'],
+                  }

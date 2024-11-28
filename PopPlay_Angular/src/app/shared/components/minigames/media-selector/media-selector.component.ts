@@ -21,6 +21,7 @@ export class MediaSelectorComponent implements OnChanges {
   protected medias: Media[] = [];
   protected btnTypes = BtnTypes
   protected isCreatorVisible: boolean = false;
+  protected onlyMine: boolean = true;
   @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
   @Input() isVisible: boolean = false;
   @Input() selectedMedias: Media[] = [];
@@ -28,20 +29,12 @@ export class MediaSelectorComponent implements OnChanges {
   private _mediaType: MediaTypes = MediaTypes.IMAGE;
   @Input() set mediaType(mediaType: MediaTypes) {
     this._mediaType = mediaType;
-    console.log(mediaType)
-    this.mediaService.getAll(mediaType).subscribe({
-      next: (medias) => {
-        console.log(medias)
-        this.medias = medias;
-      },
-      error: (err) => { console.log(err); }
-    });
+    this.GetMedias(this.onlyMine);
   }
 
   get mediaType(): MediaTypes {
     return this._mediaType;
   }
-
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -57,6 +50,12 @@ export class MediaSelectorComponent implements OnChanges {
     }
   }
 
+
+  toggleOnlyMine() {
+    this.onlyMine = !this.onlyMine;
+    this.GetMedias(this.onlyMine);
+  }
+
   selectMedia(media: Media) {
     // add or remove the media
     if (!this.selectedMedias.includes(media)) {
@@ -67,6 +66,25 @@ export class MediaSelectorComponent implements OnChanges {
       this.ToggleCheckbox(media, false);
     }
   }
+
+  private GetMedias(onlyMine: boolean) {
+    if (!onlyMine) {
+      this.mediaService.getAll([this.mediaType]).subscribe({
+        next: (medias) => {
+          this.medias = medias;
+        },
+        error: (err) => { console.log(err); }
+      });
+    } else {
+      this.mediaService.getAllByUser([this.mediaType]).subscribe({
+        next: (medias) => {
+          this.medias = medias;
+        },
+        error: (err) => { console.log(err); }
+      });
+    }
+  }
+
 
   private ToggleCheckbox(media: Media, value: boolean) {
     // (un)check the checkbox mathcing the media id

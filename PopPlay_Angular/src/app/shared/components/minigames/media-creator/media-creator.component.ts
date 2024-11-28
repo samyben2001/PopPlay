@@ -1,7 +1,6 @@
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MediaService } from '../../../../services/api/media.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Media, Answer, MediaCreate, MediaType } from '../../../../models/models';
 import { BehaviorSubject, forkJoin, Observable, Subscription } from 'rxjs';
 import { DropdownModule } from 'primeng/dropdown';
@@ -20,10 +19,9 @@ import { MediaTypes } from '../../../../enums/MediaTypes';
   styleUrl: './media-creator.component.css'
 })
 export class MediaCreatorComponent implements OnInit, OnDestroy {
-  mediaServ = inject(MediaService);
-  minigameServ = inject(MinigameService);
-  router = inject(Router);
-  fb = inject(FormBuilder);
+  private mediaServ = inject(MediaService);
+  private minigameServ = inject(MinigameService);
+  private fb = inject(FormBuilder);
   @Input() isVisible: boolean = false
   @Output() mediaCreatedEvent = new EventEmitter<Media | null>()
   @Input() mediaType?: MediaTypes
@@ -56,7 +54,6 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
       type_id: [{value: this.mediaType, disabled: this.mediaType ? true : false}, [Validators.required]],
       answers_id: [[]],
     })
-    console.log(this.mediaForm.get('type_id')!.value)
     this.mediaToCreate = this.mediaForm.value
   }
 
@@ -139,11 +136,9 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
           this.mediaToCreate.name = this.mediaForm.value.name
           this.mediaToCreate.url = this.mediaForm.value.url
           this.mediaToCreate.type_id = this.mediaForm.get('type_id')!.value
-          console.log(this.mediaToCreate)
 
           this.subscriptions.push(this.mediaServ.create(this.mediaToCreate).subscribe({
             next: (data) => { 
-              console.log(data); 
               this.mediaCreatedEvent.emit(data); 
             },
             error: (err) => { console.log(err); }

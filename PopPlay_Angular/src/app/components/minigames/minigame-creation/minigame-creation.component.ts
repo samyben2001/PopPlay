@@ -101,7 +101,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
           this.gameToUpdate = game
           this.creationForm = this.fb.group({
             id: [this.gameToUpdate.id],
-            name: [this.gameToUpdate.name, [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
+            name: [this.gameToUpdate.name, [Validators.required, Validators.minLength(3)]],
             cover_url: [''],
             type_id: [this.gameToUpdate.type.id, [Validators.required]],
             theme_id: [this.gameToUpdate.theme.id, [Validators.required]],
@@ -118,7 +118,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
     } else {
       // Using FormBuilder to create the FormGroup.
       this.creationForm = this.fb.group({
-        name: ['', [Validators.required, Validators.minLength(3)]], // Define the default value and validators inside the array
+        name: ['', [Validators.required, Validators.minLength(3)]],
         cover_url: ['', [Validators.required]],
         type_id: ['', [Validators.required]],
         theme_id: ['', [Validators.required]],
