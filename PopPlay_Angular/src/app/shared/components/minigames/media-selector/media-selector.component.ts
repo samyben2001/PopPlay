@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChildren } from '@angular/core';
 import { Media } from '../../../../models/models';
 import { MediaCreatorComponent } from '../media-creator/media-creator.component';
 import { ToastService } from '../../../../services/tools/toast.service';
@@ -7,31 +7,39 @@ import { ButtonComponent } from '../../tools/button/button.component';
 import { BtnTypes } from '../../../../enums/BtnTypes';
 import { MediaTypes } from '../../../../enums/MediaTypes';
 import { MediaService } from '../../../../services/api/media.service';
+import { UpperFirstPipe } from '../../../pipes/upper-first.pipe';
 
 @Component({
   selector: 'app-media-selector',
   standalone: true,
-  imports: [MediaCreatorComponent, ButtonComponent],
+  imports: [MediaCreatorComponent, ButtonComponent, UpperFirstPipe],
   templateUrl: './media-selector.component.html',
   styleUrl: './media-selector.component.css'
 })
 export class MediaSelectorComponent implements OnChanges {
+  // declare services
   private toastService = inject(ToastService);
   private mediaService = inject(MediaService);
+
+  // declare variables
   protected medias: Media[] = [];
   protected btnTypes = BtnTypes
+  protected mediaTypes = MediaTypes;
   protected isCreatorVisible: boolean = false;
   protected onlyMine: boolean = true;
-  @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
+  private _mediaType: MediaTypes = MediaTypes.IMAGE;
   @Input() isVisible: boolean = false;
   @Input() selectedMedias: Media[] = [];
   @Output() selectedMediasEvent = new EventEmitter<Media[] | null>();
-  private _mediaType: MediaTypes = MediaTypes.IMAGE;
+  @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
+
+  // getters and setters
   @Input() set mediaType(mediaType: MediaTypes) {
     this._mediaType = mediaType;
-    this.GetMedias(this.onlyMine);
+    setTimeout(() => {
+      this.GetMedias(this.onlyMine);
+    }, 100);
   }
-
   get mediaType(): MediaTypes {
     return this._mediaType;
   }

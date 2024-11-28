@@ -17,7 +17,7 @@ export class MediaService {
 
   create(media: MediaCreate): Observable<Media> {
     const formData = new FormData();
-    formData.append('name', media.name);
+    formData.append('name', media.name.toLowerCase());
     formData.append('type_id', media.type_id.toString());
     formData.append('url', media.url);
 

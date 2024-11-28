@@ -5,153 +5,162 @@
     </div>
 
     @if (!gameID || (gameID && gameToUpdate)) {
-     @if(gameToUpdate) {
+        @if(gameToUpdate) {
         <app-confirm-pop-up (confirmEvent)="onPopupConfirm()"/>
-        
         <app-button class="self-end" text="Supprimer le jeu" [btnType]="btnTypes.PINK" (onClick)="delete()"/>
-     }
-    <!-- Game Creation Form -->
-    <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full md:w-1/2 p-6 rounded bg-slate-700">
-        <!-- Game name -->
-        <div class="flex flex-col mb-6">
-            <p-floatLabel>
-                <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
-                <label for="name" class="peer-focus:text-slate-200">Nom du jeu</label>
-            </p-floatLabel>
-            @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
-                @if (creationForm.get('name')!.errors!['required']) {
-                    <span class="text-red-600 text-sm">
-                        Le nom du jeu est obligatoire.
-                    </span>
-                }
-                @if (creationForm.get('name')!.errors!['minlength']) {
-                    <span class="text-red-600 text-sm">
-                        Le nom du jeu doit comporter minimum 3 caractères.
-                    </span>
-                }
-            }
-        </div>
-
-        <!-- Cover -->
-        <div class="flex flex-col mb-6">
-            <app-button [text]="!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
-            <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
-                    
-            @if (!gameToUpdate || (gameToUpdate && isCoverUpdated)) {
-                <span class="text-slate-200 mt-1">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
-            }@else{
-                <div class="h-24 mt-2 flex justify-center">
-                    <img [src]="selectedCover" [alt]="gameToUpdate.name" class="h-full w-auto">
-                </div>
-            }
-            
-            @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
-                <span class="text-red-600 text-sm">
-                    L'image de couverture du jeu est obligatoire.
-                </span>
-            }
-        </div>
-
-        <!-- Type -->
-        <div class="flex flex-col mb-6">
-            <p-floatLabel>
-                <p-dropdown 
-                inputId="type"
-                [options]="types" 
-                 formControlName="type_id"
-                 optionLabel="name" 
-                 optionValue="id"
-                 [filter]="true"
-                 filterBy="name" 
-                 [showClear]="true"  
-                 styleClass="w-full" 
-                 /> 
-                <label for="type">Type</label>
-            </p-floatLabel>
-
-            @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
-                <span class="text-red-600 text-sm">
-                    Le type du jeu est obligatoire.
-                </span>
-            }
-        </div>
-        
-        <!-- Theme -->
-        <div class="flex flex-col mb-6">
-            <div class="flex flex-row ">
-                <p-floatLabel class="grow">
-                    <p-dropdown 
-                        inputId="theme"
-                        [options]="themes" 
-                        formControlName="theme_id"
-                        optionLabel="customName" 
-                        optionValue="id"
-                        [filter]="true"
-                        filterBy="name" 
-                        [showClear]="true"  
-                        styleClass="w-full" #themeDropdown/> 
-                    <label for="theme">Thème</label>
+        }
+        <!-- Game Creation Form -->
+        <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col w-full md:w-1/2 p-6 rounded bg-slate-700">
+            <!-- Game name -->
+            <div class="flex flex-col mb-3 md:mb-6">
+                <p-floatLabel>
+                    <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
+                    <label for="name" class="peer-focus:text-slate-200">Nom du jeu</label>
                 </p-floatLabel>
-                    
-                <app-button class="ml-2" text="+" [btnType]="btnTypes.CYAN" (onClick)="openThemesCreator()"/>
-                <app-theme-creator [isVisible]="isThemeCreatorVisible" (themeCreatedEvent)="onThemeCreated($event)"/>
+                @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
+                    @if (creationForm.get('name')!.errors!['required']) {
+                        <span class="text-red-600 text-sm">
+                            Le nom du jeu est obligatoire.
+                        </span>
+                    }
+                    @if (creationForm.get('name')!.errors!['minlength']) {
+                        <span class="text-red-600 text-sm">
+                            Le nom du jeu doit comporter minimum 3 caractères.
+                        </span>
+                    }
+                }
             </div>
-            @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
-                <span class="text-red-600 text-sm">
-                    Le thème du jeu est obligatoire.
-                </span>
-            }
-        </div>
 
-        <!-- if type is 'Image Guessing' then display the medias section -->
-         @switch (creationForm.get('type_id')!.value) {
-            @case (quizzId) {
-                <!-- Quizz -->
-                <div class="flex flex-col mb-6">
-
-                    <div class="flex flex-col gap-2">
-                        @for (quizz of quizzSelected; track $index) {
-                            <p class="text-slate-200">Question {{$index + 1 | number:'2.0'}}: <span>{{quizz.question.question}}</span></p>
-                        }@empty {
-                            <p class="text-slate-200">Aucune question sélectionnée</p>
-                        }
+            <!-- Cover -->
+            <div class="flex flex-col mb-6">
+                <app-button [text]="!selectedCover ? 'Sélectionner une couverture' : 'Modifier la couverture'" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
+                <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;" />
+                        
+                @if (!gameToUpdate || (gameToUpdate && isCoverUpdated)) {
+                    <span class="text-slate-200 mt-1">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
+                }@else{
+                    <div class="h-24 mt-2 flex justify-center">
+                        <img [src]="selectedCover" [alt]="gameToUpdate.name" class="h-full w-auto">
                     </div>
-                    
-                    <app-button [text]="quizzSelected.length > 0 ? 'Modifier le quizz' : 'Ajouter un quizz'" [btnType]="btnTypes.CYAN" (onClick)="openQuizzCreator()"/>
+                }
+                
+                @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
+                    <span class="text-red-600 text-sm">
+                        L'image de couverture du jeu est obligatoire.
+                    </span>
+                }
+            </div>
+
+            <!-- Type -->
+            <div class="flex flex-col mb-6">
+                <p-floatLabel>
+                    <p-dropdown 
+                    inputId="type"
+                    [options]="types" 
+                    formControlName="type_id"
+                    optionLabel="name" 
+                    optionValue="id"
+                    [filter]="true"
+                    filterBy="name" 
+                    [showClear]="true"  
+                    styleClass="w-full" 
+                    /> 
+                    <label for="type">Type</label>
+                </p-floatLabel>
+
+                @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
+                    <span class="text-red-600 text-sm">
+                        Le type du jeu est obligatoire.
+                    </span>
+                }
+            </div>
+            
+            <!-- Theme -->
+            <div class="flex flex-col mb-6">
+                <div class="flex flex-row ">
+                    <p-floatLabel class="grow">
+                        <p-dropdown 
+                            inputId="theme"
+                            [options]="themes" 
+                            formControlName="theme_id"
+                            optionLabel="customName" 
+                            optionValue="id"
+                            [filter]="true"
+                            filterBy="name" 
+                            [showClear]="true"  
+                            styleClass="w-full" #themeDropdown/> 
+                        <label for="theme">Thème</label>
+                    </p-floatLabel>
+                        
+                    <app-button class="ml-2" text="+" [btnType]="btnTypes.CYAN" (onClick)="openThemesCreator()"/>
+                    <app-theme-creator [isVisible]="isThemeCreatorVisible" (themeCreatedEvent)="onThemeCreated($event)"/>
                 </div>
-                <!-- Quizz Creator -->
-                <app-quizz-creator [isVisible]="isQuizzCreatorVisible" [quizzSelected]="quizzSelected" (quizzCreatedEvent)="onQuizzCreated($event)"/>
-            }
-            @default {
-                @if (creationForm.get('type_id')!.value == imageGuessId || creationForm.get('type_id')!.value == blindTestId) {
-                    <!-- Medias -->
+                @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
+                    <span class="text-red-600 text-sm">
+                        Le thème du jeu est obligatoire.
+                    </span>
+                }
+            </div>
+
+            <!-- if type is 'Image Guessing' then display the medias section -->
+            @switch (creationForm.get('type_id')!.value) {
+                @case (quizzId) {
+                    <!-- Quizz -->
                     <div class="flex flex-col mb-6">
-                        <div class="flex flex-row flex-wrap gap-2">
-                            @for (media of mediasSelected; track $index) {
-                                <div class="h-24 relative">
-                                    <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
-                                    <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
-                                </div>
+
+                        <div class="flex flex-col gap-2">
+                            @for (quizz of quizzSelected; track $index) {
+                                <p class="text-slate-200">Question {{$index + 1 | number:'2.0'}}: <span>{{quizz.question.question}}</span></p>
                             }@empty {
-                                <p class="text-slate-200">Aucun média sélectionné</p>
+                                <p class="text-slate-200">Aucune question sélectionnée</p>
                             }
                         </div>
                         
-                        <app-button [text]="mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'" [btnType]="btnTypes.CYAN" (onClick)="openMediasSelector()"/>
+                        <app-button [text]="quizzSelected.length > 0 ? 'Modifier le quizz' : 'Ajouter un quizz'" [btnType]="btnTypes.CYAN" (onClick)="openQuizzCreator()"/>
                     </div>
+                    <!-- Quizz Creator -->
+                    <app-quizz-creator [isVisible]="isQuizzCreatorVisible" [quizzSelected]="quizzSelected" (quizzCreatedEvent)="onQuizzCreated($event)"/>
+                }
+                @default {
+                    @if (creationForm.get('type_id')!.value == imageGuessId || creationForm.get('type_id')!.value == blindTestId) {
+                        <!-- Medias -->
+                        <div class="flex flex-col mb-3 md:mb-6">
+                            <div class="flex flex-row flex-wrap gap-2 mb-3 md:mb-6">
+                                @for (media of mediasSelected; track $index) {
+                                    <!-- Media Thumbnail TODO: audio thumbnail -->
+                                     @if(creationForm.get('type_id')!.value == imageGuessId){
+                                        <div class="h-24 relative">
+                                            <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
+                                            <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
+                                        </div>
+                                     }@else if (creationForm.get('type_id')!.value == blindTestId) {
+                                        <div class="w-full md:w-1/2">
+                                            <audio controls controlsList="nodownload" #question class="w-full">
+                                                <source [src]="media.url" type="audio/mp3">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </div>
+                                     }
+                                }@empty {
+                                    <p class="text-slate-200">Aucun média sélectionné</p>
+                                }
+                            </div>
+                            
+                            <app-button [text]="mediasSelected.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'" [btnType]="btnTypes.CYAN" (onClick)="openMediasSelector()"/>
+                        </div>
 
-                    <!-- Medias Selector -->
-                    <app-media-selector [isVisible]="isMediasSelectorVisible" [mediaType]="creationForm.get('type_id')!.value == imageGuessId ? mediaTypes.IMAGE : mediaTypes.AUDIO" [selectedMedias]="mediasSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
+                        <!-- Medias Selector -->
+                        <app-media-selector [isVisible]="isMediasSelectorVisible" [mediaType]="creationForm.get('type_id')!.value == imageGuessId ? mediaTypes.IMAGE : mediaTypes.AUDIO" [selectedMedias]="mediasSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
+                    }
                 }
             }
-         }
-    
-        <!-- Submit -->
-         @if (creationForm.invalid) {
-            <app-button [isSubmit]="true" [text]="!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'" [btnType]="btnTypes.GREEN" [disabled]="true"/>
-         }@else {   
-            <app-button [isSubmit]="true" [text]="!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'" [btnType]="btnTypes.GREEN"/>
-        }
-    </form>
+        
+            <!-- Submit -->
+            @if (creationForm.invalid) {
+                <app-button [isSubmit]="true" [text]="!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'" [btnType]="btnTypes.GREEN" [disabled]="true"/>
+            }@else {   
+                <app-button [isSubmit]="true" [text]="!gameToUpdate ? 'Ajouter le jeu':'Modifier le jeu'" [btnType]="btnTypes.GREEN"/>
+            }
+        </form>
     }
 </div>
