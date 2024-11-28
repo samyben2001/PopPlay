@@ -14,7 +14,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 class MediaTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = MediaType
-        fields = '__all__'   
+        fields = '__all__'
         
         
 class MediaLightSerializer(serializers.ModelSerializer):

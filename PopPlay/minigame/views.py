@@ -91,6 +91,7 @@ class MediaViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   
+    filterset_fields = ['type']
     # parser_classes = [MultiPartParser, FormParser]
 
     

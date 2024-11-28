@@ -7,21 +7,33 @@
             <div class="relative flex flex-col justify-center h-[50vh] my-6">
                 @if (!isGameEnded) {
                     @if (!isCorrectAnswerShown) { <!-- Game Conatianer -->
-                        @if (minigame.type.name == gameTypes.IMAGE_GUESSING) { <!-- Image to Find & Blurred Overlay -->
-                            <img noRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
-                            <div noRightClick class="absolute top-0 left-0 h-full w-full"  #question></div>
-                        }@else if (minigame.type.name == gameTypes.QUIZZ) { <!-- Question -->
-                            <p class="w-3/4 m-auto text-xl md:text-3xl text-slate-200 font-bold text-center" #question>{{minigame.quizz[actualMediaIndex].question.question}}</p>
+                        @switch (minigame.type.name) {
+                            @case (gameTypes.IMAGE_GUESSING) { <!-- Image to Find & Blurred Overlay -->
+                                <img noRightClick id="imgToFind" [src]="minigame.medias[actualMediaIndex].url" [alt]="minigame.medias[actualMediaIndex].name" class="h-full w-auto">
+                                <div noRightClick class="absolute top-0 left-0 h-full w-full"  #question></div>
+                            }@case (gameTypes.QUIZZ) { <!-- Question -->
+                                <p class="w-3/4 m-auto text-xl md:text-3xl text-slate-200 font-bold text-center" #question>{{minigame.quizz[actualMediaIndex].question.question}}</p>
+                            }@case (gameTypes.BLIND_TEST) {
+                                <audio controls controlsList="nodownload" #question>
+                                    <source [src]="minigame.medias[actualMediaIndex].url" type="audio/mp3">
+                                    Your browser does not support the audio element.
+                                  </audio>
+                            }
                         }
                     }@else { <!-- Game Answer -->
                         <div class="flex flex-col items-center my-6">
                             <p class="text-3xl text-slate-200">La bonne réponse était: </p>
-                            @if (minigame.type.name == gameTypes.IMAGE_GUESSING) {
-                                <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
-                                <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
-                            }@else if (minigame.type.name == gameTypes.QUIZZ) {
-                                <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.quizz[actualMediaIndex].answers[0].answer}}</p>
-                                <p class="text-2xl text-slate-200">Prochaine question dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                            @switch (minigame.type.name) {
+                                @case (gameTypes.IMAGE_GUESSING) {
+                                    <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
+                                    <p class="text-2xl text-slate-200">Prochaine image dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                                }@case (gameTypes.QUIZZ) {
+                                    <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.quizz[actualMediaIndex].answers[0].answer}}</p>
+                                    <p class="text-2xl text-slate-200">Prochaine question dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                                }@case (gameTypes.BLIND_TEST) {
+                                    <p class="text-4xl text-pink-600 font-bold py-2">{{minigame.medias[actualMediaIndex].answers[0].answer}}</p>
+                                    <p class="text-2xl text-slate-200">Prochain audio dans: <span class="font-bold">{{timerBeforeNextMedia}}</span></p>
+                                }
                             }
                         </div>
                     }
@@ -29,7 +41,17 @@
                     <div class="flex flex-col items-center my-6 p-6 bg-slate-200 rounded-md shadow-md shadow-slate-950">
                         <div class="flex flex-col items-center gap-y-2 text-xl md:text-3xl text-slate-800">
                             <p>Partie Terminée !</p>
-                            <p>Vous avez trouvez <span class="text-pink-600 font-bold">{{nbCorrectAnswers}} images sur {{maxMediaIndex}}</span></p>
+                            <p>Vous avez trouvez <span class="text-pink-600 font-bold">{{nbCorrectAnswers}} 
+                            @switch (minigame.type.name) {
+                                @case (gameTypes.IMAGE_GUESSING) {
+                                    images
+                                }@case (gameTypes.QUIZZ) {
+                                    réponses
+                                }@case (gameTypes.BLIND_TEST) {
+                                    audios
+                                }
+                            } 
+                            sur {{maxMediaIndex}}</span></p>
                             <p>Score Total :</p>
                             <p class="relative text-4xl text-pink-600 font-bold">{{score}} points</p>
                         </div>
@@ -43,7 +65,8 @@
             </div>
     
             @if (!isGameEnded) {
-            <!-- Timer & Score & Answer Input -->
+                <!-- TODO: add a Quizz/Media/MapGuess or Minigame report button -->
+                <!-- Timer & Score & Answer Input -->
                 <div class="flex flex-col items-center w-11/12 md:w-3/4 p-6 bg-slate-200 rounded-md">
                     <span class="text-base md:text-lg text-slate-800 self-end -mr-3 -mt-3">{{actualMediaIndex + 1}} / {{maxMediaIndex}}</span> <!-- Quiz index -->
                     <div class="w-full flex flex-col md:flex-row items-center md:justify-around text-center">

@@ -29,7 +29,15 @@ export class MediaService {
     return this.httpClient.post<Media>(this.apiUrl + 'minigame/media/', formData);
   }
 
+  getAll(typeId? : number): Observable<Media[]> {
+    console.log(typeId)
+    if (typeId == null)
+      return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/');
+    return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/?type=' + typeId);
+  }
+
   getAllTypes(): Observable<MediaType[]> {
     return this.httpClient.get<MediaType[]>(this.apiUrl + 'minigame/mediaType/');
   }
+
 }

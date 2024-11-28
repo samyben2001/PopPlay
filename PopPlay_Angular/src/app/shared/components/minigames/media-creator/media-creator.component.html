@@ -9,7 +9,7 @@
                 <!-- Media Selector Button -->
                 <div class="flex flex-col mb-6">
                     <app-button [text]="!selectedFileName ? 'Sélectionner un média' : 'Modifier le média'" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
-                    <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" />
+                    <input #fileInput type="file" (change)="onMediaAdded($event)" style="display:none;" accept="image/*,audio/*"/>
                     
                     <span class="text-slate-200 mt-1">{{selectedFileName ? selectedFileName : 'Aucun fichier sélectionné'}}</span>
                 </div>
@@ -36,7 +36,7 @@
                         optionLabel="name" 
                         optionValue="id"
                         [showClear]="true"  
-                        styleClass="w-full" />
+                        styleClass="w-full"/>
                         <label for="type_id">Type</label>
                     </p-floatLabel>
                 </div>

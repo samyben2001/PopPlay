@@ -54,6 +54,7 @@ export interface Theme {
     id?: number;
     name: string;
     category: ThemeCategory;
+    customName?: string;
 }
 
 export interface ThemeCategory {

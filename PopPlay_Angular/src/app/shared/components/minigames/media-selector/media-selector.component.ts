@@ -5,6 +5,8 @@ import { ToastService } from '../../../../services/tools/toast.service';
 import { ToastTypes } from '../../../../enums/ToastTypes';
 import { ButtonComponent } from '../../tools/button/button.component';
 import { BtnTypes } from '../../../../enums/BtnTypes';
+import { MediaTypes } from '../../../../enums/MediaTypes';
+import { MediaService } from '../../../../services/api/media.service';
 
 @Component({
   selector: 'app-media-selector',
@@ -13,17 +15,34 @@ import { BtnTypes } from '../../../../enums/BtnTypes';
   templateUrl: './media-selector.component.html',
   styleUrl: './media-selector.component.css'
 })
-export class MediaSelectorComponent implements OnChanges{
-  toastService = inject(ToastService);
-  @Input() medias: Media[] = [];
+export class MediaSelectorComponent implements OnChanges {
+  private toastService = inject(ToastService);
+  private mediaService = inject(MediaService);
+  protected medias: Media[] = [];
+  protected btnTypes = BtnTypes
+  protected isCreatorVisible: boolean = false;
+  @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
   @Input() isVisible: boolean = false;
   @Input() selectedMedias: Media[] = [];
   @Output() selectedMediasEvent = new EventEmitter<Media[] | null>();
+  private _mediaType: MediaTypes = MediaTypes.IMAGE;
+  @Input() set mediaType(mediaType: MediaTypes) {
+    this._mediaType = mediaType;
+    console.log(mediaType)
+    this.mediaService.getAll(mediaType).subscribe({
+      next: (medias) => {
+        console.log(medias)
+        this.medias = medias;
+      },
+      error: (err) => { console.log(err); }
+    });
+  }
 
-  isCreatorVisible: boolean = false;
-  protected btnTypes = BtnTypes
+  get mediaType(): MediaTypes {
+    return this._mediaType;
+  }
 
-  @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedMedias'] && changes['selectedMedias'].currentValue) {
@@ -75,7 +94,7 @@ export class MediaSelectorComponent implements OnChanges{
   }
 
   onMediaCreated(media: Media | null) {
-    if (media){
+    if (media) {
       this.medias.push(media);
       this.toastService.Show("Media Created", `Media ${media.name} created successfully`, ToastTypes.SUCCESS, 3000);
     }

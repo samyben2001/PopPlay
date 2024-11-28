@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MinigameService } from '../../../../services/api/minigame.service';
 import { ButtonComponent } from '../../tools/button/button.component';
 import { BtnTypes } from '../../../../enums/BtnTypes';
+import { MediaTypes } from '../../../../enums/MediaTypes';
 
 @Component({
   selector: 'app-media-creator',
@@ -25,6 +26,7 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
   fb = inject(FormBuilder);
   @Input() isVisible: boolean = false
   @Output() mediaCreatedEvent = new EventEmitter<Media | null>()
+  @Input() mediaType?: MediaTypes
 
   mediaForm: FormGroup = new FormGroup({});
   mediaTypes: MediaType[] = []
@@ -51,9 +53,10 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
     this.mediaForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       url: ['', [Validators.required]],
-      type_id: ['', [Validators.required]],
+      type_id: [{value: this.mediaType, disabled: this.mediaType ? true : false}, [Validators.required]],
       answers_id: [[]],
     })
+    console.log(this.mediaForm.get('type_id')!.value)
     this.mediaToCreate = this.mediaForm.value
   }
 
@@ -71,7 +74,6 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
   }
 
   filterMediaTypes(event: any) {
-    //in a real application, make a request to a remote url with the query and return filtered results, for demo purposes we filter at client side
     this.filteredMediaTypes = this.mediaTypes.filter((type) => {
       return type.name.toLowerCase().startsWith(event.query.toLowerCase())
     })
@@ -136,7 +138,8 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
           // Create the media
           this.mediaToCreate.name = this.mediaForm.value.name
           this.mediaToCreate.url = this.mediaForm.value.url
-          this.mediaToCreate.type_id = this.mediaForm.value.type_id
+          this.mediaToCreate.type_id = this.mediaForm.get('type_id')!.value
+          console.log(this.mediaToCreate)
 
           this.subscriptions.push(this.mediaServ.create(this.mediaToCreate).subscribe({
             next: (data) => { 

@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.files.storage import storages
 from django.core.validators import MaxValueValidator, MinValueValidator
+import os
+from django.utils.text import slugify
 
 # Create your models here.    
 class Answer(models.Model):
@@ -23,13 +25,28 @@ class Media(models.Model):
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(Answer)
     
+    def save(self, *args, **kwargs):
+        """
+        Saves the Media instance, ensuring that the file name of the URL is generated 
+        based on the slugified version of the 'name' field for safe storage. The file 
+        extension is preserved in the new file name. Calls the superclass save method 
+        with any additional arguments passed.
+        """
+        if self.url and self.name:
+            # Generate a new file name based on the name field
+            ext = os.path.splitext(self.url.name)[1]  # Get the file extension
+            new_filename = f"{slugify(self.name)}{ext}"  # Slugify the name for a safe filename
+            self.url.name = new_filename
+        
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return self.name
 
-# TODO: implement create mapGuess serializer/views
-class MapGuess(models.Model):
+# TODO: thinking about a better way to do this
+class MapGuess(models.Model): # 1# find the game with an unblur image (media), #2 find where the image was taken on the map (cf lostgamer.io)
     media = models.ForeignKey(Media, on_delete=models.DO_NOTHING)
-    map = models.FileField(storage=storages["cloudflare"])
+    map = models.FileField(storage=storages["cloudflare"]) 
     positionX = models.IntegerField()
     positionY = models.IntegerField()
     
@@ -59,11 +76,14 @@ class ThemeCategory(models.Model):
        
     
 class Theme(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     category = models.ForeignKey(ThemeCategory, on_delete=models.RESTRICT)
     
     def __str__(self):
         return self.name
+    
+    class Meta:
+        unique_together = ('name', 'category')
     
   
 class Type(models.Model):

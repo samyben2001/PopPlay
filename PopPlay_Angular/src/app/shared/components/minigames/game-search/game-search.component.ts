@@ -31,7 +31,6 @@ export class GameSearchComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.minigameServ.get_types().subscribe({
       next: (data) => {
         this.types = data;
-        console.log(this.types);
       },
       error: (err) => { console.log(err); }
     })
@@ -40,7 +39,7 @@ export class GameSearchComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.minigameServ.get_themes().subscribe({
       next: (data) => {
         this.themes = data;
-        console.log(this.themes);
+        this.themes.forEach(theme => theme.customName = theme.name + ' (' + theme.category.name + ')');
       },
       error: (err) => { console.log(err); }
     })

@@ -4,6 +4,7 @@
             <!-- Cancel Button -->
             <span (click)="dismiss()" class="self-end cursor-pointer mr-1 my-1 p-1 leading-[1.0955rem] box-content text-pink-600 text-2xl md:text-3xl border-2 border-opacity-0 border-pink-600 rounded-full active:border-opacity-100 active:bg-slate-600">&times;</span>
             <!-- Media Gallery -->
+             <!-- TODO: getmedias by game created by user -->
             <div class="p-2 pt-0 md:p-6 md:pt-0 flex flex-row flex-wrap gap-4 justify-around overflow-y-auto">
                 @for (media of medias; track $index) {
                     <!-- Media Thumbnail -->
@@ -29,5 +30,5 @@
         
     </div>
 
-    <app-media-creator [isVisible]="isCreatorVisible" (mediaCreatedEvent)="onMediaCreated($event)"></app-media-creator>
+    <app-media-creator [isVisible]="isCreatorVisible" (mediaCreatedEvent)="onMediaCreated($event)" [mediaType]="mediaType"/>
 }

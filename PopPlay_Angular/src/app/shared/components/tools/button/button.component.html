@@ -1,29 +1,32 @@
 @if (!disabled) {
     @switch (btnType) {
         @case (btnTypes.PINK){
-            <button [type]="isSubmit ? 'submit':'button'" class='w-full py-1 md:py-2 px-2 md:px-4 bg-pink-600 rounded-lg cursor-pointer select-none
-                            active:translate-y-[5px] active:[box-shadow:0_0px_0_0_#ae1e61]
-                            active:border-opacity-0
-                            transition-all duration-150 [box-shadow:0_5px_0_0_#ae1e61]
-                            border-opacity-100] border-pink-700' (click)="click()">
+            <button [type]="isSubmit ? 'submit':'button'" class='w-full py-1 md:py-2 px-2 md:px-4 border-[1px] border-[#ae1e61] box-border
+                    bg-pink-600 rounded-lg cursor-pointer select-none
+                    active:translate-y-[4px] active:[box-shadow:0_0px_0_0_#ae1e61]
+                    active:border-opacity-0
+                    transition-all duration-150 [box-shadow:0_4px_0_0_#ae1e61]
+                    border-opacity-100]' (click)="click()">
                 <span class="flex flex-col justify-center items-center h-full text-slate-200 font-bold">{{text}}</span>
             </button>
         }
         @case (btnTypes.CYAN) {
-            <button [type]="isSubmit ? 'submit':'button'" class='w-full py-1 md:py-2 px-2 md:px-4 bg-cyan-500 rounded-lg cursor-pointer select-none
-                            active:translate-y-[5px] active:[box-shadow:0_0px_0_0_#0b7189]
-                            active:border-opacity-0
-                            transition-all duration-150 [box-shadow:0_5px_0_0_#0b7189]
-                            border-opacity-100] border-cyan-600s' (click)="click()">
+            <button [type]="isSubmit ? 'submit':'button'" class='w-full py-1 md:py-2 px-2 md:px-4 border-[1px] border-[#0b7189] box-border
+                    bg-cyan-500 rounded-lg cursor-pointer select-none
+                    active:translate-y-[4px] active:[box-shadow:0_0px_0_0_#0b7189]
+                    active:border-opacity-0
+                    transition-all duration-150 [box-shadow:0_4px_0_0_#0b7189]
+                    border-opacity-100]' (click)="click()">
                 <span class="flex flex-col justify-center items-center h-full text-slate-700 font-bold">{{text}}</span>
             </button>
         }
         @case (btnTypes.GREEN) {
-            <button [type]="isSubmit ? 'submit':'button'" class='w-full py-1 md:py-2 px-2 md:px-4 bg-emerald-600 rounded-lg cursor-pointer select-none
-                            active:translate-y-[5px] active:[box-shadow:0_0px_0_0_#0f766e]
-                            active:border-opacity-0
-                            transition-all duration-150 [box-shadow:0_5px_0_0_#0f766e]
-                            border-opacity-100] border-emerald-700' (click)="click()">
+            <button [type]="isSubmit ? 'submit':'button'" class='w-full py-1 md:py-2 px-2 md:px-4 border-[1px] border-[#0f766e] box-border
+                    bg-emerald-600 rounded-lg cursor-pointer select-none
+                    active:translate-y-[4px] active:[box-shadow:0_0px_0_0_#0f766e]
+                    active:border-opacity-0
+                    transition-all duration-150 [box-shadow:0_4px_0_0_#0f766e]
+                    border-opacity-100]' (click)="click()">
                 <span class="flex flex-col justify-center items-center h-full text-slate-200 font-bold">{{text}}</span>
             </button>
         }
@@ -31,17 +34,20 @@
 }@else {
     @switch (btnType) {
         @case (btnTypes.PINK){
-            <button class='w-full py-1 md:py-2 px-2 md:px-4 bg-pink-800 rounded-lg cursor-not-allowed select-none [box-shadow:0_5px_0_0_#831843]' disabled>
+            <button class='w-full py-1 md:py-2 px-2 md:px-4 bg-pink-800 rounded-lg cursor-not-allowed select-none [box-shadow:0_4px_0_0_#831843]'
+                    disabled>
                 <span class="flex flex-col justify-center items-center h-full text-slate-400 font-bold">{{text}}</span>
             </button>
         }
         @case (btnTypes.CYAN) {
-            <button class='w-full py-1 md:py-2 px-2 md:px-4 bg-cyan-700 rounded-lg cursor-not-allowed select-none box-shadow:0_5px_0_0_#094b5d]' disabled>
+            <button class='w-full py-1 md:py-2 px-2 md:px-4 bg-cyan-700 rounded-lg cursor-not-allowed select-none box-shadow:0_4px_0_0_#094b5d]'
+                    disabled>
                 <span class="flex flex-col justify-center items-center h-full text-slate-700 font-bold">{{text}}</span>
             </button>
         }
         @case (btnTypes.GREEN) {
-            <button class='w-full py-1 md:py-2 px-2 md:px-4 bg-emerald-800 rounded-lg cursor-not-allowed select-none [box-shadow:0_5px_0_0_#043a2a]' disabled>
+            <button class='w-full py-1 md:py-2 px-2 md:px-4 bg-emerald-800 rounded-lg cursor-not-allowed select-none
+                    [box-shadow:0_4px_0_0_#043a2a]' disabled>
                 <span class="flex flex-col justify-center items-center h-full text-slate-400 font-bold">{{text}}</span>
             </button>
         }

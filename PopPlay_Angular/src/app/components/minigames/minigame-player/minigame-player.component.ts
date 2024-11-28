@@ -79,8 +79,9 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this.subscriptions.push(this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
+        console.log('minigame ', this.minigame)
 
-        if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+        if (this.minigame.type.name == GameTypes.IMAGE_GUESSING || this.minigame.type.name == GameTypes.BLIND_TEST) {
           this.shuffle(this.minigame.medias)
           this.maxMediaIndex = this.minigame.medias.length
         } else if (this.minigame.type.name == GameTypes.QUIZZ) {
@@ -114,7 +115,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   try() {
     if (this.userAnswer == '') return // Check if user entered an answer
     let correctAnswers: any[] = []
-    if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+    if (this.minigame.type.name == GameTypes.IMAGE_GUESSING || this.minigame.type.name == GameTypes.BLIND_TEST) {
       correctAnswers = this.minigame.medias[this.actualMediaIndex].answers
     } else if (this.minigame.type.name == GameTypes.QUIZZ) {
       correctAnswers = this.minigame.quizz[this.actualMediaIndex].answers
@@ -218,7 +219,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       if (correctAnswers[index].answer.toLowerCase() == this.userAnswer.toLowerCase()) { // Check if answer is Correct among the correct answers
         if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
           this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts
-        } else if (this.minigame.type.name == GameTypes.QUIZZ) {
+        } else {
           this.scoreGained = Math.round(this.timer * this.timer) + 100; // Calculate score based on time and attempts
         }
         this.score += this.scoreGained

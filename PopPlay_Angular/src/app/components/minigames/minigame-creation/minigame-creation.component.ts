@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
-import { Media, Minigame, Quiz, Theme, Type } from '../../../models/models';
+import { Media, MediaType, Minigame, Quiz, Theme, Type } from '../../../models/models';
 import { MinigameService } from '../../../services/api/minigame.service';
 import { ToastService } from '../../../services/tools/toast.service';
 import { PopUpService } from '../../../services/tools/pop-up.service';
@@ -19,6 +19,7 @@ import { QuizzCreatorComponent } from '../../../shared/components/minigames/quiz
 import { Subscription } from 'rxjs';
 import { ButtonComponent } from '../../../shared/components/tools/button/button.component';
 import { BtnTypes } from '../../../enums/BtnTypes';
+import { MediaTypes } from '../../../enums/MediaTypes';
 
 @Component({
   selector: 'app-minigame-creation',
@@ -53,9 +54,10 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   @ViewChild('themeDropdown') themeDropdown!: Dropdown;
   themes: Theme[] = [];
   types: Type[] = [];
-  medias: Media[] = [];
+  mediaTypes = MediaTypes
   imageGuessId!: number;
   quizzId!: number
+  blindTestId!: number
   isMediasSelectorVisible: boolean = false;
   isThemeCreatorVisible: boolean = false;
   isQuizzCreatorVisible: boolean = false;
@@ -67,7 +69,6 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   gameID?: number = -1;
   gameToUpdate?: Minigame
   isCoverUpdated: boolean = false
-
   btnTypes = BtnTypes
 
 
@@ -78,17 +79,16 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
         this.types = data;
         this.imageGuessId = this.types.find(type => type.name == GameTypes.IMAGE_GUESSING)!.id;
         this.quizzId = this.types.find(type => type.name == GameTypes.QUIZZ)!.id;
+        this.blindTestId = this.types.find(type => type.name == GameTypes.BLIND_TEST)!.id;
       },
       error: (err) => { console.log(err); }
     }));
 
     this.subscriptions.push(this.minigameServ.get_themes().subscribe({
-      next: (data) => { this.themes = data; },
-      error: (err) => { console.log(err); }
-    }));
-
-    this.subscriptions.push(this.minigameServ.get_medias().subscribe({
-      next: (data) => { this.medias = data; },
+      next: (data) => { 
+        this.themes = data; 
+        this.themes.forEach(theme => theme.customName = theme.name + ' (' + theme.category.name + ')');
+      },
       error: (err) => { console.log(err); }
     }));
 

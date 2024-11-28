@@ -97,10 +97,6 @@ export class MinigameService {
     return this.httpClient.post<Answer>(this.apiUrl + 'minigame/answer/', { answer: answer });
   }
 
-  get_medias(): Observable<Media[]> {
-    return this.httpClient.get<Media[]>(this.apiUrl + 'minigame/media/');
-  }
-
   get_likes(id: number): Observable<number[]> {
     return this.httpClient.get<number[]>(this.apiUrl + 'minigame/' + id + '/likes/');
   }
