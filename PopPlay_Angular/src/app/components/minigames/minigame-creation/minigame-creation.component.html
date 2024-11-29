@@ -127,18 +127,20 @@
                         <div class="flex flex-col mb-3 md:mb-6">
                             <div class="flex flex-row flex-wrap gap-2 mb-3 md:mb-6">
                                 @for (media of mediasSelected; track $index) {
-                                    <!-- Media Thumbnail TODO: audio thumbnail -->
-                                     @if(creationForm.get('type_id')!.value == imageGuessId){
+                                    @if(creationForm.get('type_id')!.value == imageGuessId){
+                                         <!-- Media Thumbnail -->
                                         <div class="h-24 relative">
                                             <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
                                             <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
                                         </div>
                                      }@else if (creationForm.get('type_id')!.value == blindTestId) {
-                                        <div class="w-full md:w-1/2">
+                                        <!-- Audio Thumbnail -->
+                                        <div class="w-full md:w-[48%]">
                                             <audio controls controlsList="nodownload" #question class="w-full">
                                                 <source [src]="media.url" type="audio/mp3">
                                                 Your browser does not support the audio element.
                                             </audio>
+                                            <p class="text-slate-200 text-center px-1 overflow-hidden text-ellipsis text-nowrap">{{ media.name }}</p>
                                         </div>
                                      }
                                 }@empty {
@@ -150,7 +152,7 @@
                         </div>
 
                         <!-- Medias Selector -->
-                        <app-media-selector [isVisible]="isMediasSelectorVisible" [mediaType]="creationForm.get('type_id')!.value == imageGuessId ? mediaTypes.IMAGE : mediaTypes.AUDIO" [selectedMedias]="mediasSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
+                        <app-media-selector [isVisible]="isMediasSelectorVisible" [mediaType]="creationForm.get('type_id')!.value == imageGuessId ? mediaTypes.IMAGE : mediaTypes.AUDIO" [selectedMedias]="mediasSelected" [isUpdate]="gameToUpdate != null || isSomeMediaSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
                     }
                 }
             }

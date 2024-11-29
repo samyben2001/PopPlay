@@ -61,6 +61,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   isMediasSelectorVisible: boolean = false;
   isThemeCreatorVisible: boolean = false;
   isQuizzCreatorVisible: boolean = false;
+  isSomeMediaSelected: boolean = false;
   mediasSelected: Media[] = [];
   quizzSelected: Quiz[] = [];
   selectedCover: string | null = null;
@@ -160,7 +161,12 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   }
 
   onSelectedMedias(medias: Media[] | null) {
-    console.log(medias)
+    if (medias) {
+      this.mediasSelected = [...medias];
+      this.isSomeMediaSelected = true
+    }else{
+      this.mediasSelected = [];
+    }
     this.mediasSelected = medias ? [...medias] : [];
     this.isMediasSelectorVisible = false;
   }

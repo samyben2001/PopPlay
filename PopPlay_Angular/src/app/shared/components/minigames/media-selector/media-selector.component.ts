@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChildren } from '@angular/core';
 import { Media } from '../../../../models/models';
 import { MediaCreatorComponent } from '../media-creator/media-creator.component';
 import { ToastService } from '../../../../services/tools/toast.service';
@@ -20,6 +20,7 @@ export class MediaSelectorComponent implements OnChanges {
   // declare services
   private toastService = inject(ToastService);
   private mediaService = inject(MediaService);
+  private changeDetectorRef = inject(ChangeDetectorRef);
 
   // declare variables
   protected medias: Media[] = [];
@@ -29,6 +30,7 @@ export class MediaSelectorComponent implements OnChanges {
   protected onlyMine: boolean = true;
   private _mediaType: MediaTypes = MediaTypes.IMAGE;
   @Input() isVisible: boolean = false;
+  @Input() isUpdate: boolean = false;
   @Input() selectedMedias: Media[] = [];
   @Output() selectedMediasEvent = new EventEmitter<Media[] | null>();
   @ViewChildren('CheckboxMedia') checkboxes!: ElementRef<HTMLInputElement>[];
@@ -46,10 +48,6 @@ export class MediaSelectorComponent implements OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedMedias'] && changes['selectedMedias'].currentValue) {
-      this.selectedMedias = changes['selectedMedias'].currentValue;
-    }
-
     if (changes['isVisible'] && changes['isVisible'].currentValue) {
       let interval = setInterval(() => {
         this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
@@ -77,10 +75,13 @@ export class MediaSelectorComponent implements OnChanges {
   }
 
   private GetMedias(onlyMine: boolean) {
+
     if (!onlyMine) {
       this.mediaService.getAll([this.mediaType]).subscribe({
         next: (medias) => {
           this.medias = medias;
+          this.ResetCheckboxes();
+          this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
         },
         error: (err) => { console.log(err); }
       });
@@ -88,6 +89,8 @@ export class MediaSelectorComponent implements OnChanges {
       this.mediaService.getAllByUser([this.mediaType]).subscribe({
         next: (medias) => {
           this.medias = medias;
+          this.ResetCheckboxes();
+          this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
         },
         error: (err) => { console.log(err); }
       });
@@ -97,18 +100,29 @@ export class MediaSelectorComponent implements OnChanges {
 
   private ToggleCheckbox(media: Media, value: boolean) {
     // (un)check the checkbox mathcing the media id
-    let box = this.checkboxes.find((checkbox: ElementRef<HTMLInputElement>) => checkbox.nativeElement.value == media.id.toString());
-    if (box)
+    let box = this.checkboxes.find((checkbox: ElementRef<HTMLInputElement>) => {
+      console.log(checkbox.nativeElement.value, media.id.toString(), checkbox.nativeElement.value == media.id.toString())
+      return checkbox.nativeElement.value == media.id.toString()
+    });
+
+    if (box){
+      console.log(box)
       box.nativeElement.checked = value;
+    }
   }
 
   private ResetCheckboxes() {
     this.checkboxes.forEach((checkbox: ElementRef<HTMLInputElement>) => checkbox.nativeElement.checked = false);
+    this.changeDetectorRef.detectChanges();
   }
 
   dismiss() {
-    this.selectedMediasEvent.emit(null);
-    this.ResetCheckboxes();
+    if(this.isUpdate){
+      this.selectedMediasEvent.emit(this.selectedMedias);
+    }else{
+      this.selectedMediasEvent.emit(null);
+    }
+      this.ResetCheckboxes();
   }
 
   submit() {

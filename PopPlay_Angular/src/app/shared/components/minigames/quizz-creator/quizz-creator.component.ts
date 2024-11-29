@@ -30,8 +30,6 @@ export class QuizzCreatorComponent implements OnInit {
   protected btnTypes = BtnTypes
   private _quizzSelected: Quiz[] = []
   @Input() set quizzSelected(quizzs: Quiz[]) { 
-    // TODO: remove setter and implement ngOnChanges cause @Input variable is populate before ngOnInit => no need of settimeout
-    setTimeout(() => {
       this._quizzSelected = quizzs;
 
       if (this._quizzSelected.length > 0) {
@@ -45,14 +43,13 @@ export class QuizzCreatorComponent implements OnInit {
           this.answers[i] = answers;
         }
       }
-    }, 100);
   }
 
   get quizz() {
     return this.quizzForm.get('quizz') as FormArray;
   }
 
-  ngOnInit(): void {
+  constructor() { 
     this.quizzForm = this.fb.group({
       quizz: this.fb.array([
         this.fb.group({
@@ -61,6 +58,9 @@ export class QuizzCreatorComponent implements OnInit {
         })
       ]),
     })
+  }
+
+  ngOnInit(): void {
   }
 
   addQuestion(questionValue: string = '', answerValue: string = '') {
