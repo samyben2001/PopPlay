@@ -18,7 +18,7 @@ class MediaType(models.Model):
     def __str__(self):
         return self.name
     
-       
+    # TODO: add accountId + isPublic
 class Media(models.Model):
     name = models.CharField(max_length=200)
     url = models.FileField(unique=True, storage=storages["cloudflare"], null=True, blank=True)
@@ -35,7 +35,7 @@ class Media(models.Model):
         if self.url and self.name:
             # Generate a new file name based on the name field
             ext = os.path.splitext(self.url.name)[1]  # Get the file extension
-            new_filename = f"{slugify(self.name)}{ext}"  # Slugify the name for a safe filename
+            new_filename = f"{slugify(self.name)}{ext}"  # Slugify the name for a safe filename TODO: add type + account id
             self.url.name = new_filename
         
         super().save(*args, **kwargs)

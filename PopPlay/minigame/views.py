@@ -87,7 +87,7 @@ class QuizViewSet(ModelViewSet):
     
 
 class MediaViewSet(ModelViewSet):
-    queryset = Media.objects.all().order_by('id').prefetch_related('type', 'answers')
+    queryset = Media.objects.all().order_by('id').prefetch_related('type', 'answers').distinct()
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   

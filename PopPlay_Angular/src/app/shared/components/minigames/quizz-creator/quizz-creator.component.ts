@@ -29,20 +29,27 @@ export class QuizzCreatorComponent implements OnInit {
   subscriptions: Subscription[] = []
   protected btnTypes = BtnTypes
   private _quizzSelected: Quiz[] = []
-  @Input() set quizzSelected(quizzs: Quiz[]) {
-    this._quizzSelected = quizzs;
+  @Input() set quizzSelected(quizzs: Quiz[]) { 
+    // TODO: remove setter and implement ngOnChanges cause @Input variable is populate before ngOnInit => no need of settimeout
+    setTimeout(() => {
+      this._quizzSelected = quizzs;
 
-    if (this._quizzSelected.length > 0) {
-      for (let i = 0; i < this._quizzSelected.length; i++) {
-        if (i > 0) {
-          this.addQuestion();
+      if (this._quizzSelected.length > 0) {
+        for (let i = 0; i < this._quizzSelected.length; i++) {
+          if (i > 0) {
+            this.addQuestion();
+          }
+          this.quizz.controls[i].get('question')?.setValue(this._quizzSelected[i].question.question);
+          let answers = this._quizzSelected[i].answers.map(answer => answer.answer)
+          this.quizz.controls[i].get('answers')?.setValue(answers.join(','));
+          this.answers[i] = answers;
         }
-        this.quizz.controls[i].get('question')?.setValue(this._quizzSelected[i].question.question);
-        let answers = this._quizzSelected[i].answers.map(answer => answer.answer)
-        this.quizz.controls[i].get('answers')?.setValue(answers.join(','));
-        this.answers[i] = answers;
       }
-    }
+    }, 100);
+  }
+
+  get quizz() {
+    return this.quizzForm.get('quizz') as FormArray;
   }
 
   ngOnInit(): void {
@@ -54,10 +61,6 @@ export class QuizzCreatorComponent implements OnInit {
         })
       ]),
     })
-  }
-
-  get quizz() {
-    return this.quizzForm.get('quizz') as FormArray;
   }
 
   addQuestion(questionValue: string = '', answerValue: string = '') {
@@ -169,23 +172,18 @@ export class QuizzCreatorComponent implements OnInit {
     this.subscriptions.push(this.answersCreatedSubject.subscribe({
       next: (data) => {
         if (data) {
-          console.log("answersCreated", this.answersCreated)
-          console.log("questionsCreated", this.questionsCreated)
           let quizRequests: Observable<Quiz>[] = []
-          console.log(quizRequests)
           for (let i = 0; i < this.quizz.value.length; i++) {
             const quiz: QuizCreate = {
               question_id: this.questionsCreated[i].id!,
               answers_id: this.answersCreated[i].map((answer) => answer.id!)
             }
-            console.log("quizToCreate", quiz)
             quizRequests.push(this.minigameServ.create_quizz(quiz));
           }
 
 
           this.subscriptions.push(forkJoin(quizRequests).subscribe({
             next: (responses: Quiz[]) => {
-              console.log("quizz", responses)
               this.resetForm();
               this.quizzCreatedEvent.emit(responses)
             },

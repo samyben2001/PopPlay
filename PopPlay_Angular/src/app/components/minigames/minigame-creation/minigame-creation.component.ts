@@ -160,6 +160,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
   }
 
   onSelectedMedias(medias: Media[] | null) {
+    console.log(medias)
     this.mediasSelected = medias ? [...medias] : [];
     this.isMediasSelectorVisible = false;
   }

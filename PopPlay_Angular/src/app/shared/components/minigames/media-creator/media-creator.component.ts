@@ -89,6 +89,7 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
    */
   dismiss() {
     this.mediaCreatedEvent.emit(null);
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   /**
@@ -128,7 +129,7 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
    * Creates the media and notifies the parent component when the media has been created
    */
   createMedia() {
-    // Wait for all answers to be created before creating the media
+    // Wait for all answers to be created before creating the media TODO: add loading during sending media to cloudflare
     this.subscriptions.push(this.answersCreatedSubject.subscribe({
       next: (data) => { 
         if (data) { 

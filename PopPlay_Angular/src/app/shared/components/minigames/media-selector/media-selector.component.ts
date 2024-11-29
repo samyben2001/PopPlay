@@ -38,7 +38,7 @@ export class MediaSelectorComponent implements OnChanges {
     this._mediaType = mediaType;
     setTimeout(() => {
       this.GetMedias(this.onlyMine);
-    }, 100);
+    }, 200);
   }
   get mediaType(): MediaTypes {
     return this._mediaType;
@@ -66,7 +66,8 @@ export class MediaSelectorComponent implements OnChanges {
 
   selectMedia(media: Media) {
     // add or remove the media
-    if (!this.selectedMedias.includes(media)) {
+    let isSelected = this.selectedMedias.find((m) => m.id == media.id);
+    if (!isSelected) {
       this.selectedMedias.push(media);
       this.ToggleCheckbox(media, true);
     } else {

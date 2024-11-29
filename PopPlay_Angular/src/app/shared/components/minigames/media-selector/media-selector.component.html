@@ -15,18 +15,21 @@
                 @for (media of medias; track $index) {
                     <!-- Media Thumbnail TODO: audio thumbnail -->
                     @if(media.type.id == mediaTypes.IMAGE){
-                        <div class="relative w-1/5">
+                        <div class="relative w-1/5" (click)="selectMedia(media)">
                             <input type="checkbox" [name]="'media_' + media.id" [value]="media.id" [id]="'media_' + media.id" class="absolute top-0 right-0 accent-pink-600" #CheckboxMedia>
-                            <img [src]="media.url" class="w-full h-auto cursor-pointer" [alt]="media.name" (click)="selectMedia(media)">
+                            <img [src]="media.url" class="w-full h-auto cursor-pointer" [alt]="media.name">
                             <p class="text-slate-200 text-center px-1 overflow-hidden text-ellipsis text-nowrap">{{media.name | upperFirst}}</p>
                         </div>
                     }@else if (media.type.id == mediaTypes.AUDIO){
                         <div class="relative w-1/5">
-                            <input type="checkbox" [name]="'media_' + media.id" [value]="media.id" [id]="'media_' + media.id" class="absolute top-0 right-0 accent-pink-600" #CheckboxMedia>
-                            <audio controls controlsList="nodownload" class="w-full cursor-pointer" (click)="selectMedia(media)">
-                                <source [src]="media.url" type="audio/mp3">
-                                Your browser does not support the audio element.
-                            </audio>
+                            <input type="checkbox" [name]="'media_' + media.id" [value]="media.id" [id]="'media_' + media.id" class="absolute top-0 right-0 accent-pink-600 z-10" #CheckboxMedia (click)="selectMedia(media)">
+                            <div>
+                                <audio controls controlsList="nodownload" class="w-full cursor-pointer" >
+                                    <source [src]="media.url" type="audio/mp3">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                            
                             <p class="text-slate-200 text-center px-1 overflow-hidden text-ellipsis text-nowrap">{{media.name | upperFirst}}</p>
                         </div>
                     }
