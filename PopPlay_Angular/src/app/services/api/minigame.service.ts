@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { Media, Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz, MinigamePagination } from '../../models/models';
+import { Media, Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz, MinigamePagination, UserMinigameScore } from '../../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -91,6 +91,10 @@ export class MinigameService {
 
   get_types(): Observable<Type[]> {
     return this.httpClient.get<Type[]>(this.apiUrl + 'minigame/type/');
+  }
+
+  get_top_scores(gameId: number): Observable<any> {
+    return this.httpClient.get<any>(this.apiUrl + 'minigame/' + gameId + '/topscores/');
   }
 
   create_answer(answer: string): Observable<Answer> {

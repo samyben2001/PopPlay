@@ -118,6 +118,8 @@ class MinigameViewSet(ModelViewSet):
             return MinigameUserNoteSerializer
         elif self.action == 'get_likes':
             return MinigameLikesSerializer
+        elif self.action == 'get_top_scores':
+            return MinigameTopScoresSerializer
         return MinigameSerializer
     
     # ajout note
@@ -147,6 +149,15 @@ class MinigameViewSet(ModelViewSet):
     # get likes
     @action(detail=True, methods=['get'],url_path='likes')
     def get_likes(self, request, pk):
+        try:
+            minigame = self.get_object()
+            serializers = self.get_serializer(minigame, many=False)
+            return Response(serializers.data, status=status.HTTP_200_OK)
+        except Minigame.DoesNotExist:
+            return Response({"error": "Minigame introuvable."}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=True, methods=['get'], url_path='topscores')
+    def get_top_scores(self, request, pk):
         try:
             minigame = self.get_object()
             serializers = self.get_serializer(minigame, many=False)

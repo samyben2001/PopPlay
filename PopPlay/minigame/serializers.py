@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from account.models import Account
+from account.models import Account, UserMinigameScore
 from .models import *
 
 
@@ -160,4 +160,26 @@ class MinigameLikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Minigame
         fields = ['liked_by']
+        
+
+class AccountMinigameScoreSerializer(serializers.ModelSerializer):
+    account = serializers.SerializerMethodField(read_only=True)
+    
+    class Meta:
+        model = UserMinigameScore
+        fields = ['account', 'score', 'date']
+        
+    def get_account(self, obj):
+        from account.serializers import AccountLightSerializer
+        return AccountLightSerializer(obj.account).data
+        
+
+class MinigameTopScoresSerializer(serializers.ModelSerializer):
+    top_scores = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = Minigame
+        fields = ['top_scores']
+        
+    def get_top_scores(self, obj):
+        return AccountMinigameScoreSerializer(UserMinigameScore.objects.filter(minigame=obj).order_by('-score')[:10], many=True).data
 # endregion

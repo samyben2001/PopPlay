@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Answer, Minigame } from '../../../models/models';
+import { Answer, Minigame, UserMinigameScore } from '../../../models/models';
 import { MinigameService } from '../../../services/api/minigame.service';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -14,11 +14,12 @@ import { GameTypes } from '../../../enums/GameTypes';
 import { Subscription } from 'rxjs';
 import { ButtonComponent } from '../../../shared/components/tools/button/button.component';
 import { BtnTypes } from '../../../enums/BtnTypes';
+import { AccountScoresComponent } from '../../../shared/components/account/account-scores/account-scores.component';
 
 @Component({
   selector: 'app-minigame-player',
   standalone: true,
-  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective, ButtonComponent],
+  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective, ButtonComponent, AccountScoresComponent],
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css',
   animations: [trigger('hiddenVisible', [
@@ -51,6 +52,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private TIME_BETWEEN_MEDIAS: number = 5
   private SCORE_PER_ERROR: number = -100
   protected btnTypes = BtnTypes
+  protected topScores: UserMinigameScore[] = []
 
   minigame!: Minigame
 
@@ -166,6 +168,8 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       clearInterval(this.timerIntervalId)
       if (this._authServ.isConnected()) {
         this.sendScore();
+      }else{
+        this.getTopScore();
       }
     }
   }
@@ -173,8 +177,22 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private sendScore() {
     this.subscriptions.push(this._accountServ.addScore(this.minigame.id, this.score).subscribe({
       next: (data) => {
-        // TODO: Show score toast + get score position
+        // TODO: get score position
         this._accountServ.account()?.games_score.push(data)
+        this.getTopScore()
+      },
+      error: (err) => {
+        console.log(err);
+        this._router.navigate(['/error']);
+      }
+    }));
+  }
+
+  private getTopScore() {
+    this.subscriptions.push(this._gameServ.get_top_scores(this.minigame.id).subscribe({
+      next: (data) => {
+        this.topScores = data.top_scores
+        console.log('top scores ', this.topScores)
       },
       error: (err) => {
         console.log(err);

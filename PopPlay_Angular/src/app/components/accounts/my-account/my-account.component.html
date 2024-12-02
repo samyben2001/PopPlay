@@ -11,7 +11,9 @@
 }@else if (isFavoritesActive) {
     <app-minigame-gallery [minigames]="account()?.games_liked!"/>
 }@else if (isScoreActive) {
-    <app-account-scores [scores]="account()?.games_score!"/>
+    <div class="h-[75vh]">
+        <app-account-scores [scores]="account()?.games_score!"/>
+    </div>
 }@else if (isMyGamesActive) {
     <app-minigame-gallery [minigames]="account()?.minigames!"/>
 }

@@ -18,8 +18,8 @@ class MediaType(models.Model):
     def __str__(self):
         return self.name
     
-    # TODO: add accountId + isPublic
 class Media(models.Model):
+    # TODO: add accountId + isPublic
     name = models.CharField(max_length=200)
     url = models.FileField(unique=True, storage=storages["cloudflare"], null=True, blank=True)
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)

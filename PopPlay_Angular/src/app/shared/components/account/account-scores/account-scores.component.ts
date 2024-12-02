@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnInit } from '@angular/core';
 import { UserMinigameScore } from '../../../../models/models';
 import { CommonModule } from '@angular/common';
+import { AccountService } from '../../../../services/api/account.service';
 
 @Component({
   selector: 'app-account-scores',
@@ -10,11 +11,16 @@ import { CommonModule } from '@angular/common';
   styleUrl: './account-scores.component.css'
 })
 export class AccountScoresComponent implements OnInit {
+  private _accountServ = inject(AccountService)
+  
   @Input() scores: UserMinigameScore[] = []
+  @Input() isTopScores: boolean = false
+  @Input() canFilter: boolean = true
   isSortedByName?: boolean
   isSortedByType?: boolean
   isSortedByScore?: boolean
   isSortedByDate?: boolean = true
+  account = this._accountServ.account
 
   ngOnInit() {
     this.sortBy('date')
