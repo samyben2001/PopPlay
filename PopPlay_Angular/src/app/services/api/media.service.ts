@@ -43,7 +43,7 @@ export class MediaService {
 
     let userId = this.accountServ.account()!.id;
     let types = typeIds ? typeIds.join(',') : '';
-    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}&minigame__author=${userId}`);
+    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}&account=${userId}`);
   }
 
   getAllTypes(): Observable<MediaType[]> {

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from minigame.models import Theme
+from minigame.models import Media, Theme
 from minigame.models import Minigame
 
 # TODO: mail in user model should be unique: heritage de AbstractUser? + add username minlength(3) + get by username

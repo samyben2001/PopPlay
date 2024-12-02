@@ -19,11 +19,12 @@ class MediaType(models.Model):
         return self.name
     
 class Media(models.Model):
-    # TODO: add accountId + isPublic
+    # TODO: add accountId + isPublic + question 
     name = models.CharField(max_length=200)
     url = models.FileField(unique=True, storage=storages["cloudflare"], null=True, blank=True)
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(Answer)
+    account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING, blank=True, null=True, related_name='medias')
     
     def save(self, *args, **kwargs):
         """

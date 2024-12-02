@@ -15,5 +15,5 @@ class MediaFilter(django_filters.FilterSet):
         model = Media
         fields = {
                   'type': ['in', 'exact'],
-                  'minigame__author': ['exact'],
+                  'account': ['exact'],
                   }

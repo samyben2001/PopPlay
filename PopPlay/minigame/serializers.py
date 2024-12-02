@@ -34,6 +34,14 @@ class MediaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
         fields = ['id', 'name', 'url', 'type','type_id', 'answers', 'answers_id'] 
+        
+    def create(self, validated_data):
+        accountID = self.context.get('request').user.account
+        if accountID is None:
+            raise serializers.ValidationError("You must be logged in to create a minigame")
+        
+        validated_data['account'] = accountID
+        return super().create(validated_data)
 # endregion
 
 # region Quizz
