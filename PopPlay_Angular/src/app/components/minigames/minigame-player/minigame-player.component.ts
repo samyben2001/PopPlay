@@ -23,20 +23,8 @@ import { AccountScoresComponent } from '../../../shared/components/account/accou
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css',
   animations: [trigger('hiddenVisible', [
-    state(
-      'hidden',
-      style({
-        opacity: 0,
-        top: 0
-      }),
-    ),
-    state(
-      'visible',
-      style({
-        opacity: 1,
-        top: '-1.5rem'
-      }),
-    ),
+    state('hidden',style({opacity: 0, top: 0}),),
+    state('visible',style({opacity: 1,top: '-1.5rem'})),
     transition('hidden => visible', [animate('0.3s')]),
   ]),],
 })
@@ -46,42 +34,46 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private _gameServ = inject(MinigameService)
   private _accountServ = inject(AccountService)
   private _authServ = inject(AuthService)
-  protected MAX_ATTEMPTS: number = 3
-  private BASE_BLUR: number = 25
-  private MAX_TIMER: number = 30
-  private TIME_BETWEEN_MEDIAS: number = 5
-  private SCORE_PER_ERROR: number = -100
+  
+  protected readonly MAX_ATTEMPTS: number = 3
+  private readonly BASE_BLUR: number = 25
+  private readonly MAX_TIMER: number = 30
+  private readonly TIME_BETWEEN_MEDIAS: number = 5
+  private readonly SCORE_PER_ERROR: number = -100
+
   protected btnTypes = BtnTypes
-  protected topScores: UserMinigameScore[] = []
+  protected gameTypes = GameTypes
+
 
   minigame!: Minigame
+  topScores: UserMinigameScore[] = []
+  score: number = 0
+  scoreGained: number = 0
+  scoreAnimation: boolean | null = null
+  timer: number = this.MAX_TIMER
+  timerIntervalId?: ReturnType<typeof setInterval>
+  timerBeforeNextMedia: number = this.TIME_BETWEEN_MEDIAS
+  nbCorrectAnswers: number = 0
+  attempts: number = 0
+  userAnswer: string = ''
+  maxMediaIndex: number = 0
+  actualMediaIndex: number = 0
+  isCorrectAnswerShown: boolean = false
+  isGameEnded: boolean = false
+  audioToFind!: ElementRef
+  imgToFind!: ElementRef
+  blurAmount: number = this.BASE_BLUR
+  subscriptions: Subscription[] = []
 
   @ViewChildren('question') questions!: QueryList<ElementRef>
   @ViewChild('scoreUp') scoreUp!: ElementRef
   @ViewChild('scoreDown') scoreDown!: ElementRef
-  gameTypes = GameTypes
-  imgToFind!: ElementRef
-  timerIntervalId?: ReturnType<typeof setInterval>
-  actualMediaIndex: number = 0
-  maxMediaIndex: number = 0
-  timer: number = this.MAX_TIMER
-  timerBeforeNextMedia: number = this.TIME_BETWEEN_MEDIAS
-  score: number = 0
-  scoreGained: number = 0
-  nbCorrectAnswers: number = 0
-  attempts: number = 0
-  userAnswer: string = ''
-  blurAmount: number = this.BASE_BLUR
-  isCorrectAnswerShown: boolean = false
-  isGameEnded: boolean = false
-  scoreAnimation: boolean | null = null
-  subscriptions: Subscription[] = []
+
 
   ngOnInit(): void {
     this.subscriptions.push(this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
-        console.log('minigame ', this.minigame)
 
         if (this.minigame.type.name == GameTypes.IMAGE_GUESSING || this.minigame.type.name == GameTypes.BLIND_TEST) {
           this.shuffle(this.minigame.medias)
@@ -105,10 +97,15 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
         this.imgToFind = question.first
         this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
+      } else if (this.minigame.type.name == GameTypes.BLIND_TEST) {
+        this.audioToFind = question.first
+        this.audioToFind.nativeElement.load()
+        this.audioToFind.nativeElement.play()
       }
 
       if (this.timerIntervalId != undefined)
         clearInterval(this.timerIntervalId)
+
       this.activateTimer()
     }))
   }
@@ -168,7 +165,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       clearInterval(this.timerIntervalId)
       if (this._authServ.isConnected()) {
         this.sendScore();
-      }else{
+      } else {
         this.getTopScore();
       }
     }
@@ -248,8 +245,13 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
           setTimeout(() => {
             this.nextMedias();
           }, 1000);
-        }else{
+        } else {
           this.nextMedias();
+          if (this.minigame.type.name == GameTypes.BLIND_TEST) {
+            this.audioToFind = this.questions.first
+            this.audioToFind.nativeElement.load()
+            this.audioToFind.nativeElement.play()
+          }
         }
         break;
       } else if (index == correctAnswers.length - 1) { // Check if answer is incorrect
