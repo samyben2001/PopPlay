@@ -22,11 +22,12 @@ import { AccountScoresComponent } from '../../../shared/components/account/accou
   imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective, ButtonComponent, AccountScoresComponent],
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css',
-  animations: [trigger('hiddenVisible', [
-    state('hidden',style({opacity: 0, top: 0}),),
-    state('visible',style({opacity: 1,top: '-1.5rem'})),
-    transition('hidden => visible', [animate('0.3s')]),
-  ]),],
+  animations: [
+    trigger('hiddenVisible', [
+      state('hidden', style({ opacity: 0, top: 0 }),),
+      state('visible', style({ opacity: 1, top: '-1.5rem' })),
+      transition('hidden => visible', [animate('0.3s')]),
+    ]),],
 })
 export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   private _router = inject(Router)
@@ -34,7 +35,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private _gameServ = inject(MinigameService)
   private _accountServ = inject(AccountService)
   private _authServ = inject(AuthService)
-  
+
   protected readonly MAX_ATTEMPTS: number = 3
   private readonly BASE_BLUR: number = 25
   private readonly MAX_TIMER: number = 30
@@ -44,26 +45,26 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   protected btnTypes = BtnTypes
   protected gameTypes = GameTypes
 
+  protected minigame!: Minigame
+  protected topScores: UserMinigameScore[] = []
+  protected score: number = 0
+  protected scoreGained: number = 0
+  protected scoreAnimation: boolean | null = null
+  protected timer: number = this.MAX_TIMER
+  private timerIntervalId?: ReturnType<typeof setInterval>
+  protected timerBeforeNextMedia: number = this.TIME_BETWEEN_MEDIAS
+  protected userAnswer: string = ''
+  protected nbCorrectAnswers: number = 0
+  protected attempts: number = 0
+  protected maxMediaIndex: number = 0
+  protected actualMediaIndex: number = 0
+  private audioToFind!: ElementRef
+  private imgToFind!: ElementRef
+  private blurAmount: number = this.BASE_BLUR
+  protected isCorrectAnswerShown: boolean = false
+  protected isGameEnded: boolean = false
 
-  minigame!: Minigame
-  topScores: UserMinigameScore[] = []
-  score: number = 0
-  scoreGained: number = 0
-  scoreAnimation: boolean | null = null
-  timer: number = this.MAX_TIMER
-  timerIntervalId?: ReturnType<typeof setInterval>
-  timerBeforeNextMedia: number = this.TIME_BETWEEN_MEDIAS
-  nbCorrectAnswers: number = 0
-  attempts: number = 0
-  userAnswer: string = ''
-  maxMediaIndex: number = 0
-  actualMediaIndex: number = 0
-  isCorrectAnswerShown: boolean = false
-  isGameEnded: boolean = false
-  audioToFind!: ElementRef
-  imgToFind!: ElementRef
-  blurAmount: number = this.BASE_BLUR
-  subscriptions: Subscription[] = []
+  private subscriptions: Subscription[] = []
 
   @ViewChildren('question') questions!: QueryList<ElementRef>
   @ViewChild('scoreUp') scoreUp!: ElementRef
@@ -110,8 +111,37 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     }))
   }
 
+  private shuffle(array: any[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const randomIndex = Math.floor(Math.random() * (i + 1));
+      [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
+    }
+  }
 
-  try() {
+  private activateTimer() {
+    this.timerIntervalId = setInterval(() => {
+
+      if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+        this.unblur();
+      }
+
+      this.timer--
+
+      if (!this.isGameEnded && this.timer <= 0) { // Check if time is elapsed for giving answer
+        this.setScoreAnimation(false);
+        clearInterval(this.timerIntervalId)
+        this.score += this.SCORE_PER_ERROR
+        this.showCorrectAnswer()
+      }
+    }, 1000);
+  }
+
+  private unblur() {
+    this.blurAmount -= this.BASE_BLUR / this.MAX_TIMER;
+    this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`;
+  }
+
+  protected try() {
     if (this.userAnswer == '') return // Check if user entered an answer
     let correctAnswers: any[] = []
     if (this.minigame.type.name == GameTypes.IMAGE_GUESSING || this.minigame.type.name == GameTypes.BLIND_TEST) {
@@ -130,7 +160,80 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this.checkIfGameEnded();
   }
 
-  restart() {
+  private checkUserAnswer(correctAnswers: Answer[]) {
+    for (let index = 0; index < correctAnswers.length; index++) {
+      if (correctAnswers[index].answer.toLowerCase() == this.userAnswer.toLowerCase()) { // Check if answer is Correct among the correct answers
+        if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+          this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts
+        } else {
+          this.scoreGained = Math.round(this.timer * this.timer) + 100; // Calculate score based on time and attempts
+        }
+        this.score += this.scoreGained
+        this.nbCorrectAnswers++;
+        this.setScoreAnimation(true);
+        // Check if it's the last media 
+        if (this.actualMediaIndex == this.maxMediaIndex - 1) {
+          setTimeout(() => {
+            this.nextMedias();
+          }, 1000);
+        } else {
+          this.nextMedias();
+          if (this.minigame.type.name == GameTypes.BLIND_TEST) {
+            this.audioToFind = this.questions.first
+            this.audioToFind.nativeElement.load()
+            this.audioToFind.nativeElement.play()
+          }
+        }
+        break;
+      } else if (index == correctAnswers.length - 1) { // Check if answer is incorrect
+        this.setScoreAnimation(false);
+        this.score += this.SCORE_PER_ERROR;
+      }
+    }
+    this.userAnswer = ''
+  }
+
+  private setScoreAnimation(state: boolean) {
+    this.scoreAnimation = state;
+    setTimeout(() => {
+      this.scoreAnimation = null;
+    }, 750);
+  }
+
+  private showCorrectAnswer() {
+    this.isCorrectAnswerShown = true;
+    clearInterval(this.timerIntervalId);
+
+    let interval = setInterval(() => {
+      this.timerBeforeNextMedia--;
+    }, 1000);
+
+    setTimeout(() => {
+      this.isCorrectAnswerShown = false;
+      this.timerBeforeNextMedia = this.TIME_BETWEEN_MEDIAS;
+      this.nextMedias();
+      clearInterval(interval);
+    }, 5000);
+  }
+
+  private nextMedias() {
+    clearInterval(this.timerIntervalId);
+    this.actualMediaIndex++;
+    this.checkIfGameEnded();
+    this.userAnswer = '';
+    if (this.isGameEnded) return;
+
+    if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
+      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
+      this.blurAmount = this.BASE_BLUR;
+    }
+
+    this.timer = this.MAX_TIMER;
+    this.attempts = 0;
+    this.activateTimer();
+  }
+
+  protected restart() {
     this.score = 0
     this.attempts = 0
     this.userAnswer = ''
@@ -153,10 +256,6 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.activateTimer()
-  }
-
-  back() {
-    this._router.navigate(['/'])
   }
 
   private checkIfGameEnded() {
@@ -198,121 +297,9 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     }));
   }
 
-  private activateTimer() {
-    this.timerIntervalId = setInterval(() => {
-
-      if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
-        this.unblur();
-      }
-
-      this.timer--
-
-      if (!this.isGameEnded && this.timer <= 0) { // Check if time is elapsed for giving answer
-        this.setAnimation(false);
-        clearInterval(this.timerIntervalId)
-        this.score += this.SCORE_PER_ERROR
-        this.showCorrectAnswer()
-      }
-    }, 1000);
+  protected back() {
+    this._router.navigate(['/'])
   }
-
-
-  private unblur() {
-    this.blurAmount -= this.BASE_BLUR / this.MAX_TIMER;
-    this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.blurAmount}px)`;
-  }
-
-  private setAnimation(state: boolean) {
-    this.scoreAnimation = state;
-    setTimeout(() => {
-      this.scoreAnimation = null;
-    }, 750);
-  }
-
-  private checkUserAnswer(correctAnswers: Answer[]) {
-    for (let index = 0; index < correctAnswers.length; index++) {
-      if (correctAnswers[index].answer.toLowerCase() == this.userAnswer.toLowerCase()) { // Check if answer is Correct among the correct answers
-        if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
-          this.scoreGained = Math.round(this.timer * this.blurAmount) + 100; // Calculate score based on time and blur and attempts
-        } else {
-          this.scoreGained = Math.round(this.timer * this.timer) + 100; // Calculate score based on time and attempts
-        }
-        this.score += this.scoreGained
-        this.nbCorrectAnswers++;
-        this.setAnimation(true);
-        // Check if it's the last media 
-        if (this.actualMediaIndex == this.maxMediaIndex - 1) {
-          setTimeout(() => {
-            this.nextMedias();
-          }, 1000);
-        } else {
-          this.nextMedias();
-          if (this.minigame.type.name == GameTypes.BLIND_TEST) {
-            this.audioToFind = this.questions.first
-            this.audioToFind.nativeElement.load()
-            this.audioToFind.nativeElement.play()
-          }
-        }
-        break;
-      } else if (index == correctAnswers.length - 1) { // Check if answer is incorrect
-        this.setAnimation(false);
-        this.score += this.SCORE_PER_ERROR;
-      }
-    }
-    this.userAnswer = ''
-  }
-
-
-  private showCorrectAnswer() {
-    this.isCorrectAnswerShown = true;
-    clearInterval(this.timerIntervalId);
-
-    let interval = setInterval(() => {
-      this.timerBeforeNextMedia--;
-    }, 1000);
-
-    setTimeout(() => {
-      this.isCorrectAnswerShown = false;
-      this.timerBeforeNextMedia = this.TIME_BETWEEN_MEDIAS;
-      this.nextMedias();
-      clearInterval(interval);
-    }, 5000);
-  }
-
-
-  private nextMedias() {
-    clearInterval(this.timerIntervalId);
-    this.actualMediaIndex++;
-    this.checkIfGameEnded();
-    this.userAnswer = '';
-    if (this.isGameEnded) return;
-
-    if (this.minigame.type.name == GameTypes.IMAGE_GUESSING) {
-      this.imgToFind.nativeElement.style.backdropFilter = `blur(${this.BASE_BLUR}px)`
-      this.blurAmount = this.BASE_BLUR;
-    }
-
-    this.timer = this.MAX_TIMER;
-    this.attempts = 0;
-    this.activateTimer();
-  }
-
-  private shuffle(array: any[]) {
-    let currentIndex: number = array.length;
-
-    // While there remain elements to shuffle...
-    while (currentIndex != 0) {
-
-      // Pick a remaining element...
-      let randomIndex: number = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-  }
-
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())
