@@ -4,7 +4,7 @@
         <h2 class="text-lg md:text-2xl text-slate-200"> {{!gameToUpdate ? 'Création d\'un jeu':'Modifier le jeu'}}</h2>
     </div>
     
-    <!-- TODO: Refacto in multiple components  (step by step creation)-->
+    <!-- TODO: Refacto in multiple components  (step by step creation (1# Infos 2# medias/quizz 3# Verification/validation)) -->
     @if (!gameID || (gameID && gameToUpdate)) {
         @if(gameToUpdate) {
         <app-confirm-pop-up (confirmEvent)="onPopupConfirm()"/>

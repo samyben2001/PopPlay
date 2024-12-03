@@ -38,6 +38,10 @@ export class NavbarComponent {
         this.router.navigate(['/minigame/creation']);
         break
       }
+      case 'gameCreationv2': {
+        this.router.navigate(['/minigame/creationv2']);
+        break
+      }
       default: {
         this.router.navigate(['/']);
       }
