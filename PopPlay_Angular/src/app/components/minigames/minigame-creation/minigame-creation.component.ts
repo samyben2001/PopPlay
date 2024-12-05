@@ -185,6 +185,7 @@ export class MinigameCreationComponent implements OnInit, OnDestroy {
     this.isQuizzCreatorVisible = false;
   }
 
+  // Delete game
   delete() {
     this.popupService.Show("Êtes vous sur de vouloir supprimer ce minigame ?");
   }

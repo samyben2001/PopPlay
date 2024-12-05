@@ -11,7 +11,7 @@ export interface MinigameCreate {
     cover_url: File;
     theme_id: number;
     type_id: number;
-    medias_id: number[];
+    medias_id: Media[];
     quizz_id: Quiz[];
 }
 

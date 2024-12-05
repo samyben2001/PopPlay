@@ -101,7 +101,6 @@ export class MediaSelectorComponent implements OnChanges {
   private ToggleCheckbox(media: Media, value: boolean) {
     // (un)check the checkbox mathcing the media id
     let box = this.checkboxes.find((checkbox: ElementRef<HTMLInputElement>) => {
-      console.log(checkbox.nativeElement.value, media.id.toString(), checkbox.nativeElement.value == media.id.toString())
       return checkbox.nativeElement.value == media.id.toString()
     });
 
