@@ -1,1 +1,49 @@
-<p>creation-validation works!</p>
+<div class="flex flex-col mb-3 md:mb-6 py-6 px-1 md:p-6 rounded bg-slate-700">
+    <!-- Game infos -->
+    <div class="flex flex-col gap-2 text-slate-200">
+        <span>Nom du jeu: {{minigame!().name}}</span>
+        <span>Cover: {{minigame!().cover_url!.name}}</span>
+        <span>Type: {{gameInfosText.type}}</span>
+        <span>Thème: {{gameInfosText.theme}}</span>
+    </div>
+
+    <!-- Game Medias -->
+     @if (minigame!().medias_id.length > 0) {
+        <div class="flex flex-row flex-wrap gap-2 mt-3 md:mt-6 text-slate-200">
+             @for (media of minigame!().medias_id; track $index) {
+                @if(minigame!().type_id == imageGuessId){
+                    <!-- Media Thumbnail -->
+                    <div class="h-24 relative">
+                        <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
+                    </div>
+                }@else if (minigame!().type_id == blindTestId) {
+                    <!-- Audio Thumbnail -->
+                    <div class="w-full md:w-[48%]">
+                        <audio controls controlsList="nodownload" #question class="w-full">
+                            <source [src]="media.url" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                        <p class="text-slate-200 text-center px-1 overflow-hidden text-ellipsis text-nowrap">{{ media.name }}</p>
+                    </div>
+                }
+            }
+        </div>
+    }
+
+    <!-- Game Quizz -->
+     @if (minigame!().quizz_id.length > 0) {
+        <div class="flex flex-col gap-2 mt-3 md:mt-6 text-slate-200">
+            @for (quiz of minigame!().quizz_id; track $index) {
+                <div class="border-b-2 border-slate-200">
+                    <p>Question {{$index + 1 | number:'2.0'}}: {{quiz.question}}</p>
+                    <p>{{quiz.answers.join(', ')}}</p>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div class="flex flex-row justify-between">
+    <app-button text="Étape précedente" [btnType]="btnTypes.PINK" (onClick)="back()"/>
+    <app-button text="Créer le jeu" [btnType]="btnTypes.GREEN" (onClick)="validateMinigame()"/>
+</div>

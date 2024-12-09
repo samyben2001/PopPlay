@@ -1,91 +1,91 @@
 
-        <!-- Game Creation Form -->
-        <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col p-6 rounded bg-slate-700">
-            <!-- Game name -->
-            <div class="flex flex-col mb-3 md:mb-6">
-                <p-floatLabel>
-                    <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
-                    <label for="name" class="peer-focus:text-slate-200">Nom du jeu</label>
-                </p-floatLabel>
-                @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
-                    @if (creationForm.get('name')!.errors!['required']) {
-                        <span class="text-red-600 text-sm">
-                            Le nom du jeu est obligatoire.
-                        </span>
-                    }
-                    @if (creationForm.get('name')!.errors!['minlength']) {
-                        <span class="text-red-600 text-sm">
-                            Le nom du jeu doit comporter minimum 3 caractères.
-                        </span>
-                    }
-                }
-            </div>
+<!-- Game Creation Form -->
+<form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col py-6 px-1 md:p-6 rounded bg-slate-700">
+    <!-- Game name -->
+    <div class="flex flex-col mb-3 md:mb-6">
+        <p-floatLabel>
+            <input pInputText id="name" formControlName="name" class="w-full py-3 px-2 peer"/>
+            <label for="name" class="peer-focus:text-slate-200">Nom du jeu</label>
+        </p-floatLabel>
+        @if (creationForm.get('name')!.touched && creationForm.get('name')!.errors) {
+            @if (creationForm.get('name')!.errors!['required']) {
+                <span class="text-red-600 text-sm">
+                    Le nom du jeu est obligatoire.
+                </span>
+            }
+            @if (creationForm.get('name')!.errors!['minlength']) {
+                <span class="text-red-600 text-sm">
+                    Le nom du jeu doit comporter minimum 3 caractères.
+                </span>
+            }
+        }
+    </div>
 
-            <!-- Cover -->
-            <div class="flex flex-col mb-6">
-                <app-button text="Sélectionner une couverture" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
-                <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;"  accept="image/*"/>
-                        
-                <span class="text-slate-200 mt-1">{{creationForm.get('cover_url')!.value ? creationForm.get('cover_url')!.value.name : 'Aucun fichier sélectionné'}}</span>
+    <!-- Cover -->
+    <div class="flex flex-col mb-6">
+        <app-button text="Sélectionner une couverture" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
+        <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;"  accept="image/*"/>
                 
-                @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
-                    <span class="text-red-600 text-sm">
-                        L'image de couverture du jeu est obligatoire.
-                    </span>
-                }
-            </div>
+        <span class="text-slate-200 mt-1">{{creationForm.get('cover_url')!.value ? creationForm.get('cover_url')!.value.name : 'Aucun fichier sélectionné'}}</span>
+        
+        @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
+            <span class="text-red-600 text-sm">
+                L'image de couverture du jeu est obligatoire.
+            </span>
+        }
+    </div>
 
-            <!-- Type -->
-            <div class="flex flex-col mb-6">
-                <p-floatLabel>
-                    <p-dropdown 
-                    inputId="type"
-                    [options]="types" 
-                    formControlName="type_id"
-                    optionLabel="name" 
+    <!-- Type -->
+    <div class="flex flex-col mb-6">
+        <p-floatLabel>
+            <p-dropdown 
+            inputId="type"
+            [options]="types" 
+            formControlName="type_id"
+            optionLabel="name" 
+            optionValue="id"
+            [filter]="true"
+            filterBy="name" 
+            [showClear]="true"  
+            styleClass="w-full" 
+            /> 
+            <label for="type">Type</label>
+        </p-floatLabel>
+
+        @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
+            <span class="text-red-600 text-sm">
+                Le type du jeu est obligatoire.
+            </span>
+        }
+    </div>
+    
+    <!-- Theme -->
+    <div class="flex flex-col mb-6">
+        <div class="flex flex-row ">
+            <p-floatLabel class="grow">
+                <p-dropdown 
+                    inputId="theme"
+                    [options]="themes" 
+                    formControlName="theme_id"
+                    optionLabel="customName" 
                     optionValue="id"
                     [filter]="true"
                     filterBy="name" 
                     [showClear]="true"  
-                    styleClass="w-full" 
-                    /> 
-                    <label for="type">Type</label>
-                </p-floatLabel>
+                    styleClass="w-full" #themeDropdown/> 
+                <label for="theme">Thème</label>
+            </p-floatLabel>
+                
+            <app-button class="ml-2" text="+" [btnType]="btnTypes.CYAN" (onClick)="openThemesCreator()"/>
+            <app-theme-creator [isVisible]="isThemeCreatorVisible" (themeCreatedEvent)="onThemeCreated($event)"/>
+        </div>
+        @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
+            <span class="text-red-600 text-sm">
+                Le thème du jeu est obligatoire.
+            </span>
+        }
+    </div>
 
-                @if (creationForm.get('type_id')!.touched && creationForm.get('type_id')!.errors) {
-                    <span class="text-red-600 text-sm">
-                        Le type du jeu est obligatoire.
-                    </span>
-                }
-            </div>
-            
-            <!-- Theme -->
-            <div class="flex flex-col mb-6">
-                <div class="flex flex-row ">
-                    <p-floatLabel class="grow">
-                        <p-dropdown 
-                            inputId="theme"
-                            [options]="themes" 
-                            formControlName="theme_id"
-                            optionLabel="customName" 
-                            optionValue="id"
-                            [filter]="true"
-                            filterBy="name" 
-                            [showClear]="true"  
-                            styleClass="w-full" #themeDropdown/> 
-                        <label for="theme">Thème</label>
-                    </p-floatLabel>
-                        
-                    <app-button class="ml-2" text="+" [btnType]="btnTypes.CYAN" (onClick)="openThemesCreator()"/>
-                    <app-theme-creator [isVisible]="isThemeCreatorVisible" (themeCreatedEvent)="onThemeCreated($event)"/>
-                </div>
-                @if (creationForm.get('theme_id')!.touched && creationForm.get('theme_id')!.errors) {
-                    <span class="text-red-600 text-sm">
-                        Le thème du jeu est obligatoire.
-                    </span>
-                }
-            </div>
-        
-            <!-- Submit -->
-            <app-button [isSubmit]="true" text="Etape suivante" [btnType]="btnTypes.GREEN" [disabled]="creationForm.invalid"/>
-        </form>
+    <!-- Submit -->
+    <app-button [isSubmit]="true" text="Étape suivante" [btnType]="btnTypes.GREEN" [disabled]="creationForm.invalid"/>
+</form>

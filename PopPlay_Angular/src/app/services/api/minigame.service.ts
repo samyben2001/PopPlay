@@ -18,7 +18,7 @@ export class MinigameService {
     formData.append('name', minigame.name);
     formData.append('type_id', minigame.type_id.toString());
     formData.append('theme_id', minigame.theme_id.toString());
-    formData.append('cover_url', minigame.cover_url);
+    formData.append('cover_url', minigame.cover_url!);
 
     if (minigame.medias_id.length > 0) {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't

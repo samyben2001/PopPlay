@@ -1,29 +1,20 @@
-@if (minigame?.type_id == quizzId) {
-    <div class="flex flex-col mb-6">
+@if (minigame!().type_id == quizzId) {
+    <div class="flex flex-col mb-6 py-6 px-1 md:p-6 bg-slate-700 rounded">
+        <app-quizz-creation [quizzs]="minigame!().quizz_id" (quizzValidatedEvent)="onQuizzValidated($event)"/>
 
-        <div class="flex flex-col gap-2">
-            @for (quizz of minigame!.quizz_id; track $index) {
-                <p class="text-slate-200">Question {{$index + 1 | number:'2.0'}}: <span>{{quizz.question.question}}</span></p>
-            }@empty {
-                <p class="text-slate-200">Aucune question sélectionnée</p>
-            }
-        </div>
-        <!-- TODO: Make a copy of quizz creator component and use it -->
-        
-        <!-- <app-button [text]="quizzSelected.length > 0 ? 'Modifier le quizz' : 'Ajouter un quizz'" [btnType]="btnTypes.CYAN" (onClick)="openQuizzCreator()"/> -->
     </div>
-} @else if (minigame?.type_id == imageGuessId || minigame?.type_id == blindTestId) {
+} @else if (minigame!().type_id == imageGuessId || minigame!().type_id == blindTestId) {
     <!-- Medias -->
-    <div class="flex flex-col mb-3 md:mb-6">
+    <div class="flex flex-col mb-3 md:mb-6 py-6 px-1 md:p-6 bg-slate-700 rounded">
         <div class="flex flex-row flex-wrap gap-2 mb-3 md:mb-6">
-            @for (media of minigame!.medias_id; track $index) {
-                @if(minigame?.type_id == imageGuessId){
+            @for (media of minigame!().medias_id; track $index) {
+                @if(minigame!().type_id == imageGuessId){
                     <!-- Media Thumbnail -->
                     <div class="h-24 relative">
                         <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
                         <span (click)="removeMedia(media)" class="absolute h-fit -top-1 right-0 text-xl text-pink-600 cursor-pointer">&times;</span>
                     </div>
-                }@else if (minigame?.type_id == blindTestId) {
+                }@else if (minigame!().type_id == blindTestId) {
                     <!-- Audio Thumbnail -->
                     <div class="w-full md:w-[48%]">
                         <audio controls controlsList="nodownload" #question class="w-full">
@@ -38,17 +29,15 @@
             }
         </div>
         
-        <app-button [text]="minigame!.medias_id.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'" [btnType]="btnTypes.CYAN" (onClick)="openMediasSelector()"/>
+        <app-button [text]="minigame!().medias_id.length > 0 ? 'Modifier les médias' : 'Ajouter des médias'" [btnType]="btnTypes.CYAN" (onClick)="openMediasSelector()"/>
     </div>
 
     <!-- Medias Selector -->
-    <app-media-selector [isVisible]="isMediasSelectorVisible" [mediaType]="minigame?.type_id == imageGuessId ? mediaTypes.IMAGE : mediaTypes.AUDIO" [selectedMedias]="minigame!.medias_id" [isUpdate]="false != null || isSomeMediaSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
+    <app-media-selector [isVisible]="isMediasSelectorVisible" [mediaType]="minigame!().type_id == imageGuessId ? mediaTypes.IMAGE : mediaTypes.AUDIO" [selectedMedias]="minigame!().medias_id" [isUpdate]="false != null || isSomeMediaSelected" (selectedMediasEvent)="onSelectedMedias($event)"/>
 }
 
 <div class="flex flex-row justify-between">
-    
-    <app-button text="Etape précedente" [btnType]="btnTypes.PINK" (click)="back()"/>
-    
-    <app-button text="Etape suivante" [btnType]="btnTypes.GREEN" [disabled]="false" (click)="next()"/>
+    <app-button text="Étape précedente" [btnType]="btnTypes.PINK" (click)="back()"/>
+    <app-button text="Étape suivante" [btnType]="btnTypes.GREEN" [disabled]="(minigame!().type_id == quizzId && minigame!().quizz_id.length == 0) || (minigame!().type_id == imageGuessId && minigame!().medias_id.length == 0)" (click)="next()"/>
 </div>
 

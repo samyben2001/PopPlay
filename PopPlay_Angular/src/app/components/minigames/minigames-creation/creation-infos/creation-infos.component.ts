@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ViewChild, WritableSignal } from '@angular/core';
 import { MinigameCreate, Theme, Type } from '../../../../models/models';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MinigameService } from '../../../../services/api/minigame.service';
@@ -39,11 +39,11 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
   themes: Theme[] = [];
   isThemeCreatorVisible: boolean = false;
   types: Type[] = [];
-  
+
   subscriptions: Subscription[] = []
-  
-  @Input() minigame?: MinigameCreate
-  @Output() infosSubmitted = new EventEmitter<MinigameCreate>();
+
+  @Input() minigame!: WritableSignal<MinigameCreate>;
+  @Output() infosSubmitted = new EventEmitter<any>();
   @ViewChild('themeDropdown') themeDropdown!: Dropdown;
 
   ngOnInit(): void {
@@ -73,21 +73,14 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
   }
 
   private initForm() {
-    if (!this.minigame) {
-      this.creationForm = this.fb.group({
-        name: ['', [Validators.required, Validators.minLength(3)]],
-        type_id: ['', [Validators.required]],
-        theme_id: ['', [Validators.required]],
-        cover_url: ['', [Validators.required]],
-      });
-    }else{
-      this.creationForm = this.fb.group({
-        name: [this.minigame.name, [Validators.required, Validators.minLength(3)]],
-        type_id: [this.minigame.type_id, [Validators.required]],
-        theme_id: [this.minigame.theme_id, [Validators.required]],
-        cover_url: [this.minigame.cover_url, [Validators.required]],
-      });
-    }
+    this.creationForm = this.fb.group({
+      name: [this.minigame!().name, [Validators.required, Validators.minLength(3)]],
+      type_id: [this.minigame!().type_id, [Validators.required]],
+      theme_id: [this.minigame!().theme_id, [Validators.required]],
+      cover_url: [this.minigame!().cover_url, [Validators.required]],
+      medias_id: [this.minigame!().medias_id],
+      quizz_id: [this.minigame!().quizz_id],
+    });
   }
 
   // Cover
@@ -115,8 +108,16 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
   protected submit() {
     if (this.creationForm.invalid) return;
 
-    this.minigame = this.creationForm.value;
-    this.infosSubmitted.emit(this.minigame);
+    // Reset medias and quizz if type changed
+    if(this.minigame().type_id != this.creationForm.get('type_id')!.value){
+      this.minigame().medias_id = [];
+      this.minigame().quizz_id = [];
+    }
+
+    this.minigame!.set(this.creationForm.value);
+    const typeName = this.types.find(type => type.id == this.creationForm.value.type_id)!.name
+    const themeName = this.themes.find(theme => theme.id == this.creationForm.value.theme_id)!.customName
+    this.infosSubmitted.emit({ type: typeName, theme: themeName });
   }
 
   ngOnDestroy(): void {

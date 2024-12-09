@@ -16,10 +16,10 @@
                 <app-creation-infos [minigame]="minigame" (infosSubmitted)="onInfosReceived($event)"/>
             }
             @case (2) {
-                <app-creation-medias-quizz [minigame]="minigame" (mediaQuizzCancelled)="onMediaQuizzCancelled($event)" (mediaQuizzSubmitted)="onMediaQuizzReceived($event)"/>
+                <app-creation-medias-quizz [minigame]="minigame" (mediaQuizzCancelled)="onMediaQuizzCancelled()" (mediaQuizzSubmitted)="onMediaQuizzReceived()"/>
             }
             @case (3) {
-                <app-creation-validation/>
+                <app-creation-validation [minigame]="minigame" [gameInfosText]="gameInfosText" (gameCreationCancelled)="onGameCreationCancelled()"/>
             }
         }
     </div>

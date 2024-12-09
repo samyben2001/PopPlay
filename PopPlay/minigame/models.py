@@ -102,6 +102,7 @@ class Minigame(models.Model):
     author = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING, related_name='minigames')
     theme = models.ForeignKey(Theme, on_delete=models.DO_NOTHING)
     type = models.ForeignKey(Type, on_delete=models.DO_NOTHING)
+    # TODO: add medias = models.ManyToManyField(Media, through='MinigameMedia')
     medias = models.ManyToManyField(Media)
     quizz = models.ManyToManyField(Quiz)
     maps = models.ManyToManyField(MapGuess)
