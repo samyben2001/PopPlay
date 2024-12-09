@@ -27,6 +27,7 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
   protected imageGuessId!: number;
   protected quizzId!: number
   protected blindTestId!: number
+  protected coverString: string = ''
 
   private questionsCreated: Question[] = []
   private answersCreated: Answer[][] = []
@@ -41,8 +42,16 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
   @Output() gameCreationCancelled = new EventEmitter<MinigameCreate>();
 
   ngOnInit(): void {
+    if(typeof this.minigame().cover_url === 'object'){
+      const cover = this.minigame().cover_url as File
+      this.coverString = cover.name
+    }else{
+      this.coverString = this.minigame().cover_url as string
+    }
     this.getTypesId();
   }
+
+  protected isObject(val: any): boolean { return typeof val === 'object'; }
 
   private getTypesId() {
     this.subscriptions.push(this.minigameServ.get_types().subscribe({
@@ -68,8 +77,10 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
       this.quizzCreatedSubject.next(true);
     }
 
-    console.log(this.minigame());
-    this.createGame();
+    if(!this.minigame().id)
+      this.createGame();
+    else
+      this.updateGame();
   }
 
   private createAllQuestions() {
@@ -158,6 +169,16 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
         }
       }
     }))
+  }
+
+  private updateGame() {
+    this.subscriptions.push(this.minigameServ.update(this.minigame()).subscribe({
+      next: (data) => {
+        this.toastService.Show("Minigame Mis à jour", `Minigame ${data.name} mis à jour avec succès`, ToastTypes.SUCCESS, 3000);
+        this.router.navigate(['']);
+      },
+      error: (err) => { console.log(err); }
+    }));
   }
 
   ngOnDestroy(): void {

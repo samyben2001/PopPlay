@@ -32,6 +32,6 @@ export class MinigameCardComponent {
   }
 
   updateGame(id: number) {
-    this._router.navigate(['/minigame/update/', id]);
+    this._router.navigate(['/minigame/updatev2/', id]);
   }
 }

@@ -22,6 +22,7 @@ export const routes: Routes = [
         {path: 'creation', component: MinigameCreationComponent, canActivate:[authGuard]},
         {path: 'creationv2', component: MinigamesCreationComponent, canActivate:[authGuard]},
         {path: 'update/:gameID', component: MinigameCreationComponent, canActivate:[authGuard]},
+        {path: 'updatev2/:gameID', component: MinigamesCreationComponent, canActivate:[authGuard]},
         {path: 'play/:gameId', component: MinigamePlayerComponent},
     ]},
 

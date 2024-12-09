@@ -30,17 +30,19 @@ import { BtnTypes } from '../../../../enums/BtnTypes';
   styleUrl: './creation-infos.component.css'
 })
 export class CreationInfosComponent implements OnInit, OnDestroy {
-  minigameServ = inject(MinigameService);
-  fb = inject(FormBuilder);
+  private minigameServ = inject(MinigameService);
+  private fb = inject(FormBuilder);
 
-  btnTypes = BtnTypes
+  protected btnTypes = BtnTypes
 
-  creationForm: FormGroup = new FormGroup({});
-  themes: Theme[] = [];
-  isThemeCreatorVisible: boolean = false;
-  types: Type[] = [];
+  protected creationForm: FormGroup = new FormGroup({});
+  protected themes: Theme[] = [];
+  protected isThemeCreatorVisible: boolean = false;
+  protected types: Type[] = [];
+  protected selectedCover: string | null = null;
+  protected isCoverUpdated: boolean = false
 
-  subscriptions: Subscription[] = []
+  private subscriptions: Subscription[] = []
 
   @Input() minigame!: WritableSignal<MinigameCreate>;
   @Output() infosSubmitted = new EventEmitter<any>();
@@ -52,6 +54,8 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
     this.getThemes();
     this.initForm();
   }
+
+  protected isObject(val: any): boolean { return typeof val === 'object'; }
 
   private getThemes() {
     this.subscriptions.push(this.minigameServ.get_themes().subscribe({
@@ -74,13 +78,23 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
 
   private initForm() {
     this.creationForm = this.fb.group({
-      name: [this.minigame!().name, [Validators.required, Validators.minLength(3)]],
-      type_id: [this.minigame!().type_id, [Validators.required]],
-      theme_id: [this.minigame!().theme_id, [Validators.required]],
-      cover_url: [this.minigame!().cover_url, [Validators.required]],
-      medias_id: [this.minigame!().medias_id],
-      quizz_id: [this.minigame!().quizz_id],
+      id: [this.minigame().id],
+      name: [this.minigame().name, [Validators.required, Validators.minLength(3)]],
+      type_id: [this.minigame().type_id, [Validators.required]],
+      theme_id: [this.minigame().theme_id, [Validators.required]],
+      cover_url: [this.minigame().cover_url, [Validators.required]],
+      medias_id: [this.minigame().medias_id],
+      quizz_id: [this.minigame().quizz_id],
     });
+
+    if (this.minigame().cover_url) {
+      if (typeof this.minigame().cover_url === 'string') {
+        this.selectedCover = this.minigame().cover_url as string
+      } else {
+        const file = this.minigame().cover_url as File
+        this.selectedCover = file.name
+      }
+    }
   }
 
   // Cover
@@ -88,6 +102,10 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
     const file: File = event.target.files[0];
     if (file) {
       this.creationForm.patchValue({ cover_url: file });
+      this.selectedCover = file.name;
+
+      if (this.minigame().id)
+        this.isCoverUpdated = true
     };
   }
 
@@ -108,13 +126,7 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
   protected submit() {
     if (this.creationForm.invalid) return;
 
-    // Reset medias and quizz if type changed
-    if(this.minigame().type_id != this.creationForm.get('type_id')!.value){
-      this.minigame().medias_id = [];
-      this.minigame().quizz_id = [];
-    }
-
-    this.minigame!.set(this.creationForm.value);
+    this.minigame.set(this.creationForm.value);
     const typeName = this.types.find(type => type.id == this.creationForm.value.type_id)!.name
     const themeName = this.themes.find(theme => theme.id == this.creationForm.value.theme_id)!.customName
     this.infosSubmitted.emit({ type: typeName, theme: themeName });

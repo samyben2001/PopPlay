@@ -98,7 +98,6 @@ export class QuizzCreatorComponent implements OnInit {
 
     this.subscriptions.push(forkJoin(questionRequests).subscribe({
       next: (responses: Question[]) => {
-        console.log("questions", responses)
         this.questionsCreated = responses
       },
       error: (err) => {

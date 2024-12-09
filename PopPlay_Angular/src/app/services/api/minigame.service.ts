@@ -16,8 +16,8 @@ export class MinigameService {
   create(minigame: MinigameCreate): Observable<Minigame> {
     const formData = new FormData();
     formData.append('name', minigame.name);
-    formData.append('type_id', minigame.type_id.toString());
-    formData.append('theme_id', minigame.theme_id.toString());
+    formData.append('type_id', minigame.type_id!.toString());
+    formData.append('theme_id', minigame.theme_id!.toString());
     formData.append('cover_url', minigame.cover_url!);
 
     if (minigame.medias_id.length > 0) {
@@ -37,9 +37,8 @@ export class MinigameService {
 
     const formData = new FormData();
     formData.append('name', minigame.name);
-    formData.append('type_id', minigame.type_id.toString());
-    formData.append('theme_id', minigame.theme_id.toString());
-    console.log(minigame.cover_url)
+    formData.append('type_id', minigame.type_id!.toString());
+    formData.append('theme_id', minigame.theme_id!.toString());
     if (typeof minigame.cover_url === 'object')
       formData.append('cover_url', minigame.cover_url);
 

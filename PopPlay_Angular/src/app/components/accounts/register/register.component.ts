@@ -49,7 +49,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.registerForm.valid) {
       this.subscription = this.authServ.register(this.registerForm.value).subscribe({
         next: (token) => { // Registration successful
-          console.log(token)
           this.authServ.setToken(token);
           this.accountServ.setAccount(this.authServ.getConnectedUser()!);
           this.router.navigate(['/']);

@@ -8,9 +8,9 @@ interface Pagination {
 export interface MinigameCreate {
     id?: number;
     name: string;
-    cover_url?: File;
-    theme_id: number;
-    type_id: number;
+    cover_url?: File | string;
+    theme_id?: number;
+    type_id?: number;
     medias_id: Media[];
     quizz_id: Quiz[];
 }

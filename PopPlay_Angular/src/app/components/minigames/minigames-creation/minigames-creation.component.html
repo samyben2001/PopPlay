@@ -1,27 +1,29 @@
-<div class="flex flex-col items-center">
-    <!-- Title -->
-    <div class="w-9/12 mb-1 border-b-2 border-pink-600">
-        <h2 class="text-lg md:text-2xl text-slate-200"> {{!gameToUpdate ? 'Création d\'un jeu':'Modifier le jeu'}}</h2>
-    </div>
+@if (minigame) {
+    <div class="flex flex-col items-center">
+        <!-- Title -->
+        <div class="w-9/12 mb-1 border-b-2 border-pink-600">
+            <h2 class="text-lg md:text-2xl text-slate-200"> {{!minigame().id ? 'Création d\'un jeu':'Modifier le jeu'}}</h2>
+        </div>
 
-    <div class="w-9/12 md:mb-6 text-slate-300 text-sm">
-        <span class="mr-2" [class]="actualStep == 1 ? 'text-pink-600 font-bold' : ''">Informations</span>>
-        <span class="mr-2 ml-2" [class]="actualStep == 2 ? 'text-pink-600 font-bold' : ''">Medias/Quizz</span>>
-        <span class="ml-2" [class]="actualStep == 3 ? 'text-pink-600 font-bold' : ''"> Validation</span>
-    </div>
+        <div class="w-9/12 md:mb-6 text-slate-300 text-sm">
+            <span class="mr-2" [class]="actualStep == 1 ? 'text-pink-600 font-bold' : ''">Informations</span>>
+            <span class="mr-2 ml-2" [class]="actualStep == 2 ? 'text-pink-600 font-bold' : ''">Medias/Quizz</span>>
+            <span class="ml-2" [class]="actualStep == 3 ? 'text-pink-600 font-bold' : ''"> Validation</span>
+        </div>
 
-    <div class="w-full md:w-2/3 p-6">
-        @switch (actualStep) {
-            @case (1) {
-                <app-creation-infos [minigame]="minigame" (infosSubmitted)="onInfosReceived($event)"/>
+        <div class="w-full md:w-2/3 p-6">
+            @switch (actualStep) {
+                @case (1) {
+                    <app-creation-infos [minigame]="minigame" (infosSubmitted)="onInfosReceived($event)"/>
+                }
+                @case (2) {
+                    <app-creation-medias-quizz [minigame]="minigame" (mediaQuizzCancelled)="onMediaQuizzCancelled()" (mediaQuizzSubmitted)="onMediaQuizzReceived()"/>
+                }
+                @case (3) {
+                    <app-creation-validation [minigame]="minigame" [gameInfosText]="gameInfosText" (gameCreationCancelled)="onGameCreationCancelled()"/>
+                }
             }
-            @case (2) {
-                <app-creation-medias-quizz [minigame]="minigame" (mediaQuizzCancelled)="onMediaQuizzCancelled()" (mediaQuizzSubmitted)="onMediaQuizzReceived()"/>
-            }
-            @case (3) {
-                <app-creation-validation [minigame]="minigame" [gameInfosText]="gameInfosText" (gameCreationCancelled)="onGameCreationCancelled()"/>
-            }
-        }
-    </div>
+        </div>
 
-</div>
+    </div>
+}

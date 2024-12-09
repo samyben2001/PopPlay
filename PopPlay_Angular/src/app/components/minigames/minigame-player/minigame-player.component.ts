@@ -288,7 +288,6 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this.subscriptions.push(this._gameServ.get_top_scores(this.minigame.id).subscribe({
       next: (data) => {
         this.topScores = data.top_scores
-        console.log('top scores ', this.topScores)
       },
       error: (err) => {
         console.log(err);

@@ -1,4 +1,3 @@
-
 <!-- Game Creation Form -->
 <form [formGroup]="creationForm" (ngSubmit)="submit()" class="flex flex-col py-6 px-1 md:p-6 rounded bg-slate-700">
     <!-- Game name -->
@@ -25,8 +24,14 @@
     <div class="flex flex-col mb-6">
         <app-button text="Sélectionner une couverture" [btnType]="btnTypes.CYAN" (onClick)="fileInput.click()"/>
         <input #fileInput type="file" (change)="onCoverSelected($event)" style="display:none;"  accept="image/*"/>
-                
-        <span class="text-slate-200 mt-1">{{creationForm.get('cover_url')!.value ? creationForm.get('cover_url')!.value.name : 'Aucun fichier sélectionné'}}</span>
+
+        @if (isObject(this.creationForm.get('cover_url')!.value)) {
+            <span class="text-slate-200 mt-1">{{selectedCover ? selectedCover : 'Aucun fichier sélectionné'}}</span>
+        }@else{
+            <div class="h-24 mt-2 flex justify-center">
+                <img [src]="selectedCover" [alt]="minigame().name" class="h-full w-auto">
+            </div>
+        }
         
         @if (creationForm.get('cover_url')!.touched && creationForm.get('cover_url')!.errors) {
             <span class="text-red-600 text-sm">

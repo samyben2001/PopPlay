@@ -60,16 +60,16 @@ export class CreationMediasQuizzComponent implements OnInit {
 
   protected onSelectedMedias(medias: Media[] | null) {
     if (medias) {
-      this.minigame!().medias_id = [...medias];
+      this.minigame().medias_id = [...medias];
       this.isSomeMediaSelected = true
     } else {
-      this.minigame!().medias_id = [];
+      this.minigame().medias_id = [];
     }
     this.isMediasSelectorVisible = false;
   }
 
   removeMedia(media: Media) {
-    this.minigame!().medias_id = this.minigame!().medias_id.filter((m) => m.id != media.id);
+    this.minigame().medias_id = this.minigame().medias_id.filter((m) => m.id != media.id);
   }
 
   onQuizzValidated($event: Quiz[]) {
@@ -80,12 +80,12 @@ export class CreationMediasQuizzComponent implements OnInit {
     //TODO:  add reset button instead
     // this.minigame!().medias_id = []
     // this.minigame!().quizz_id = []
-    this.minigame!().quizz_id = this.minigame!().quizz_id.filter((quizz: any) => quizz.question !='' && quizz.answers != '') // remove empty quizz
+    this.minigame().quizz_id = this.minigame().quizz_id.filter((quizz: any) => quizz.question != '' && quizz.answers != '') // remove empty quizz
     this.mediaQuizzCancelled.emit();
   }
 
   next() {
-    this.minigame!().quizz_id = this.minigame!().quizz_id.filter((quizz: any) => quizz.question !='' && quizz.answers != '') // remove empty quizz
+    this.minigame().quizz_id = this.minigame().quizz_id.filter((quizz: any) => quizz.question != '' && quizz.answers != '') // remove empty quizz
     this.mediaQuizzSubmitted.emit();
   }
 }

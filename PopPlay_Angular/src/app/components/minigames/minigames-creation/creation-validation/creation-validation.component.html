@@ -1,22 +1,29 @@
 <div class="flex flex-col mb-3 md:mb-6 py-6 px-1 md:p-6 rounded bg-slate-700">
     <!-- Game infos -->
     <div class="flex flex-col gap-2 text-slate-200">
-        <span>Nom du jeu: {{minigame!().name}}</span>
-        <span>Cover: {{minigame!().cover_url!.name}}</span>
+        <span>Nom du jeu: {{minigame().name}}</span>
+        @if (!isObject(minigame().cover_url)) {
+
+            <div class="h-24 relative">
+                <img [src]="coverString" [alt]="minigame().name + ' cover'" class="h-full w-auto peer">
+            </div>
+        }@else {
+            <span>Cover: {{coverString}}</span>
+        }
         <span>Type: {{gameInfosText.type}}</span>
         <span>Thème: {{gameInfosText.theme}}</span>
     </div>
 
     <!-- Game Medias -->
-     @if (minigame!().medias_id.length > 0) {
+     @if (minigame().medias_id.length > 0) {
         <div class="flex flex-row flex-wrap gap-2 mt-3 md:mt-6 text-slate-200">
-             @for (media of minigame!().medias_id; track $index) {
-                @if(minigame!().type_id == imageGuessId){
+             @for (media of minigame().medias_id; track $index) {
+                @if(minigame().type_id == imageGuessId){
                     <!-- Media Thumbnail -->
                     <div class="h-24 relative">
                         <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
                     </div>
-                }@else if (minigame!().type_id == blindTestId) {
+                }@else if (minigame().type_id == blindTestId) {
                     <!-- Audio Thumbnail -->
                     <div class="w-full md:w-[48%]">
                         <audio controls controlsList="nodownload" #question class="w-full">
@@ -31,12 +38,16 @@
     }
 
     <!-- Game Quizz -->
-     @if (minigame!().quizz_id.length > 0) {
-        <div class="flex flex-col gap-2 mt-3 md:mt-6 text-slate-200">
-            @for (quiz of minigame!().quizz_id; track $index) {
-                <div class="border-b-2 border-slate-200">
-                    <p>Question {{$index + 1 | number:'2.0'}}: {{quiz.question}}</p>
-                    <p>{{quiz.answers.join(', ')}}</p>
+     @if (minigame().quizz_id.length > 0) {
+        <div class="flex flex-col mt-3 md:mt-6 text-slate-200">
+            @for (quiz of minigame().quizz_id; track $index) {
+                <div class="border-b-2 py-2 border-slate-200" [class]="$index == 0 ? 'border-t-2' : ''">
+                    <p class="font-bold">Question {{$index + 1 | number:'2.0'}}: {{quiz.question.question}}</p>
+                    <p> Réponses: 
+                        @for (answer of quiz.answers; track $index; let last = $last) {
+                            {{answer.answer + (last ? '' : ', ')}}
+                        }
+                    </p>
                 </div>
             }
         </div>
@@ -45,5 +56,5 @@
 
 <div class="flex flex-row justify-between">
     <app-button text="Étape précedente" [btnType]="btnTypes.PINK" (onClick)="back()"/>
-    <app-button text="Créer le jeu" [btnType]="btnTypes.GREEN" (onClick)="validateMinigame()"/>
+    <app-button [text]="minigame().id ? 'Modifier le jeu':'Créer le jeu'" [btnType]="btnTypes.GREEN" (onClick)="validateMinigame()"/>
 </div>

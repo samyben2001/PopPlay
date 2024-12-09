@@ -7,7 +7,7 @@
             <div class="mb-6 flex justify-between">
                 <span class="text-lg text-slate-200">Question {{$index + 1}}</span>
                 @if (!first) {
-                <app-button text="Supprimer Question" [btnType]="btnTypes.PINK" (onClick)="removeQuestion($index)" />
+                    <app-button text="Supprimer Question" [btnType]="btnTypes.PINK" (onClick)="removeQuestion($index)" />
                 }
             </div>
             <!-- Quizz Question -->
@@ -19,9 +19,9 @@
                 </p-floatLabel>
             </div>
             @if (question.get('question')!.dirty && question.get('question')!.errors) {
-            <span class="text-red-600 text-sm">
+                <span class="text-red-600 text-sm">
                 Veuillez entrer une question valide.
-            </span>
+                </span>
             }
 
             <!-- Quizz Answers -->
@@ -29,14 +29,14 @@
                 <p-floatLabel>
                     <input pInputText [id]="'answers' + $index" formControlName="answers" class="w-full py-3 px-2 peer"
                         (keyup)="onAnswersChanged($event, $index)" />
-                    <label [for]="'answers' + $index" class="peer-focus:text-slate-200">Réponses associées (séparées par
-                        une
-                        virgule)</label>
+                    <label [for]="'answers' + $index" class="peer-focus:text-slate-200">
+                        Réponses associées (séparées par une virgule)
+                    </label>
                 </p-floatLabel>
                 <!-- Selected Answers -->
                 <div class="flex flex-row flex-wrap gap-2 mt-2">
-                    @for (answer of question.get('answers')?.value; track $index) {
-                    <span class="text-slate-700 bg-sky-400 rounded-full px-2">{{answer}}</span>
+                    @for (answer of answers[$index]; track $index) {
+                        <span class="text-slate-700 bg-sky-400 rounded-full px-2">{{answer}}</span>
                     }
                 </div>
             </div>
