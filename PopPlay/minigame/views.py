@@ -1,12 +1,8 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
 from rest_framework import status
 
 from popplay.paginations import StandardResultsSetPagination
@@ -87,7 +83,7 @@ class QuizViewSet(ModelViewSet):
     
 
 class MediaViewSet(ModelViewSet):
-    queryset = Media.objects.all().order_by('id').prefetch_related('type', 'answers').distinct()
+    queryset = Media.objects.all().order_by('name').prefetch_related('type', 'answers').distinct()
     filter_backends = [DjangoFilterBackend]
     serializer_class = MediaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   

@@ -14,6 +14,7 @@ class MediaFilter(django_filters.FilterSet):
     class Meta:
         model = Media
         fields = {
-                  'type': ['in', 'exact'],
-                  'account': ['exact'],
-                  }
+            'name': ['exact', 'icontains'],
+            'type': ['in', 'exact'],
+            'account': ['exact'],
+        }

@@ -8,11 +8,14 @@ import { BtnTypes } from '../../../../enums/BtnTypes';
 import { MediaTypes } from '../../../../enums/MediaTypes';
 import { MediaService } from '../../../../services/api/media.service';
 import { UpperFirstPipe } from '../../../pipes/upper-first.pipe';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-media-selector',
   standalone: true,
-  imports: [MediaCreatorComponent, ButtonComponent, UpperFirstPipe],
+  imports: [MediaCreatorComponent, ButtonComponent, UpperFirstPipe, InputTextModule, FloatLabelModule, FormsModule],
   templateUrl: './media-selector.component.html',
   styleUrl: './media-selector.component.css'
 })
@@ -28,6 +31,7 @@ export class MediaSelectorComponent implements OnChanges {
   protected mediaTypes = MediaTypes;
   protected isCreatorVisible: boolean = false;
   protected onlyMine: boolean = true;
+  protected nameQuery?: string;
   private _mediaType: MediaTypes = MediaTypes.IMAGE;
   @Input() isVisible: boolean = false;
   @Input() isUpdate: boolean = false;
@@ -74,10 +78,15 @@ export class MediaSelectorComponent implements OnChanges {
     }
   }
 
+  
+  protected getByName() {
+    this.GetMedias(this.onlyMine);
+  }
+
   private GetMedias(onlyMine: boolean) {
 
     if (!onlyMine) {
-      this.mediaService.getAll([this.mediaType]).subscribe({
+      this.mediaService.getAll([this.mediaType],this.nameQuery).subscribe({
         next: (medias) => {
           this.medias = medias;
           this.ResetCheckboxes();
@@ -86,7 +95,7 @@ export class MediaSelectorComponent implements OnChanges {
         error: (err) => { console.log(err); }
       });
     } else {
-      this.mediaService.getAllByUser([this.mediaType]).subscribe({
+      this.mediaService.getAllByUser([this.mediaType],this.nameQuery).subscribe({
         next: (medias) => {
           this.medias = medias;
           this.ResetCheckboxes();
@@ -105,7 +114,6 @@ export class MediaSelectorComponent implements OnChanges {
     });
 
     if (box){
-      console.log(box)
       box.nativeElement.checked = value;
     }
   }

@@ -31,19 +31,22 @@ export class MediaService {
     return this.httpClient.post<Media>(this.apiUrl + 'minigame/media/', formData);
   }
 
-  getAll(typeIds? : number[]): Observable<Media[]> {
+  getAll(typeIds? : number[], name? : string): Observable<Media[]> {
+    
+    let nameQuery = name ? name : '';
     let types = typeIds ? typeIds.join(',') : '';
-    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}`);
+    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}&name__icontains=${nameQuery}`);
   }
 
-  getAllByUser(typeIds? : number[]): Observable<Media[]> {
+  getAllByUser(typeIds? : number[], name? : string): Observable<Media[]> {
     if(this.accountServ.account() == null){
       throw new Error("Account not connected");
     }
 
+    let nameQuery = name ? name : '';
     let userId = this.accountServ.account()!.id;
     let types = typeIds ? typeIds.join(',') : '';
-    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}&account=${userId}`);
+    return this.httpClient.get<Media[]>(this.apiUrl + `minigame/media/?type__in=${types}&name__icontains=${nameQuery}&account=${userId}`);
   }
 
   getAllTypes(): Observable<MediaType[]> {

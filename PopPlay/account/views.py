@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, RetrieveDestroyAPIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,11 +9,10 @@ from rest_framework.decorators import action
 
 from django.contrib.auth.models import User
 from minigame.models import Theme, Minigame
-from minigame.serializers import ThemeLightSerializer, MinigameExtraLightSerializer
+from minigame.serializers import ThemeLightSerializer
 from .models import Account
 from .serializers import *
 from popplay.permissions import IsAccountOwnerOrIsStaffOrReadOnly
-from account.filters import AccountMinigameFilter
 
 # Create your views here.
 class RegisterView(CreateAPIView):
