@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Answer, Minigame, UserMinigameScore } from '../../../models/models';
+import { Answer, MediaQuizReport, Minigame, UserMinigameScore } from '../../../models/models';
 import { MinigameService } from '../../../services/api/minigame.service';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -15,11 +15,13 @@ import { Subscription } from 'rxjs';
 import { ButtonComponent } from '../../../shared/components/tools/button/button.component';
 import { BtnTypes } from '../../../enums/BtnTypes';
 import { AccountScoresComponent } from '../../../shared/components/account/account-scores/account-scores.component';
+import { ReportCreatorComponent } from '../../../shared/components/minigames/report-creator/report-creator.component';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-minigame-player',
   standalone: true,
-  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective, ButtonComponent, AccountScoresComponent],
+  imports: [FormsModule, InputTextModule, FloatLabelModule, DatePipe, NoRightClickDirective, ButtonComponent, AccountScoresComponent, ReportCreatorComponent, TooltipModule],
   templateUrl: './minigame-player.component.html',
   styleUrl: './minigame-player.component.css',
   animations: [
@@ -63,6 +65,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   private blurAmount: number = this.BASE_BLUR
   protected isCorrectAnswerShown: boolean = false
   protected isGameEnded: boolean = false
+  protected isReportCreatorVisible: boolean = false
 
   private subscriptions: Subscription[] = []
 
@@ -294,6 +297,16 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
         this._router.navigate(['/error']);
       }
     }));
+  }
+
+  protected openReport(){
+    this.isReportCreatorVisible = true
+    clearTimeout(this.timerIntervalId)
+  }
+
+  protected onReportCreated(report: MediaQuizReport | null) {
+    this.isReportCreatorVisible = false
+    this.activateTimer()
   }
 
   protected back() {

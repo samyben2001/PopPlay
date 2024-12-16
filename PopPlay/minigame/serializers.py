@@ -59,7 +59,35 @@ class QuizSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Quiz
-        fields = ['id','question', 'question_id', 'answers' , 'answers_id']
+        fields = ['id','question', 'question_id', 'answers' , 'answers_id']   
+
+    
+class MediaQuizReportTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MediaQuizReportType
+        fields = '__all__'
+        
+    
+class MediaQuizReportGetSerializer(serializers.ModelSerializer):
+    reportType = MediaQuizReportTypeSerializer(read_only=True)
+    account = serializers.SerializerMethodField(read_only=True)
+    media = MediaLightSerializer(read_only=True)
+    quiz = QuizSerializer(read_only=True)
+    
+    class Meta:
+        model = MediaQuizReport
+        fields = ['reportType', 'message', 'account', 'media', 'quiz']
+        
+    def get_account(self, obj):
+        from account.serializers import AccountLightSerializer
+        return AccountLightSerializer(obj.account).data
+        
+        
+class MediaQuizReportPostSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = MediaQuizReport
+        fields = ['reportType', 'message']
 # endregion
 
 # region MapGuess
@@ -164,6 +192,27 @@ class MinigameSerializer(serializers.ModelSerializer):
         validated_data['author'] = accountID
         return super().create(validated_data)
         
+
+class MinigameReportTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MinigameReportType
+        fields = '__all__'   
+        
+        
+class MinigameReportGetSerializer(serializers.ModelSerializer):
+    reportType = MediaQuizReportTypeSerializer(read_only=True)
+    
+    class Meta:
+        model = MinigameReport
+        fields = ['reportType', 'message', 'account']
+     
+        
+class MinigameReportPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MinigameReport
+        fields = ['reportType', 'message']     
+        
+
 class MinigameLikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Minigame

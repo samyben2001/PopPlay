@@ -23,6 +23,8 @@ export class AccountService {
     });
   }
 
+  // TODO: add GetScoreByUser + filter (need new view in django)
+
   addScore(gameid: number, score: number): Observable<any> {
     let userid = this.authServ.getConnectedUser()
 

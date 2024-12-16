@@ -1,31 +1,32 @@
 <div class="flex flex-col mb-3 md:mb-6 py-6 px-1 md:p-6 rounded bg-slate-700">
     <!-- Game infos -->
     <div class="flex flex-col gap-2 text-slate-200">
-        <span>Nom du jeu: {{minigame().name}}</span>
+        <span class="overflow-hidden text-ellipsis text-wrap">Nom du jeu: {{minigame().name}}</span>
         @if (!isObject(minigame().cover_url)) {
 
             <div class="h-24 relative">
                 <img [src]="coverString" [alt]="minigame().name + ' cover'" class="h-full w-auto peer">
             </div>
         }@else {
-            <span>Cover: {{coverString}}</span>
+            <span class="overflow-hidden text-ellipsis text-wrap">Cover: {{coverString}}</span>
         }
-        <span>Type: {{gameInfosText.type}}</span>
-        <span>Thème: {{gameInfosText.theme}}</span>
+        <span class="overflow-hidden text-ellipsis text-wrap">Type: {{gameInfosText.type}}</span>
+        <span class="overflow-hidden text-ellipsis text-wrap">Thème: {{gameInfosText.theme}}</span>
     </div>
 
     <!-- Game Medias -->
      @if (minigame().medias_id.length > 0) {
-        <div class="flex flex-row flex-wrap gap-2 mt-3 md:mt-6 text-slate-200">
+        <div class="flex flex-row flex-wrap justify-center gap-4 mt-3 md:mt-6 text-slate-200">
              @for (media of minigame().medias_id; track $index) {
                 @if(minigame().type_id == imageGuessId){
                     <!-- Media Thumbnail -->
-                    <div class="h-24 relative">
-                        <img [src]="media.url" [alt]="media.name" class="h-full w-auto peer">
+                    <div class="w-1/4">
+                        <img [src]="media.url" [alt]="media.name" class="w-full h-auto peer">
+                        <p class="text-slate-200 text-center px-1 overflow-hidden text-ellipsis text-nowrap">{{media.name | upperFirst}}</p>
                     </div>
                 }@else if (minigame().type_id == blindTestId) {
                     <!-- Audio Thumbnail -->
-                    <div class="w-full md:w-[48%]">
+                    <div class="w-full md:w-1/4">
                         <audio controls controlsList="nodownload" #question class="w-full">
                             <source [src]="media.url" type="audio/mp3">
                             Your browser does not support the audio element.

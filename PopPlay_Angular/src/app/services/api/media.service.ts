@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Media, MediaCreate, MediaType } from '../../models/models';
+import { Media, MediaCreate, MediaQuizReport, MediaType, ReportType } from '../../models/models';
 import { AccountService } from './account.service';
 
 @Injectable({
@@ -52,5 +52,4 @@ export class MediaService {
   getAllTypes(): Observable<MediaType[]> {
     return this.httpClient.get<MediaType[]>(this.apiUrl + 'minigame/mediaType/');
   }
-
 }

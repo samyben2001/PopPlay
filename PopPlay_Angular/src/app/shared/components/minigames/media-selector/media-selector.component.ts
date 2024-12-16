@@ -11,11 +11,12 @@ import { UpperFirstPipe } from '../../../pipes/upper-first.pipe';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-media-selector',
   standalone: true,
-  imports: [MediaCreatorComponent, ButtonComponent, UpperFirstPipe, InputTextModule, FloatLabelModule, FormsModule],
+  imports: [MediaCreatorComponent, ButtonComponent, UpperFirstPipe, InputTextModule, FloatLabelModule, FormsModule, TooltipModule],
   templateUrl: './media-selector.component.html',
   styleUrl: './media-selector.component.css'
 })
@@ -58,6 +59,11 @@ export class MediaSelectorComponent implements OnChanges {
         clearInterval(interval);
       }, 50);
     }
+  }
+
+  
+  getAnswers(media: Media): string {
+    return media.answers.map((a) => a.answer).join(', ');
   }
 
 

@@ -9,11 +9,12 @@ import { MinigameService } from '../../../../services/api/minigame.service';
 import { ToastService } from '../../../../services/tools/toast.service';
 import { ToastTypes } from '../../../../enums/ToastTypes';
 import { Router } from '@angular/router';
+import { UpperFirstPipe } from '../../../../shared/pipes/upper-first.pipe';
 
 @Component({
   selector: 'app-creation-validation',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule, ButtonComponent, UpperFirstPipe],
   templateUrl: './creation-validation.component.html',
   styleUrl: './creation-validation.component.css'
 })

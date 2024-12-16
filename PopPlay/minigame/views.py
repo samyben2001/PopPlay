@@ -66,9 +66,8 @@ class QuestionViewSet(ModelViewSet):
     
     
 class QuizViewSet(ModelViewSet):
-    queryset = Quiz.objects.all().order_by('id').prefetch_related('answers', 'question')
+    queryset = Quiz.objects.all().order_by('id').prefetch_related('answers', 'question', 'reports')
     filter_backends = [DjangoFilterBackend]
-    serializer_class = QuizSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     
     # create an quizz if it doesn't exist already else return it
@@ -81,14 +80,113 @@ class QuizViewSet(ModelViewSet):
                 
         return super().create(request, *args, **kwargs)
     
+    
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == 'reports':
+            if self.request.method == 'GET':
+                return MediaQuizReportGetSerializer
+            if self.request.method == 'POST':
+                return MediaQuizReportPostSerializer
+        return QuizSerializer
+        
+    @action(detail=True, methods=['post', 'get'], url_path='reports', permission_classes=[IsAuthenticated])
+    def reports(self, request, pk):
+        # Get all reports
+        if request.method == 'GET':
+            try:
+                quiz = self.get_object()
+                reports = MediaQuizReport.objects.filter(quiz=quiz)
+                serializers = self.get_serializer(reports, many=True)
+            except Quiz.DoesNotExist:
+                return Response({"error": "Quiz introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            except MediaQuizReport.DoesNotExist:
+                return Response({"error": "Rapport introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            except Account.DoesNotExist:
+                return Response({"error": "Account introuvable."}, status=status.HTTP_404_NOT_FOUND)
+        
+            return Response(serializers.data, status=status.HTTP_200_OK)
+        # add a report
+        else:
+            try:
+                quiz = self.get_object()
+                account = request.user.account
+            except Quiz.DoesNotExist:
+                return Response({"error": "Quiz introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            except Account.DoesNotExist:
+                return Response({"error": "Account introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            
+            if MediaQuizReport.objects.filter(quiz=quiz, account=account).exists():
+                return Response({'error': 'Ce média a dejà éte signalé par le compte'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(quiz=quiz, account=account)
+            return Response({'response': 'Le signalement a bien été ajouté'}, status=status.HTTP_201_CREATED)
+    
 
 class MediaViewSet(ModelViewSet):
-    queryset = Media.objects.all().order_by('name').prefetch_related('type', 'answers').distinct()
+    queryset = Media.objects.all().order_by('name').prefetch_related('type', 'answers', 'reports').distinct()
     filter_backends = [DjangoFilterBackend]
-    serializer_class = MediaSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]   
     filterset_class = MediaFilter
     # parser_classes = [MultiPartParser, FormParser]
+    
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == 'reports':
+            if self.request.method == 'GET':
+                return MediaQuizReportGetSerializer
+            if self.request.method == 'POST':
+                return MediaQuizReportPostSerializer
+        return MediaSerializer
+        
+    @action(detail=True, methods=['post', 'get'], url_path='reports', permission_classes=[IsAuthenticated])
+    def reports(self, request, pk):
+        # Get all reports
+        if request.method == 'GET':
+            try:
+                media = self.get_object()
+                reports = MediaQuizReport.objects.filter(media=media)
+                serializers = self.get_serializer(reports, many=True)
+            except Media.DoesNotExist:
+                return Response({"error": "Media introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            except MediaQuizReport.DoesNotExist:
+                return Response({"error": "Rapport introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            except Account.DoesNotExist:
+                return Response({"error": "Account introuvable."}, status=status.HTTP_404_NOT_FOUND)
+        
+            return Response(serializers.data, status=status.HTTP_200_OK)
+        # add a report
+        else:
+            try:
+                media = self.get_object()
+                account = request.user.account
+            except Media.DoesNotExist:
+                return Response({"error": "Media introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            except Account.DoesNotExist:
+                return Response({"error": "Account introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            
+            # if MediaQuizReport.objects.filter(media=media, account=account).exists():
+            #     return Response({'error': 'Ce média a dejà éte signalé par le compte'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(media=media, account=account)
+            return Response({'response': 'Le signalement a bien été ajouté'}, status=status.HTTP_201_CREATED)
+        
+
+class MediaQuizReportTypeViewSet(ModelViewSet):
+    queryset = MediaQuizReportType.objects.all().order_by('id') 
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = MediaQuizReportTypeSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+
+class MediaQuizReportViewSet(ModelViewSet):
+    queryset = MediaQuizReport.objects.all().order_by('id')
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['account', 'media', 'quiz', 'reportType']
+    serializer_class = MediaQuizReportGetSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     
 # TODO: mapguess ViewSet
@@ -125,7 +223,7 @@ class MinigameViewSet(ModelViewSet):
             minigame = self.get_object()
             account = Account.objects.get(id=request.data['account'])
             
-            if account != request.user and request.user.is_staff is False:
+            if account != request.user.account and request.user.is_staff is False:
                 return Response({"error": "Vous n'avez pas le droit d'effectuer cette action."}, status=status.HTTP_403_FORBIDDEN)
             
         except Minigame.DoesNotExist:

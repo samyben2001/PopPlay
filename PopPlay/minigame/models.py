@@ -4,6 +4,38 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import os
 from django.utils.text import slugify
 
+
+class MinigameReportType(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    
+    def __str__(self):
+        return self.name
+
+
+class MinigameReport(models.Model):
+    account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING)
+    minigame = models.ForeignKey('minigame.Minigame', on_delete=models.DO_NOTHING)
+    reportType = models.ForeignKey(MinigameReportType, on_delete=models.DO_NOTHING)
+    isActive = models.BooleanField(default=True)
+    message = models.TextField(blank=True, null=True)
+    
+    
+class MediaQuizReportType(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    
+    def __str__(self):
+        return self.name
+
+
+class MediaQuizReport(models.Model):
+    account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING)
+    media = models.ForeignKey('minigame.Media', on_delete=models.DO_NOTHING, blank=True, null=True)
+    quiz = models.ForeignKey('minigame.Quiz', on_delete=models.DO_NOTHING, blank=True, null=True)
+    reportType = models.ForeignKey(MediaQuizReportType, on_delete=models.DO_NOTHING)
+    isActive = models.BooleanField(default=True)
+    message = models.TextField(blank=True, null=True)
+
+
 # Create your models here.    
 class Answer(models.Model):
     answer = models.CharField(max_length=200, unique=True)
@@ -25,6 +57,7 @@ class Media(models.Model):
     type = models.ForeignKey(MediaType, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(Answer)
     account = models.ForeignKey('account.Account', on_delete=models.DO_NOTHING, blank=True, null=True, related_name='medias')
+    reports = models.ManyToManyField('account.Account', blank=True, through='MediaQuizReport', related_name='mediaReports')
     
     def save(self, *args, **kwargs):
         """
@@ -54,17 +87,18 @@ class MapGuess(models.Model): # 1# find the game with an unblur image (media), #
     def __str__(self):
         return self.name
     
+    
 class Question(models.Model): 
     question = models.CharField(unique=True)
     
     def __str__(self):
         return self.question
- 
 
-    
+
 class Quiz(models.Model):
     question = models.ForeignKey(Question, on_delete=models.DO_NOTHING)
     answers = models.ManyToManyField(Answer)
+    reports = models.ManyToManyField('account.Account', blank=True, through='MediaQuizReport', related_name='quizReports')
     
     def __str__(self):
         return self.question.question
@@ -107,6 +141,7 @@ class Minigame(models.Model):
     quizz = models.ManyToManyField(Quiz)
     maps = models.ManyToManyField(MapGuess)
     notes = models.ManyToManyField('account.Account', through='MinigameUserNote')
+    reports = models.ManyToManyField('account.Account', blank=True, through='MinigameReport', related_name='reports')
     
     def __str__(self):
         return self.name

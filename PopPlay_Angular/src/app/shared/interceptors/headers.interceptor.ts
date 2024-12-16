@@ -92,7 +92,7 @@ export const headersInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, nex
               }
             });
             console.log("token is refreshed")
-            location.reload(); // TODO: check if this is the right way
+            location.reload(); // TODO: check if this is the right way (try avioiding reload)
             // return next(clone);
           },
           error: (err) => { // refresh token is expired => logout

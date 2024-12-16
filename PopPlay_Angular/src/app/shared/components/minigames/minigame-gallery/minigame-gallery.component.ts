@@ -24,16 +24,16 @@ export class MinigameGalleryComponent {
 
     if(!path) return
 
-    let regex = new RegExp(/page=(\d+)/);
+    let regex = new RegExp(/page=(\d+)/, 'g');
 
     if (path?.includes('account') && path?.includes('games_liked')) {
       regex = /games_liked=(\d+)/;
-      path.replace(regex, `games_liked=${$event}`);
+      path = path.replace(regex, `games_liked=${$event}`);
     } else if (path?.includes('account') && path?.includes('minigames')) {
       regex = /minigames=(\d+)/;
-      path.replace(regex, `minigames=${$event}`);
+      path = path.replace(regex, `minigames=${$event}`);
     } else {
-      path.replace(regex, `page=${$event}`);
+      path = path.replace(regex, `page=${$event}`);
     }
     
     this.paginatorService.navigate(path).subscribe(data => this.minigames = data);

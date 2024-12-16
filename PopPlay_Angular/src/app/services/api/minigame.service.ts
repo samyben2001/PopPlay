@@ -60,7 +60,7 @@ export class MinigameService {
     let types = typeIds ? typeIds.join(',') : '';
     let themes = themeIds ? themeIds.join(',') : '';
     let pageQuery = page?.toString() ? page : '1';
-    return this.httpClient.get<MinigamePagination>(this.apiUrl + `minigame/?name__icontains=${nameQuery}&type__in=${types}&theme__in=${themes}&page=${pageQuery}`);
+    return this.httpClient.get<MinigamePagination>(this.apiUrl + `minigame/?name__icontains=${nameQuery}&page=${pageQuery}&type__in=${types}&theme__in=${themes}`);
   }
 
   get_by_id(id: number): Observable<Minigame> {

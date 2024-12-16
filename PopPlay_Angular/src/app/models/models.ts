@@ -27,7 +27,6 @@ export interface Minigame {
     dateCreated: Date; // DateTime type in Django (string?)
     dateUpdated?: Date; // Nullable DateTime in Django
     notes: MinigameUserNote[];
-
 }
 
 export interface MinigamePagination extends Pagination {
@@ -37,6 +36,20 @@ export interface MinigamePagination extends Pagination {
 export interface Question {
     id?: number;
     question: string;
+}
+
+export interface ReportType{
+    id?: number;
+    name: string;
+}
+
+export interface MediaQuizReport{
+    id?: number;
+    media?: Media;
+    quiz?: Quiz;
+    account?: Account;
+    reportType: ReportType;
+    message?: string;
 }
 
 export interface Quiz{
