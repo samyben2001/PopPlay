@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { Media, Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz, MinigamePagination, UserMinigameScore } from '../../models/models';
+import { Answer, Minigame, MinigameCreate, QuizCreate, Theme, ThemeCategory, Type, Question, Quiz, MinigamePagination } from '../../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class MinigameService {
     }
 
     if (minigame.quizz_id.length > 0) {
-      // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
+      // formData.append('quizz_id', JSON.stringify(minigame.quizz_id)); // => should work but doesn't
       minigame.quizz_id.forEach((quizz: any) => formData.append('quizz_id', quizz.id.toString()));
     }
 
@@ -49,6 +49,7 @@ export class MinigameService {
 
     if (minigame.quizz_id.length > 0) {
       // formData.append('medias_id', JSON.stringify(minigame.medias_id)); // => should work but doesn't
+      // console.log(minigame.quizz_id) TODO: FIX QUIZZ UPDATE
       minigame.quizz_id.forEach((quizz: any) => formData.append('quizz_id', quizz.id.toString()));
     }
 

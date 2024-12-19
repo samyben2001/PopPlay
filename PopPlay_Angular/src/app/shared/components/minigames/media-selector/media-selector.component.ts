@@ -90,11 +90,11 @@ export class MediaSelectorComponent implements OnChanges {
   }
 
   private GetMedias(onlyMine: boolean) {
-
     if (!onlyMine) {
       this.mediaService.getAll([this.mediaType],this.nameQuery).subscribe({
         next: (medias) => {
           this.medias = medias;
+          console.log(this.medias);
           this.ResetCheckboxes();
           this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
         },
@@ -104,6 +104,7 @@ export class MediaSelectorComponent implements OnChanges {
       this.mediaService.getAllByUser([this.mediaType],this.nameQuery).subscribe({
         next: (medias) => {
           this.medias = medias;
+          console.log(this.medias);
           this.ResetCheckboxes();
           this.selectedMedias.forEach((media: Media) => this.ToggleCheckbox(media, true));
         },

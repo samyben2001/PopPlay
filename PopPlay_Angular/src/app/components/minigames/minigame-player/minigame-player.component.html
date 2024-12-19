@@ -119,11 +119,13 @@
         }
 
         <!-- Report Creator -->
-        @if (minigame.type.name == gameTypes.IMAGE_GUESSING || minigame.type.name == gameTypes.BLIND_TEST) {
-            <app-report-creator [isVisible]="isReportCreatorVisible" [objectType]="minigame.type.name" [objectId]="minigame.medias[actualMediaIndex].id" (reportCreatedEvent)="onReportCreated($event)"/>
-        }@else if (minigame.type.name == gameTypes.QUIZZ) {
-            <app-report-creator [isVisible]="isReportCreatorVisible" [objectType]="minigame.type.name" [objectId]="minigame.quizz[actualMediaIndex].id" (reportCreatedEvent)="onReportCreated($event)"/>
-        }
+         @if(!isCorrectAnswerShown){
+            @if (minigame.type.name == gameTypes.IMAGE_GUESSING || minigame.type.name == gameTypes.BLIND_TEST) {
+                <app-report-creator [isVisible]="isReportCreatorVisible" [objectType]="minigame.type.name" [objectId]="minigame.medias[actualMediaIndex].id" (reportCreatedEvent)="onReportCreated($event)"/>
+            }@else if (minigame.type.name == gameTypes.QUIZZ) {
+                <app-report-creator [isVisible]="isReportCreatorVisible" [objectType]="minigame.type.name" [objectId]="minigame.quizz[actualMediaIndex].id" (reportCreatedEvent)="onReportCreated($event)"/>
+            }
+         }
     }@else {
         <h2>Chargement du jeu ...</h2>
     }

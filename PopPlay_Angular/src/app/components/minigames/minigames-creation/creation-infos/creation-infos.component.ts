@@ -115,7 +115,8 @@ export class CreationInfosComponent implements OnInit, OnDestroy {
   }
 
   protected onThemeCreated(theme: Theme | null) {
-    if (theme) {
+    if (theme) { 
+      theme.customName = theme.name + ' (' + theme.category.name + ')'
       this.themes.push(theme);
       this.themeDropdown.value = theme.name;
       this.creationForm.patchValue({ theme_id: theme.id });

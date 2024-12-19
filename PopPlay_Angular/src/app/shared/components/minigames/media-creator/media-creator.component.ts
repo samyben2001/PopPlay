@@ -133,13 +133,18 @@ export class MediaCreatorComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.answersCreatedSubject.subscribe({
       next: (data) => { 
         if (data) { 
+          
+          this.answersCreatedSubject.next(false)
           // Create the media
           this.mediaToCreate.name = this.mediaForm.value.name
           this.mediaToCreate.url = this.mediaForm.value.url
           this.mediaToCreate.type_id = this.mediaForm.get('type_id')!.value
 
+          // TODO: CHECK IF THIS WORKS (ERROR on order of creation?)
+          console.log("before creating media", this.mediaToCreate)
           this.subscriptions.push(this.mediaServ.create(this.mediaToCreate).subscribe({
             next: (data) => { 
+              console.log("media created", data)
               this.mediaCreatedEvent.emit(data); 
             },
             error: (err) => { console.log(err); }

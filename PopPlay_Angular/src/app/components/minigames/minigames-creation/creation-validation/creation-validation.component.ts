@@ -70,6 +70,8 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
   }
 
   protected validateMinigame() {
+    console.log(this.minigame())
+    
     if (this.minigame().type_id == this.quizzId && this.minigame().quizz_id.length > 0) {
       this.createAllQuestions();
       this.createAllAnswers();
@@ -85,7 +87,7 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
   }
 
   private createAllQuestions() {
-    const questionRequests: Observable<Question>[] = this.minigame().quizz_id.map((quizz: any) => this.minigameServ.create_question(quizz.question));
+    const questionRequests: Observable<Question>[] = this.minigame().quizz_id.map((quizz: any) => this.minigameServ.create_question(quizz.question.question));
 
     this.subscriptions.push(forkJoin(questionRequests).subscribe({
       next: (responses: Question[]) => {
@@ -103,19 +105,21 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
   private createAllAnswers() {
     this.subscriptions.push(this.responsesCreatedSubject.subscribe({
       next: (data) => {
+        this.responsesCreatedSubject.next(false);
         if (data) {
           // Create an array of observables for all answer groups
           const allAnswerRequests = this.minigame().quizz_id.map(answerGroup => {
             const answerRequests: Observable<Answer>[] = answerGroup.answers.map(answer => {
-              return this.minigameServ.create_answer(answer.toString().trim())
+              return this.minigameServ.create_answer(answer.answer.toString().trim())
             });
             return forkJoin(answerRequests); // Each group is a forkJoin
           });
 
           // Wait for all groups to complete
           this.subscriptions.push(forkJoin(allAnswerRequests).subscribe({
-            next: (allResponses) => {
-              this.answersCreated = allResponses; // Assign all responses
+            next: (allAnswers) => {
+              this.answersCreated = allAnswers; // Assign all answers
+              console.log(this.answersCreated)
               this.answersCreatedSubject.next(true); // Emit when everything is done
             },
             error: (err) => {
@@ -130,6 +134,7 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
   private createQuizz() {
     this.subscriptions.push(this.answersCreatedSubject.subscribe({
       next: (data) => {
+        this.answersCreatedSubject.next(false);
         if (data) {
           let quizRequests: Observable<Quiz>[] = []
           for (let i = 0; i < this.minigame().quizz_id.length; i++) {
@@ -160,6 +165,7 @@ export class CreationValidationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.quizzCreatedSubject.subscribe({
       next: (data) => {
         if (data) {
+          this.quizzCreatedSubject.next(false);
           this.subscriptions.push(this.minigameServ.create(this.minigame()).subscribe({
             next: (data) => {
               this.toastService.Show("Minigame Créé", `Minigame ${data.name} créé avec succès`, ToastTypes.SUCCESS, 3000);

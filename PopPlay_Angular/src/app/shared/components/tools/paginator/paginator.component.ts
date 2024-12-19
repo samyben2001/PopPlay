@@ -14,7 +14,7 @@ export class PaginatorComponent {
   @Output() pageChanged: EventEmitter<number> = new EventEmitter<number>()
 
   @Input() onePageVisible: boolean = false
-  @Input() itemsPerPage: number = 3
+  @Input() itemsPerPage: number = 6
   private _nbItems: number = 0
   @Input() set nbItems(nbItems: number) {
     this._nbItems = nbItems

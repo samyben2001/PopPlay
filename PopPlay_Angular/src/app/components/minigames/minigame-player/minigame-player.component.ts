@@ -41,7 +41,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
   protected readonly MAX_ATTEMPTS: number = 3
   private readonly BASE_BLUR: number = 25
   private readonly MAX_TIMER: number = 30
-  private readonly TIME_BETWEEN_MEDIAS: number = 5
+  private readonly TIME_BETWEEN_MEDIAS: number = 3
   private readonly SCORE_PER_ERROR: number = -100
 
   protected btnTypes = BtnTypes
@@ -78,6 +78,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
     this.subscriptions.push(this._gameServ.get_by_id(this._ar.snapshot.params['gameId']).subscribe({
       next: (data) => {
         this.minigame = data
+        console.log(this.minigame)
 
         if (this.minigame.type.name == GameTypes.IMAGE_GUESSING || this.minigame.type.name == GameTypes.BLIND_TEST) {
           this.shuffle(this.minigame.medias)
@@ -216,7 +217,7 @@ export class MinigamePlayerComponent implements OnInit, AfterViewInit, OnDestroy
       this.timerBeforeNextMedia = this.TIME_BETWEEN_MEDIAS;
       this.nextMedias();
       clearInterval(interval);
-    }, 5000);
+    }, this.TIME_BETWEEN_MEDIAS*1000);
   }
 
   private nextMedias() {

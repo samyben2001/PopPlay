@@ -22,7 +22,7 @@ class ThemeCategoryViewSet(ModelViewSet):
     
     
 class ThemeViewSet(ModelViewSet):
-    queryset = Theme.objects.all().order_by('id').prefetch_related('category')
+    queryset = Theme.objects.all().order_by('name').prefetch_related('category')
     filter_backends = [DjangoFilterBackend]
     serializer_class = ThemeSerializer 
     permission_classes = [IsAuthenticatedOrReadOnly]   

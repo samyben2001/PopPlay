@@ -22,7 +22,6 @@ export class MediaService {
     formData.append('url', media.url);
 
     if (media.answers_id.length > 0) {
-
       media.answers_id.forEach((id) => { 
         formData.append("answers_id", id.toString());
       })
